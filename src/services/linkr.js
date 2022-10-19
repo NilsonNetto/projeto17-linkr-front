@@ -6,4 +6,8 @@ function getTrendingHashtags(headers) {
   return axios.get(`${URL}/hashtags`, headers);
 }
 
-export { getTrendingHashtags };
+function getHashtagByName(hashtag, headers) {
+  return axios.get(`${URL}/hashtags/${hashtag}`, headers);
+}
+
+export { getTrendingHashtags, getHashtagByName };

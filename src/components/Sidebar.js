@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { getTrendingHashtags } from "../services/linkr";
 
@@ -7,26 +8,30 @@ import { getTrendingHashtags } from "../services/linkr";
 export default function Sidebar() {
 
   const [trendingHashtags, setTrendingHashtags] = useState([]);
+  const navigate = useNavigate();
 
-  const arrayTeste = ['Hashtag1', 'bolinha', 'belezinha'];
+  useEffect(() => {
 
-  /*  useEffect(() => {
- 
-     const config = {
-       headers: {
-         Authorization: `Bearer `
-       }
-     };
- 
-     getTrendingHashtags(config)
-       .then(res => {
-         setTrendingHashtags(res.data);
-       })
-       .catch(res => {
-         console.log(res.data);
-         alert('Trending hashtags error');
-       });
-   }, []); */
+    const config = {
+      headers: {
+        Authorization: `Bearer `
+      }
+    };
+
+    getTrendingHashtags(config)
+      .then(res => {
+        setTrendingHashtags(res.data);
+      })
+      .catch(res => {
+        console.log(res.data);
+        alert('Trending hashtags error');
+      });
+  }, []);
+
+  function hashtagPage(hashtag) {
+    navigate(`/hashtag/${hashtag}`);
+  }
+
 
   return (
     <SidebarStyle>
@@ -35,7 +40,9 @@ export default function Sidebar() {
       </Header>
       <HorizontalLine />
       <HashtagsWrapper>
-        {arrayTeste.length === 0 ? 'Carregando...' : arrayTeste.map((value, index) => <p key={index}># {value}</p>)}
+        {trendingHashtags.length === 0 ?
+          'Carregando...' :
+          trendingHashtags.map((value, index) => <p key={index} onClick={() => hashtagPage(value.name)}># {value.name}</p>)}
       </HashtagsWrapper>
     </SidebarStyle>
   );
@@ -75,6 +82,7 @@ const HashtagsWrapper = styled.div`
   margin: 15px;
 
   p{
+    cursor: pointer;
     font-weight: 700;
     font-size: 19px;
     margin-bottom: 15px;
