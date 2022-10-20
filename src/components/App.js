@@ -8,7 +8,7 @@ export default function App() {
     <BrowserRouter>
       <GlobalStyle />
       <Routes>
-        <Route path='/' element={<Sidebar />} />
+        <Route path='/sidebar' element={<Sidebar />} />
         <Route path='/hashtag/:hashtag' element={<HashtagPage />} />
       </Routes>
     </BrowserRouter>
