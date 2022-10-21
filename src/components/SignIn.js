@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import axios from "axios";
+import { postSignin } from "../services/linkr";
 
 export default function SignIn() {
   const [email, setEmail] = useState();
@@ -13,13 +13,13 @@ export default function SignIn() {
 
   function Login(e) {
     e.preventDefault();
-    const URL = "http://localhost:4000/signin";
+
     const body = {
       email,
-      password,
+      password
     };
 
-    const promise = axios.post(URL, body);
+    const promise = postSignin(body);
     promise.then((res) => {
       const { data } = res;
 
