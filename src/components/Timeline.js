@@ -40,6 +40,7 @@ export default function Timeline() {
                 console.log(resposta);
                 setLoading(false);
                 setForm({ description: '', link: '' });
+                updating();
             })
             .catch(resposta => {
                 console.log(resposta);
