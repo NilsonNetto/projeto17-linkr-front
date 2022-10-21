@@ -23,7 +23,7 @@ export default function SignUp() {
           <input placeholder="picture url" type="text" />
           <br />
           <button>Sign Up</button>
-          <Link to="/signin">
+          <Link to="/">
             <DescSignUp>Switch back to log in</DescSignUp>
           </Link>
         </BoardLogUpInputs>
