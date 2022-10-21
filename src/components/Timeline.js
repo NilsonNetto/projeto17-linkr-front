@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { postPost, getPosts } from './../services/linkr';
 import Header from "./Header";
 import PostBox from "./PostBox";
+import Sidebar from "./Sidebar";
 
 export default function Timeline() {
     const [form, setForm] = useState({ description: '', link: '' });
@@ -47,65 +48,85 @@ export default function Timeline() {
                 alert('Houve um erro ao publicar seu link');
                 setLoading(false);
                 setForm({ description: '', link: '' });
-            })
+            });
     }
 
     return (
         <>
             <Header />
             <Container>
-                <Title>timeline</Title>
-                <Publish>
-                    <ImgDiv>
-                        <Img></Img>
-                    </ImgDiv>
-                    <FormDiv>
-                        <PublishTitle>What are you going to share today?</PublishTitle>
-                        <Form onSubmit={post}>
-                            <InputLink
-                                type='url'
-                                name='link'
-                                value={form.link}
-                                placeholder='https://...'
-                                required
-                                disabled={loading}
-                                onChange={e => setForm({ ...form, link: e.target.value })}
-                            />
-                            <InputDescription
-                                type='text'
-                                name='description'
-                                value={form.description}
-                                placeholder='Awesome article about #Javascript'
-                                disabled={loading}
-                                onChange={e => setForm({ ...form, description: e.target.value })}
-                            />
-                            <button type="submit">
-                                {loading ?
-                                    <>Publishing...</>
-                                    :
-                                    <>Publish</>
-                                }
-                            </button>
-                        </Form>
-                    </FormDiv>
-                </Publish>
-                <Posts>
-                    {
-                        loadingPosts ?
-                            <>Loading...</>
-                            :
-                            <PostBox />
-                    }
+                <TimelineBox>
+                    <Title>timeline</Title>
+                    <Publish>
+                        <ImgDiv>
+                            <Img></Img>
+                        </ImgDiv>
+                        <FormDiv>
+                            <PublishTitle>What are you going to share today?</PublishTitle>
+                            <Form onSubmit={post}>
+                                <InputLink
+                                    type='url'
+                                    name='link'
+                                    value={form.link}
+                                    placeholder='https://...'
+                                    required
+                                    disabled={loading}
+                                    onChange={e => setForm({ ...form, link: e.target.value })}
+                                />
+                                <InputDescription
+                                    type='text'
+                                    name='description'
+                                    value={form.description}
+                                    placeholder='Awesome article about #Javascript'
+                                    disabled={loading}
+                                    onChange={e => setForm({ ...form, description: e.target.value })}
+                                />
+                                <button type="submit">
+                                    {loading ?
+                                        <>Publishing...</>
+                                        :
+                                        <>Publish</>
+                                    }
+                                </button>
+                            </Form>
+                        </FormDiv>
+                    </Publish>
+                    <Posts>
+                        {
+                            loadingPosts ?
+                                <>Loading...</>
+                                :
+                                <PostBox />
+                        }
 
-                </Posts>
+                    </Posts>
+                </TimelineBox>
+                <SidebarBox>
+                    <Sidebar />
+                </SidebarBox>
             </Container>
+
+
         </>
     );
 }
 
 const Container = styled.div`
+    width: 100%;
+    display: flex;
+    justify-content: center;
+`;
+
+const TimelineBox = styled.div`
     width: 611px;
-    margin: 78px auto 0px auto;   
+    margin-top: 78px;
+`;
+
+const SidebarBox = styled.div`
+    margin: 164px 0 0 25px;
+    @media (max-width: 950px) {
+        display: none;
+    }
 `;
 
 const Title = styled.h1`
