@@ -25,6 +25,15 @@ function getPosts(token) {
     },
   });
 }
+
+function postSignin(body) {
+  return axios.post(`${URL}/signin`, body);
+}
+
+function postSignup(body) {
+  return axios.post(`${URL}/signup`, body);
+}
+
 function getPageUser(token, id) {
   return axios.get(`${URL}/user/${id}`, {
     headers: {
@@ -46,4 +55,6 @@ export {
   getPosts,
   getPageUser,
   searchUser,
+  postSignin,
+  postSignup,
 };

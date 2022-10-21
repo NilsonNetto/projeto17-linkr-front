@@ -1,8 +1,9 @@
 import styled from "styled-components";
+import { FiChevronDown } from "react-icons/fi";
 import { DebounceInput } from "react-debounce-input";
 import { useState } from "react";
 import { searchUser } from "../services/linkr";
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 export default function Header() {
   const [user, setUser] = useState([]);
   const token =
@@ -11,8 +12,7 @@ export default function Header() {
     const promise = searchUser(token, value);
     promise.then((res) => setUser(res.data));
   }
-  console.log(user);
-  console.log("PASSEI AQUI");
+
   return (
     <Top>
       <Title>linkr</Title>
@@ -29,7 +29,7 @@ export default function Header() {
             ? " "
             : user.map((u) => (
                 <Link to={`/user/${u.id}`} key={u.id}>
-                  <User onClick={() => Navigate}>
+                  <User>
                     <img src={u.profilePicture} />
                     <p>{u.username}</p>
                   </User>
@@ -39,7 +39,7 @@ export default function Header() {
       </Search>
 
       <Logout>
-        <ion-icon name="chevron-down-outline"></ion-icon>
+        <FiChevronDown size={25} />
         <Img></Img>
       </Logout>
     </Top>
@@ -66,11 +66,6 @@ const Logout = styled.div`
   display: flex;
   align-items: center;
   margin-right: 26px;
-
-  ion-icon[name="chevron-down-outline"] {
-    height: 20px;
-    width: 30px;
-  }
 `;
 
 const Img = styled.div`

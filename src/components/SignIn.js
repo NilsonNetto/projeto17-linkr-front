@@ -1,7 +1,57 @@
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { postSignin } from "../services/linkr";
 
 export default function SignIn() {
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  const [user, setUser] = useState();
+  const [offButton, setOffButton] = useState(false);
+
+  const navigate = useNavigate();
+
+  function Login(e) {
+    e.preventDefault();
+
+    const body = {
+      email,
+      password
+    };
+
+    const promise = postSignin(body);
+    promise.then((res) => {
+      const { data } = res;
+
+      const result = [data.token]
+      if (result.length > 0) {
+        setOffButton(true);
+      }
+
+      navigate("/timeline");
+      setUser(data.token);
+
+      localStorage.clear();
+      localStorage.setItem("user", JSON.stringify(data.token));
+    });
+    promise.catch((err) => {
+      const erros = err.response.data;
+      console.log(erros);
+      alert(erros);
+    });
+  }
+
+  useEffect(() => {
+    const userLogado = localStorage.getItem("user");
+    if (userLogado) {
+      const getUser = JSON.parse(userLogado);
+      setUser(getUser);
+      navigate("/timeline");
+    } else {
+      navigate("/");
+    }
+  }, []);
+
   return (
     <SignInStyle>
       <Logo>
@@ -14,11 +64,23 @@ export default function SignIn() {
       </Logo>
       <LogIn>
         <BoardLogInInputs>
-          <input placeholder="e-mail" type="email" />
+          <input
+            placeholder="e-mail"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
           <br />
-          <input placeholder="password" type="password" />
+          <input
+            placeholder="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
           <br />
-          <button>Log In</button>
+          <button onClick={Login} disabled={offButton}>Log In</button>
           <Link to="/signup">
             <SignDesc>First time? Create an account!</SignDesc>
           </Link>
@@ -33,7 +95,7 @@ const SignInStyle = styled.div`
   height: 100vw;
   display: flex;
 
-  @media (max-width: 375px) {
+  @media (max-width: 450px) {
     flex-direction: column;
   }
 `;
@@ -45,7 +107,7 @@ const BoardLogIn = styled.div`
   margin-bottom: 478px;
   margin-right: 319px;
 
-  @media (max-width: 375px) {
+  @media (max-width: 450px) {
     width: 375px;
     height: 175px;
     margin-left: 69px;
@@ -81,7 +143,7 @@ const Description = styled.div`
   line-height: 64px;
   color: #ffffff;
 
-  @media (max-width: 375px) {
+  @media (max-width: 450px) {
     width: 237px;
     height: 68px;
     font-size: 23px;
@@ -92,7 +154,7 @@ const LogIn = styled.div`
   width: 535px;
   height: auto;
 
-  @media (max-width: 375px) {
+  @media (max-width: 450px) {
     width: 375px;
   }
 `;
@@ -104,13 +166,13 @@ const BoardLogInInputs = styled.div`
   margin-bottom: 440px;
   margin-right: 55px;
 
-  @media (max-width: 375px) {
+  @media (max-width: 450px) {
     width: 330px;
     height: auto;
     margin-left: 23px;
+    margin-right: 22px;
     margin-top: 40px;
     margin-bottom: 91px;
-    margin-right: 22px;
   }
 
   input {
@@ -127,7 +189,7 @@ const BoardLogInInputs = styled.div`
     color: #9f9f9f;
     margin-bottom: 13px;
 
-    @media (max-width: 375px) {
+    @media (max-width: 450px) {
       width: 330px;
       height: 55px;
       margin-bottom: 13px;
@@ -147,7 +209,7 @@ const BoardLogInInputs = styled.div`
     color: #ffffff;
     margin-bottom: 22px;
 
-    @media (max-width: 375px) {
+    @media (max-width: 450px) {
       width: 330px;
       height: 55px;
       margin-bottom: 18px;
@@ -168,7 +230,7 @@ const SignDesc = styled.div`
   margin-left: 90px;
   margin-right: 134px;
 
-  @media (max-width: 375px) {
+  @media (max-width: 450px) {
     margin-left: 35px;
     margin-right: 117px;
   }
