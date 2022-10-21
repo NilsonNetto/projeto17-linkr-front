@@ -1,11 +1,14 @@
 import styled from "styled-components";
+import { FiChevronDown } from 'react-icons/fi';
 
 export default function Header() {
     return (
         <Top>
             <Title>linkr</Title>
             <Logout>
-                <ion-icon name="chevron-down-outline"></ion-icon>
+                    <FiChevronDown 
+                        size={25}
+                    />
                 <Img>
                 </Img>
             </Logout>
@@ -33,11 +36,6 @@ const Logout = styled.div`
     display: flex;
     align-items: center;
     margin-right: 26px;
-
-    ion-icon[name='chevron-down-outline'] {
-       height: 20px;
-       width: 30px;
-    }
 `;
 
 const Img = styled.div`
