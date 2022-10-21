@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import styled from "styled-components";
 import { postSignin } from "../services/linkr";
+import { useState, useEffect } from "react";
+import styled from "styled-components";
 
 export default function SignIn() {
   const [email, setEmail] = useState();
