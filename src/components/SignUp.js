@@ -1,7 +1,42 @@
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { postSignup } from "../services/linkr";
 
 export default function SignUp() {
+  const [username, setUsername] = useState();
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  const [profilePicture, setProfilePicture] = useState();
+  const [offButton, setOffButton] = useState(false);
+
+  const navigate = useNavigate();
+
+  function SendSignup(e) {
+    e.preventDefault();
+
+    const body = {
+      email,
+      password,
+      username,
+      profilePicture,
+    };
+
+    const promise = postSignup(body);
+    promise.then((res) => {
+      const result = [res];
+      if (result.length > 0) {
+        setOffButton(true);
+      }
+
+      navigate("/");
+    });
+    promise.catch((err) => {
+      const erros = err.response.data;
+      alert(erros);
+    });
+  }
+
   return (
     <SignUpStyle>
       <LogoSingUp>
@@ -14,15 +49,39 @@ export default function SignUp() {
       </LogoSingUp>
       <LogUp>
         <BoardLogUpInputs>
-          <input placeholder="e-mail" type="email" />
+          <input
+            placeholder="e-mail"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
           <br />
-          <input placeholder="password" type="password" />
+          <input
+            placeholder="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
           <br />
-          <input placeholder="username" type="text" />
+          <input
+            placeholder="username"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
           <br />
-          <input placeholder="picture url" type="text" />
+          <input
+            placeholder="picture url"
+            type="text"
+            value={profilePicture}
+            onChange={(e) => setProfilePicture(e.target.value)}
+            required
+          />
           <br />
-          <button>Sign Up</button>
+          <button onClick={SendSignup} disabled={offButton}>Sign Up</button>
           <Link to="/">
             <DescSignUp>Switch back to log in</DescSignUp>
           </Link>

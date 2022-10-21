@@ -26,4 +26,12 @@ function getPosts(token) {
   });
 }
 
-export { getTrendingHashtags, getHashtagByName, postPost, getPosts };
+function postSignin(body) {
+  return axios.post(`${URL}/signin`, body);
+}
+
+function postSignup (body) {
+  return axios.post(`${URL}/signup`, body);
+}
+
+export { getTrendingHashtags, getHashtagByName, postPost, getPosts, postSignin, postSignup };
