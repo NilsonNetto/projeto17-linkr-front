@@ -8,25 +8,23 @@ export default function Sidebar() {
 
   const [trendingHashtags, setTrendingHashtags] = useState([]);
 
-  const arrayTeste = ['Hashtag1', 'bolinha', 'belezinha'];
+  useEffect(() => {
 
-  /*  useEffect(() => {
- 
-     const config = {
-       headers: {
-         Authorization: `Bearer `
-       }
-     };
- 
-     getTrendingHashtags(config)
-       .then(res => {
-         setTrendingHashtags(res.data);
-       })
-       .catch(res => {
-         console.log(res.data);
-         alert('Trending hashtags error');
-       });
-   }, []); */
+    const config = {
+      headers: {
+        Authorization: `Bearer `
+      }
+    };
+    console.log(trendingHashtags);
+    getTrendingHashtags()
+      .then(res => {
+        setTrendingHashtags(res.data);
+      })
+      .catch(res => {
+        console.log(res.data);
+        alert('Trending hashtags error');
+      });
+  }, []);
 
   return (
     <SidebarStyle>
@@ -35,7 +33,7 @@ export default function Sidebar() {
       </Header>
       <HorizontalLine />
       <HashtagsWrapper>
-        {arrayTeste.length === 0 ? 'Carregando...' : arrayTeste.map((value, index) => <p key={index}># {value}</p>)}
+        {trendingHashtags.length === 0 ? 'Carregando...' : trendingHashtags.map((value, index) => <p># {value}</p>)}
       </HashtagsWrapper>
     </SidebarStyle>
   );
