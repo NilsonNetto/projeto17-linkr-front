@@ -6,4 +6,24 @@ function getTrendingHashtags(headers) {
   return axios.get(`${URL}/hashtags`, headers);
 }
 
-export { getTrendingHashtags };
+function getHashtagByName(hashtag, headers) {
+  return axios.get(`${URL}/hashtags/${hashtag}`, headers);
+}
+
+function postPost(body, token) {
+  return axios.post(`${URL}/publish`, body, {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+}
+
+function getPosts(token) {
+  return axios.get(`${URL}/timeline`, {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+}
+
+export { getTrendingHashtags, getHashtagByName, postPost, getPosts };
