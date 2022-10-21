@@ -17,7 +17,7 @@ export default function UserPage() {
   return (
     <Container>
       <TimelineBox>
-        <Title>{userPage[0]?.username}'s posts</Title>
+        <Title>{userPage[0]?.username} 's posts</Title>
         <SidebarBox>
           <Sidebar />
         </SidebarBox>
