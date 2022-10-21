@@ -18,4 +18,12 @@ function postPost(body, token) {
   });
 }
 
-export { getTrendingHashtags, getHashtagByName, postPost };
+function getPosts(token) {
+  return axios.get(`${URL}/timeline`, {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  });
+}
+
+export { getTrendingHashtags, getHashtagByName, postPost, getPosts };
