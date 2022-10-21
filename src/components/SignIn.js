@@ -36,6 +36,7 @@ export default function SignIn() {
     });
     promise.catch((err) => {
       const erros = err.response.data;
+      console.log(erros);
       alert(erros);
     });
   }
