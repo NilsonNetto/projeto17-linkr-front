@@ -13,12 +13,15 @@ export default function UserPage() {
     const promise = getPageUser(token, id);
     promise.then((res) => setUserPage(res.data));
   }, []);
-
+  console.log(userPage[0]?.username);
   return (
     <Container>
-      <SidebarBox>
-        <Sidebar />
-      </SidebarBox>
+      <TimelineBox>
+        <Title>{userPage[0]?.username}'s posts</Title>
+        <SidebarBox>
+          <Sidebar />
+        </SidebarBox>
+      </TimelineBox>
     </Container>
   );
 }
@@ -34,4 +37,14 @@ const SidebarBox = styled.div`
   @media (max-width: 950px) {
     display: none;
   }
+`;
+const Title = styled.h1`
+  font-size: 43px;
+  font-weight: 700;
+  font-family: "Oswald", sans-serif;
+`;
+
+const TimelineBox = styled.div`
+  width: 611px;
+  margin-top: 78px;
 `;
