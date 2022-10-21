@@ -1,9 +1,54 @@
-import { useEffect } from "react";
 import styled from "styled-components";
-import { AiOutlineHeart } from 'react-icons/ai';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { likePost, unlikePost } from "../services/linkr";
 import { FaTrash, FaPencilAlt } from 'react-icons/fa';
+import { BsHeart, BsHeartFill } from "react-icons/bs";
+import ReactHashtag from "@mdnm/react-hashtag";
 
 export default function PostBox({ id, username, profilePicture, description, url, userLike, postLikes }) {
+
+    const [isLiked, setIsLiked] = useState(userLike);
+    const navigate = useNavigate();
+
+    console.log(isLiked);
+
+    function likeAndDislike({ postId }) {
+
+        const config = {
+            headers: {
+                Authorization: `Bearer `
+            }
+        };
+
+        if (isLiked) {
+            unlikePost(postId, config)
+                .then(res => {
+                    console.log(res.data);
+                    setIsLiked(false);
+                })
+                .catch(res => {
+                    console.log(res.message);
+                    alert('unlike error');
+                });
+
+        } else {
+            likePost(postId, config)
+                .then(res => {
+                    console.log(res.data);
+                    setIsLiked(true);
+                })
+                .catch(res => {
+                    console.log(res.message);
+                    alert('like error');
+                });
+        }
+    }
+
+    function redirectHashtag(hashtag) {
+        const redirect = hashtag.replace('#', '');
+        navigate(`/hashtag/${redirect}`);
+    }
 
     return (
         <Post>
@@ -11,11 +56,11 @@ export default function PostBox({ id, username, profilePicture, description, url
                 <Img>
                     <img src={profilePicture} alt='profile' />
                 </Img>
-                <Likes>
-                    <div>
-                        <AiOutlineHeart />
-                    </div>
-                    <div>likes</div>
+                <Likes isLiked={isLiked}>
+                    <LikeHeart isLiked={isLiked} onClick={() => likeAndDislike(id)}>
+                        {isLiked ? <BsHeartFill /> : <BsHeart />}
+                    </LikeHeart>
+                    <LikeCount>likes</LikeCount>
                 </Likes>
             </Left>
             <Right>
@@ -30,7 +75,16 @@ export default function PostBox({ id, username, profilePicture, description, url
                         </div>
                     </Icons>
                 </Top>
-                <Description>{description}</Description>
+                <Description>
+                    <ReactHashtag
+                        renderHashtag={(hashtagValue) =>
+                            <Hashtag
+                                onClick={() => redirectHashtag(hashtagValue)}>
+                                {hashtagValue}
+                            </Hashtag>}>
+                        {description}
+                    </ReactHashtag>
+                </Description>
                 <Link>{url}</Link>
             </Right>
         </Post>
@@ -74,13 +128,22 @@ const Likes = styled.div`
     flex-direction: column;
     align-items: center;
     margin-top: 19px;
+`;
 
-    div {
-        font-size: 11px;
-        font-family: 'Lato', sans-serif;
-        color: #FFFFFF;
-        margin-top: 5px;
-    }
+const LikeHeart = styled.div`
+  width: 30px;
+  height: 30px;
+  margin-top: 20px;
+  font-size: 20px;
+  cursor: pointer;
+  color: ${({ isLiked }) => isLiked ? 'red' : 'white'} ;
+`;
+
+const LikeCount = styled.div`
+    font-size: 11px;
+    font-family: 'Lato', sans-serif;
+    color: #FFFFFF;
+    margin-top: 5px;
 `;
 
 const Right = styled.div`
@@ -105,6 +168,11 @@ const Name = styled.div`
 
 const Icons = styled.div`
     display: flex;
+`;
+
+const Hashtag = styled.span`
+  font-weight: 700;
+  cursor: pointer;
 `;
 
 const Description = styled.div`
