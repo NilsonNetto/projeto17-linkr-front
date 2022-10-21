@@ -37,7 +37,7 @@ const SignUpStyle = styled.div`
   height: 100vw;
   display: flex;
 
-  @media (max-width: 375px) {
+  @media (max-width: 450px) {
     flex-direction: column;
   }
 `;
@@ -68,7 +68,7 @@ const DescriptionSignUp = styled.div`
   line-height: 64px;
   color: #ffffff;
 
-  @media (max-width: 375px) {
+  @media (max-width: 450px) {
     width: 237px;
     height: 68px;
     font-size: 23px;
@@ -83,7 +83,7 @@ const BoardSignUp = styled.div`
   margin-bottom: 478px;
   margin-right: 319px;
 
-  @media (max-width: 375px) {
+  @media (max-width: 450px) {
     width: 375px;
     height: 175px;
     margin-left: 69px;
@@ -96,7 +96,7 @@ const LogUp = styled.div`
   width: 535px;
   height: auto;
 
-  @media (max-width: 375px) {
+  @media (max-width: 450px) {
     width: 375px;
   }
 `;
@@ -108,7 +108,7 @@ const BoardLogUpInputs = styled.div`
   margin-bottom: 440px;
   margin-right: 55px;
 
-  @media (max-width: 375px) {
+  @media (max-width: 450px) {
     width: 330px;
     height: auto;
     margin-left: 23px;
@@ -131,7 +131,7 @@ const BoardLogUpInputs = styled.div`
     color: #9f9f9f;
     margin-bottom: 13px;
 
-    @media (max-width: 375px) {
+    @media (max-width: 450px) {
       width: 330px;
       height: 55px;
       margin-bottom: 13px;
@@ -150,7 +150,7 @@ const BoardLogUpInputs = styled.div`
     color: #ffffff;
     margin-bottom: 22px;
 
-    @media (max-width: 375px) {
+    @media (max-width: 450px) {
       width: 330px;
       height: 55px;
       margin-bottom: 18px;
@@ -170,7 +170,7 @@ const DescSignUp = styled.div`
   margin-left: 130px;
   margin-right: 134px;
 
-  @media (max-width: 375px) {
+  @media (max-width: 450px) {
     margin-left: 70.5px;
     margin-right: 117px;
   }
