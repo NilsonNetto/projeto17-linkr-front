@@ -26,4 +26,12 @@ function getPosts(token) {
   });
 }
 
-export { getTrendingHashtags, getHashtagByName, postPost, getPosts };
+function likePost(postId, headers) {
+  return axios.post(`${URL}/likes/${postId}/like`, headers);
+}
+
+function unlikePost(postId, headers) {
+  return axios.post(`${URL}/likes/${postId}/unlike`, headers);
+}
+
+export { getTrendingHashtags, getHashtagByName, postPost, getPosts, likePost, unlikePost };
