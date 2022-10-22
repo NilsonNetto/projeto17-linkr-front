@@ -12,10 +12,11 @@ export default function Timeline() {
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
+  const [updateLike, setUpdateLike] = useState(false);
 
   useEffect(() => {
     updating();
-  }, []);
+  }, [updateLike]);
 
   async function updating() {
 
@@ -113,6 +114,8 @@ export default function Timeline() {
                         url={post.url}
                         userLike={post.userLike}
                         postLikes={post.postLikes}
+                        updateLike={updateLike}
+                        setUpdateLike={setUpdateLike}
                       />
                     );
                   })}

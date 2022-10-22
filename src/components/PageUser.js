@@ -14,6 +14,7 @@ export default function UserPage() {
 
   const [userPage, setUserPage] = useState([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
+  const [updateLike, setUpdateLike] = useState(false);
 
   useEffect(() => {
 
@@ -24,7 +25,7 @@ export default function UserPage() {
       setUserPage(res.data);
       setLoadingPosts(!loadingPosts);
     });
-  }, []);
+  }, [updateLike]);
 
   return (
     <>
@@ -47,6 +48,8 @@ export default function UserPage() {
                       description={post.description}
                       url={post.url}
                       postLikes={post.postLikes}
+                      updateLike={updateLike}
+                      setUpdateLike={setUpdateLike}
                     />
                   );
                 })}

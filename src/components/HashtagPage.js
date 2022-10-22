@@ -12,6 +12,7 @@ export default function HashtagPage() {
 
   const [postsWithHashtag, setPostsWithHashtag] = useState([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
+  const [updateLike, setUpdateLike] = useState(false);
   const { hashtag } = useParams();
 
   useEffect(() => {
@@ -27,7 +28,7 @@ export default function HashtagPage() {
         console.log(res.data);
         alert('Get posts with hashtags error');
       });
-  }, [hashtag]);
+  }, [hashtag, updateLike]);
 
   return (
     <>
@@ -51,6 +52,8 @@ export default function HashtagPage() {
                       url={post.url}
                       userLike={post.userLike}
                       postLikes={post.postLikes}
+                      updateLike={updateLike}
+                      setUpdateLike={setUpdateLike}
                     />
                   );
                 })}

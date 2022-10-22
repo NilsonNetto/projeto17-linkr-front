@@ -17,28 +17,32 @@ export default function PostBox({
   url,
   userLike,
   postLikes,
+  updateLike,
+  setUpdateLike
 }) {
   const [isLiked, setIsLiked] = useState(userLike);
   const navigate = useNavigate();
 
   function likesCount(likes) {
 
-    if (userLike) {
+    if (likes[0] === null) {
+      return 'No one likes this, be the first!';
+    }
 
+    if (userLike) {
       const filteredLikes = likes.filter(value => value !== username);
 
       switch (likes.length) {
-        case 0: return 'Erro'; break;
         case 1: return 'Você'; break;
         case 2: return `Você e ${filteredLikes[0]}`; break;
         default: return `Você, ${filteredLikes[0]} e outras ${likes.length - 2} pessoas`;
       }
-    }
-    switch (likes.length) {
-      case 0: return 'No one likes this, be the first!'; break;
-      case 1: return likes[0]; break;
-      case 2: return `${likes[0]} e ${likes[1]}`; break;
-      default: return `${likes[0]}, ${likes[1]} e outras ${likes.length - 2} pessoas`;
+    } else {
+      switch (likes.length) {
+        case 1: return likes[0]; break;
+        case 2: return `${likes[0]} e ${likes[1]}`; break;
+        default: return `${likes[0]}, ${likes[1]} e outras ${likes.length - 2} pessoas`;
+      }
     };
   }
 
@@ -49,8 +53,8 @@ export default function PostBox({
     if (isLiked) {
       unlikePost(postId, headers)
         .then((res) => {
-          console.log(res.data);
           setIsLiked(false);
+          setUpdateLike(!updateLike);
         })
         .catch((res) => {
           console.log(res.message);
@@ -59,8 +63,8 @@ export default function PostBox({
     } else {
       likePost(postId, headers)
         .then((res) => {
-          console.log(res.data);
           setIsLiked(true);
+          setUpdateLike(!updateLike);
         })
         .catch((res) => {
           console.log(res.message);
@@ -84,7 +88,7 @@ export default function PostBox({
           <LikeHeart isLiked={isLiked} onClick={() => likeAndDislike(id)}>
             {isLiked ? <BsHeartFill /> : <BsHeart />}
           </LikeHeart>
-          <a data-tip={likesCount(postLikes)}>{postLikes.length} likes</a>
+          <a data-tip={likesCount(postLikes)}>{postLikes[0] === null ? 0 : postLikes.length} likes</a>
         </Likes>
       </Left>
       <Right>
