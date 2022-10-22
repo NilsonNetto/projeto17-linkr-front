@@ -1,3 +1,4 @@
+
 import { useNavigate, Link } from "react-router-dom";
 import { FiChevronDown } from "react-icons/fi";
 import styled from "styled-components";
@@ -8,7 +9,9 @@ import { searchUser } from "../services/linkr";
 export default function Header() {
   const [click, setClick] = useState(false);
   const navigate = useNavigate();
-  const [user, setUser] = useState([]);
+
+ const [user, setUser] = useState([]);
+
   const token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2NjI4NTI3NCwiZXhwIjoxNjY4ODc3Mjc0fQ.XKUQZ1CZOy-FU8-ZIvv3Mz0NDgDFv5jeWjYYL6C6S3g";
   function find(value) {
@@ -45,6 +48,7 @@ export default function Header() {
                 ))}
           </UserFind>
         </Search>
+
         <Logout>
           {click === false ? (
             <ion-icon
@@ -72,6 +76,7 @@ const Top = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+
 `;
 
 const Title = styled.div`
@@ -81,6 +86,7 @@ const Title = styled.div`
   margin-left: 28px;
   margin-top: 10px;
 `;
+
 
 const Logout = styled.div`
   display: flex;
@@ -96,6 +102,7 @@ const Logout = styled.div`
     height: 20px;
     width: 30px;
   }
+
 `;
 
 const Img = styled.div`
@@ -103,13 +110,14 @@ const Img = styled.div`
   width: 53px;
   border-radius: 26.5px;
   background-color: aqua;
+  margin-top: 8px;
 `;
 
 const Glueded = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
+   width: 100%;
 `;
 
 const Box = styled.div`
