@@ -1,11 +1,11 @@
 import styled from "styled-components";
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { likePost, unlikePost } from "../services/linkr";
 import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
 import ReactHashtag from "@mdnm/react-hashtag";
+import ReactTooltip from "react-tooltip";
 
 export default function PostBox({
   id,
@@ -19,6 +19,26 @@ export default function PostBox({
   const [isLiked, setIsLiked] = useState(userLike);
   const navigate = useNavigate();
 
+  function likesCount(likes) {
+
+    if (userLike) {
+
+      const filteredLikes = likes.filter(value => value !== username);
+
+      switch (likes.length) {
+        case 0: return 'Erro'; break;
+        case 1: return 'Você'; break;
+        case 2: return `Você e ${filteredLikes[0]}`; break;
+        default: return `Você, ${filteredLikes[0]} e outras ${likes.length - 2} pessoas`;
+      }
+    }
+    switch (likes.length) {
+      case 0: return 'No one likes this, be the first!'; break;
+      case 1: return likes[0]; break;
+      case 2: return `${likes[0]} e ${likes[1]}`; break;
+      default: return `${likes[0]}, ${likes[1]} e outras ${likes.length - 2} pessoas`;
+    };
+  }
 
   function likeAndDislike({ postId }) {
     const config = {
@@ -65,7 +85,7 @@ export default function PostBox({
           <LikeHeart isLiked={isLiked} onClick={() => likeAndDislike(id)}>
             {isLiked ? <BsHeartFill /> : <BsHeart />}
           </LikeHeart>
-          <LikeCount>likes</LikeCount>
+          <a data-tip={likesCount(postLikes)}>{postLikes.length} likes</a>
         </Likes>
       </Left>
       <Right>
@@ -93,6 +113,7 @@ export default function PostBox({
         </Description>
         <Link>{url}</Link>
       </Right>
+      <ReactTooltip place="bottom" type="light" effect="solid" />
     </Post>
   );
 }
