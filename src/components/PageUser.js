@@ -3,26 +3,56 @@ import { getPageUser } from "../services/linkr";
 import styled from "styled-components";
 import Sidebar from "./Sidebar";
 import { useParams } from "react-router-dom";
+import Header from "./Header";
+import PostBox from "./PostBox";
 export default function UserPage() {
   const { id } = useParams();
   console.log(id);
   const token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2NjI4NTI3NCwiZXhwIjoxNjY4ODc3Mjc0fQ.XKUQZ1CZOy-FU8-ZIvv3Mz0NDgDFv5jeWjYYL6C6S3g";
   const [userPage, setUserPage] = useState([]);
+  const [loadingPosts, setLoadingPosts] = useState(true);
   useEffect(() => {
     const promise = getPageUser(token, id);
-    promise.then((res) => setUserPage(res.data));
+    promise.then((res) => {
+      setUserPage(res.data);
+      setLoadingPosts(!loadingPosts);
+    });
   }, []);
-  console.log(userPage[0]?.username);
+
   return (
-    <Container>
-      <TimelineBox>
-        <Title>{userPage[0]?.username} 's posts</Title>
-        <SidebarBox>
-          <Sidebar />
-        </SidebarBox>
-      </TimelineBox>
-    </Container>
+    <>
+      <Header />
+      <Container>
+        <TimelineBox>
+          <Title>{userPage?.username} 's posts</Title>
+          <Posts>
+            {loadingPosts ? (
+              <>Loading...</>
+            ) : (
+              <>
+                {userPage.posts.map((post, index) => {
+                  return (
+                    <PostBox
+                      key={index}
+                      id={post.id}
+                      username={post.username}
+                      profilePicture={post.profilePicture}
+                      description={post.description}
+                      url={post.url}
+                      postLikes={post.postLikes}
+                    />
+                  );
+                })}
+              </>
+            )}
+          </Posts>
+          <SidebarBox>
+            <Sidebar />
+          </SidebarBox>
+        </TimelineBox>
+      </Container>
+    </>
   );
 }
 
@@ -47,4 +77,7 @@ const Title = styled.h1`
 const TimelineBox = styled.div`
   width: 611px;
   margin-top: 78px;
+`;
+const Posts = styled.div`
+  margin-top: 13px;
 `;
