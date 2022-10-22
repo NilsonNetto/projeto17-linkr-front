@@ -23,7 +23,7 @@ export default function SignIn() {
     promise.then((res) => {
       const { data } = res;
 
-      const result = [data.token]
+      const result = [data.token];
       if (result.length > 0) {
         setOffButton(true);
       }

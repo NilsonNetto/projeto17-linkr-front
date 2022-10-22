@@ -19,7 +19,6 @@ export default function PostBox({
   const [isLiked, setIsLiked] = useState(userLike);
   const navigate = useNavigate();
 
-  console.log(isLiked);
 
   function likeAndDislike({ postId }) {
     const config = {
