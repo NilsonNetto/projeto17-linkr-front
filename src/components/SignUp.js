@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
+import { postSignup } from "../services/linkr";
 import styled from "styled-components";
 import { useState } from "react";
-import { postSignup } from "../services/linkr";
 
 export default function SignUp() {
   const [username, setUsername] = useState();

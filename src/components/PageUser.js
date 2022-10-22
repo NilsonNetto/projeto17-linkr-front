@@ -77,6 +77,10 @@ const Title = styled.h1`
 const TimelineBox = styled.div`
   width: 611px;
   margin-top: 78px;
+  margin-bottom: 43px;
+`;
+const Posts = styled.div`
+  margin-top: 13px;
 `;
 const Posts = styled.div`
   margin-top: 13px;
