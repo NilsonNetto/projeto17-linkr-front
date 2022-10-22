@@ -43,11 +43,11 @@ function searchUser(name, headers) {
 }
 
 function likePost(postId, headers) {
-  return axios.post(`${URL}/likes/${postId}/like`, headers);
+  return axios.post(`${URL}/likes/${postId}/like`, {}, headers);
 }
 
 function unlikePost(postId, headers) {
-  return axios.post(`${URL}/likes/${postId}/unlike`, headers);
+  return axios.post(`${URL}/likes/${postId}/unlike`, {}, headers);
 }
 
 export {

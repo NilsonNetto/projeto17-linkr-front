@@ -42,7 +42,7 @@ export default function PostBox({
     };
   }
 
-  function likeAndDislike({ postId }) {
+  function likeAndDislike(postId) {
 
     const headers = mountHeaders(token);
 
