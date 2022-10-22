@@ -25,13 +25,13 @@ export default function UserPage() {
       <Header />
       <Container>
         <TimelineBox>
-          <Title>{userPage[0]?.username} 's posts</Title>
+          <Title>{userPage?.username} 's posts</Title>
           <Posts>
             {loadingPosts ? (
               <>Loading...</>
             ) : (
               <>
-                {userPage.map((post, index) => {
+                {userPage.posts.map((post, index) => {
                   return (
                     <PostBox
                       key={index}
