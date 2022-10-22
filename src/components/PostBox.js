@@ -1,11 +1,13 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { likePost, unlikePost } from "../services/linkr";
+import { mountHeaders, likePost, unlikePost } from "../services/linkr";
 import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
 import ReactHashtag from "@mdnm/react-hashtag";
 import ReactTooltip from "react-tooltip";
+
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTY2NjM5MjEzNCwiZXhwIjoxNjY4OTg0MTM0fQ.VsaUgWtuR8bcYYH0JH87hKHoATfkQGxIaB_dlq_bkpg';
 
 export default function PostBox({
   id,
@@ -41,14 +43,11 @@ export default function PostBox({
   }
 
   function likeAndDislike({ postId }) {
-    const config = {
-      headers: {
-        Authorization: `Bearer `,
-      },
-    };
+
+    const headers = mountHeaders(token);
 
     if (isLiked) {
-      unlikePost(postId, config)
+      unlikePost(postId, headers)
         .then((res) => {
           console.log(res.data);
           setIsLiked(false);
@@ -58,7 +57,7 @@ export default function PostBox({
           alert("unlike error");
         });
     } else {
-      likePost(postId, config)
+      likePost(postId, headers)
         .then((res) => {
           console.log(res.data);
           setIsLiked(true);

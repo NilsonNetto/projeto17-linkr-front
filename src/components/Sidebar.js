@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { getTrendingHashtags } from "../services/linkr";
+import { mountHeaders, getTrendingHashtags } from "../services/linkr";
 
-
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTY2NjM5MjEzNCwiZXhwIjoxNjY4OTg0MTM0fQ.VsaUgWtuR8bcYYH0JH87hKHoATfkQGxIaB_dlq_bkpg';
 
 export default function Sidebar() {
 
@@ -12,13 +12,9 @@ export default function Sidebar() {
 
   useEffect(() => {
 
-    const config = {
-      headers: {
-        Authorization: `Bearer `
-      }
-    };
+    const headers = mountHeaders(token);
 
-    getTrendingHashtags(config)
+    getTrendingHashtags(headers)
       .then(res => {
         setTrendingHashtags(res.data);
       })

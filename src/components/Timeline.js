@@ -1,127 +1,134 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { postPost, getPosts } from "./../services/linkr";
+import { mountHeaders, postPost, getPosts } from "./../services/linkr";
 import Header from "./Header";
 import PostBox from "./PostBox";
 import Sidebar from "./Sidebar";
 
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTY2NjM5MjEzNCwiZXhwIjoxNjY4OTg0MTM0fQ.VsaUgWtuR8bcYYH0JH87hKHoATfkQGxIaB_dlq_bkpg';
+
 export default function Timeline() {
-    const [form, setForm] = useState({ description: '', link: '' });
-    const [loading, setLoading] = useState(false);
-    const [posts, setPosts] = useState([]);
-    const [loadingPosts, setLoadingPosts] = useState(true);
-    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2NjI4NTI3NCwiZXhwIjoxNjY4ODc3Mjc0fQ.XKUQZ1CZOy-FU8-ZIvv3Mz0NDgDFv5jeWjYYL6C6S3g';
+  const [form, setForm] = useState({ description: '', link: '' });
+  const [loading, setLoading] = useState(false);
+  const [posts, setPosts] = useState([]);
+  const [loadingPosts, setLoadingPosts] = useState(true);
 
-    useEffect(() => {
-        updating();
-    }, []);
+  useEffect(() => {
+    updating();
+  }, []);
 
-    async function updating() {
-        await getPosts(token)
-            .then(resposta => {
-                setPosts(resposta.data);
-                setLoadingPosts(false);
-            })
-            .catch(resposta => {
-                console.log(resposta);
-                setLoadingPosts(false);
-            });
-    }
+  async function updating() {
 
-    function post(event) {
-        event.preventDefault();
-        setLoading(true);
+    const headers = mountHeaders(token);
 
-        postPost({
-            "description": form.description,
-            "link": form.link
-        }, token)
-            .then(resposta => {
-                console.log(resposta);
-                setLoading(false);
-                setForm({ description: '', link: '' });
-            })
-            .catch(resposta => {
-                console.log(resposta);
-                alert('Houve um erro ao publicar seu link');
-                setLoading(false);
-                setForm({ description: '', link: '' });
-            });
-    }
+    await getPosts(headers)
+      .then(resposta => {
+        setPosts(resposta.data);
+        setLoadingPosts(false);
+      })
+      .catch(resposta => {
+        console.log(resposta);
+        setLoadingPosts(false);
+      });
+  }
 
-    return (
-        <>
-            <Header />
-            <Container>
-                <TimelineBox>
-                    <Title>timeline</Title>
-                    <Publish>
-                        <ImgDiv>
-                            <Img></Img>
-                        </ImgDiv>
-                        <FormDiv>
-                            <PublishTitle>What are you going to share today?</PublishTitle>
-                            <Form onSubmit={post}>
-                                <InputLink
-                                    type='url'
-                                    name='link'
-                                    value={form.link}
-                                    placeholder='https://...'
-                                    required
-                                    disabled={loading}
-                                    onChange={e => setForm({ ...form, link: e.target.value })}
-                                />
-                                <InputDescription
-                                    type='text'
-                                    name='description'
-                                    value={form.description}
-                                    placeholder='Awesome article about #Javascript'
-                                    disabled={loading}
-                                    onChange={e => setForm({ ...form, description: e.target.value })}
-                                />
-                                <button type="submit">
-                                    {loading ?
-                                        <>Publishing...</>
-                                        :
-                                        <>Publish</>
-                                    }
-                                </button>
-                            </Form>
-                        </FormDiv>
-                    </Publish>
-                    <Posts>
-                        {
-                            loadingPosts ?
-                                <>Loading...</>
-                                :
-                                <>
-                                    {posts.map((post, index) => {
-                                        return (
-                                            <PostBox
-                                                key={index}
-                                                id={post.id}
-                                                username={post.username}
-                                                profilePicture={post.profilePicture}
-                                                description={post.description}
-                                                url={post.url}
-                                                userLike={post.userLike}
-                                                postLikes={post.postLikes}
-                                            />
-                                        );
-                                    })}
-                                </>
-                        }
+  function post(event) {
+    event.preventDefault();
+    setLoading(true);
 
-                    </Posts>
-                </TimelineBox>
-                <SidebarBox>
-                    <Sidebar />
-                </SidebarBox>
-            </Container>
+    const headers = mountHeaders(token);
+    const body = {
+      "description": form.description,
+      "link": form.link
+    };
+
+    postPost(body, headers)
+      .then(resposta => {
+        console.log(resposta);
+        setLoading(false);
+        setForm({ description: '', link: '' });
+      })
+      .catch(resposta => {
+        console.log(resposta);
+        alert('Houve um erro ao publicar seu link');
+        setLoading(false);
+        setForm({ description: '', link: '' });
+      });
+  }
+
+  return (
+    <>
+      <Header />
+      <Container>
+        <TimelineBox>
+          <Title>timeline</Title>
+          <Publish>
+            <ImgDiv>
+              <Img></Img>
+            </ImgDiv>
+            <FormDiv>
+              <PublishTitle>What are you going to share today?</PublishTitle>
+              <Form onSubmit={post}>
+                <InputLink
+                  type='url'
+                  name='link'
+                  value={form.link}
+                  placeholder='https://...'
+                  required
+                  disabled={loading}
+                  onChange={e => setForm({ ...form, link: e.target.value })}
+                />
+                <InputDescription
+                  type='text'
+                  name='description'
+                  value={form.description}
+                  placeholder='Awesome article about #Javascript'
+                  disabled={loading}
+                  onChange={e => setForm({ ...form, description: e.target.value })}
+                />
+                <button type="submit">
+                  {loading ?
+                    <>Publishing...</>
+                    :
+                    <>Publish</>
+                  }
+                </button>
+              </Form>
+            </FormDiv>
+          </Publish>
+          <Posts>
+            {
+              loadingPosts ?
+                <>Loading...</>
+                :
+                <>
+                  {posts.map((post, index) => {
+                    return (
+                      <PostBox
+                        key={index}
+                        id={post.id}
+                        username={post.username}
+                        profilePicture={post.profilePicture}
+                        description={post.description}
+                        url={post.url}
+                        userLike={post.userLike}
+                        postLikes={post.postLikes}
+                      />
+                    );
+                  })}
+                </>
+            }
+
+          </Posts>
+        </TimelineBox>
+        <SidebarBox>
+          <Sidebar />
+        </SidebarBox>
+      </Container>
 
 
-        </>
-    );
+    </>
+  );
 
 }
 

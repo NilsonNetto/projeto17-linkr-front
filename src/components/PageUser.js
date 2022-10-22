@@ -1,19 +1,25 @@
 import { useState, useEffect } from "react";
-import { getPageUser } from "../services/linkr";
+import { mountHeaders, getPageUser } from "../services/linkr";
 import styled from "styled-components";
 import Sidebar from "./Sidebar";
 import { useParams } from "react-router-dom";
 import Header from "./Header";
 import PostBox from "./PostBox";
+
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTY2NjM5MjEzNCwiZXhwIjoxNjY4OTg0MTM0fQ.VsaUgWtuR8bcYYH0JH87hKHoATfkQGxIaB_dlq_bkpg';
+
 export default function UserPage() {
   const { id } = useParams();
   console.log(id);
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2NjI4NTI3NCwiZXhwIjoxNjY4ODc3Mjc0fQ.XKUQZ1CZOy-FU8-ZIvv3Mz0NDgDFv5jeWjYYL6C6S3g";
+
   const [userPage, setUserPage] = useState([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
+
   useEffect(() => {
-    const promise = getPageUser(token, id);
+
+    const headers = mountHeaders(token);
+
+    const promise = getPageUser(id, headers);
     promise.then((res) => {
       setUserPage(res.data);
       setLoadingPosts(!loadingPosts);
@@ -26,7 +32,7 @@ export default function UserPage() {
       <Container>
         <TimelineBox>
           <Title>{userPage?.username} 's posts</Title>
-          <Posts>
+          <PostsWrapper>
             {loadingPosts ? (
               <>Loading...</>
             ) : (
@@ -46,7 +52,7 @@ export default function UserPage() {
                 })}
               </>
             )}
-          </Posts>
+          </PostsWrapper>
           <SidebarBox>
             <Sidebar />
           </SidebarBox>
@@ -79,6 +85,6 @@ const TimelineBox = styled.div`
   margin-top: 78px;
   margin-bottom: 43px;
 `;
-const Posts = styled.div`
+const PostsWrapper = styled.div`
   margin-top: 13px;
 `;
