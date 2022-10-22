@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { postPost, getPosts } from './../services/linkr';
+import { postPost, getPosts } from "./../services/linkr";
 import Header from "./Header";
 import PostBox from "./PostBox";
 import Sidebar from "./Sidebar";
@@ -122,27 +122,29 @@ export default function Timeline() {
 
         </>
     );
+
 }
 
 const Container = styled.div`
-    width: 100%;
-    display: flex;
-    justify-content: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 `;
 
 const TimelineBox = styled.div`
-    width: 611px;
-    margin-top: 78px;
+  width: 611px;
+  margin-top: 78px;
 `;
 
 const SidebarBox = styled.div`
-    margin: 164px 0 0 25px;
-    @media (max-width: 950px) {
-        display: none;
-    }
+  margin: 164px 0 0 25px;
+  @media (max-width: 950px) {
+    display: none;
+  }
 `;
 
 const Title = styled.h1`
+
     font-size: 43px;
     font-weight: 700;
     font-family: 'Oswald', sans-serif;
@@ -155,82 +157,83 @@ const Publish = styled.div`
     background-color: #FFFFFF;
     border-radius: 16px;
     display: flex;
+
 `;
 
 const ImgDiv = styled.div`
-    margin-right: 21px;
+  margin-right: 21px;
 `;
 
 const Img = styled.div`
-    height: 50px;
-    width: 50px;
-    border-radius: 26.5px;
-    background-color: antiquewhite;
-    margin-top: 16px;
-    margin-left: 18px;
+  height: 50px;
+  width: 50px;
+  border-radius: 26.5px;
+  background-color: antiquewhite;
+  margin-top: 16px;
+  margin-left: 18px;
 `;
 
 const FormDiv = styled.div``;
 
 const PublishTitle = styled.div`
-    font-family: 'Lato', sans-serif;
-    font-size: 20px;
-    color: #707070;
-    margin-top: 21px;
-    margin-bottom: 10px;
+  font-family: "Lato", sans-serif;
+  font-size: 20px;
+  color: #707070;
+  margin-top: 21px;
+  margin-bottom: 10px;
 `;
 
 const Form = styled.form`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    margin-right: 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-right: 22px;
 
-    input {
-        width: 503px;
-        background-color: #EFEFEF;
-        border-radius: 5px;
-        border: #EFEFEF;
-    }
+  input {
+    width: 503px;
+    background-color: #efefef;
+    border-radius: 5px;
+    border: #efefef;
+  }
 
-    button {
-        height: 31px;
-        width: 112px;
-        border-radius: 5px;
-        background-color: #1877F2;
-        border: #1877F2;
-        margin-top: 5px;
-        color: #FFFFFF;
-        font-size: 14px;
-        font-family: 'Lato', sans-serif;
-    }
+  button {
+    height: 31px;
+    width: 112px;
+    border-radius: 5px;
+    background-color: #1877f2;
+    border: #1877f2;
+    margin-top: 5px;
+    color: #ffffff;
+    font-size: 14px;
+    font-family: "Lato", sans-serif;
+  }
 `;
 
 const InputLink = styled.input`
-    height: 30px;
+  height: 30px;
 
-    ::placeholder {
-        color: #949494;
-        font-family: 'Lato', sans-serif;
-        font-size: 15px;
-        padding-left: 13px;
-    }
+  ::placeholder {
+    color: #949494;
+    font-family: "Lato", sans-serif;
+    font-size: 15px;
+    padding-left: 13px;
+  }
 `;
 
 const InputDescription = styled.input`
-    height: 66px;
-    margin-top: 5px;
+  height: 66px;
+  margin-top: 5px;
 
-    ::placeholder {
-        color: #949494;
-        font-family: 'Lato', sans-serif;
-        font-size: 15px;
-        padding-left: 13px;
-        display: flex;
-        justify-content: center;
-    }
+  ::placeholder {
+    color: #949494;
+    font-family: "Lato", sans-serif;
+    font-size: 15px;
+    padding-left: 13px;
+    display: flex;
+    justify-content: center;
+  }
 `;
 
 const Posts = styled.div`
-    margin-top: 13px;
+  margin-top: 13px;
 `;
