@@ -25,7 +25,7 @@ export default function Timeline() {
             .catch(resposta => {
                 console.log(resposta);
                 setLoadingPosts(false);
-            })
+            });
     }
 
     function post(event) {
@@ -95,20 +95,20 @@ export default function Timeline() {
                                 <>Loading...</>
                                 :
                                 <>
-                                { posts.map((post, index) => {
-                                    return (
-                                        <PostBox 
-                                            key={index}
-                                            id={post.id}
-                                            username={post.username}
-                                            profilePicture={post.profilePicture}
-                                            description={post.description}
-                                            url={post.url}
-                                            userLike={post.userLike}
-                                            postLikes={post.postLikes}
-                                        />
-                                    )
-                                })}
+                                    {posts.map((post, index) => {
+                                        return (
+                                            <PostBox
+                                                key={index}
+                                                id={post.id}
+                                                username={post.username}
+                                                profilePicture={post.profilePicture}
+                                                description={post.description}
+                                                url={post.url}
+                                                userLike={post.userLike}
+                                                postLikes={post.postLikes}
+                                            />
+                                        );
+                                    })}
                                 </>
                         }
 

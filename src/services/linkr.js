@@ -41,6 +41,7 @@ function getPageUser(token, id) {
     },
   });
 }
+
 function searchUser(token, name) {
   return axios.get(`${URL}/timeline/${name}`, {
     headers: {
@@ -48,6 +49,15 @@ function searchUser(token, name) {
     },
   });
 }
+
+function likePost(postId, headers) {
+  return axios.post(`${URL}/likes/${postId}/like`, headers);
+}
+
+function unlikePost(postId, headers) {
+  return axios.post(`${URL}/likes/${postId}/unlike`, headers);
+}
+
 export {
   getTrendingHashtags,
   getHashtagByName,
@@ -57,4 +67,6 @@ export {
   searchUser,
   postSignin,
   postSignup,
+  likePost,
+  unlikePost
 };
