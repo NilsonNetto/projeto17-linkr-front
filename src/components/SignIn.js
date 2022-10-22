@@ -33,6 +33,7 @@ export default function SignIn() {
 
       localStorage.clear();
       localStorage.setItem("user", JSON.stringify(data.token));
+      localStorage.setItem("userPicture", JSON.stringify(data.profilePicture));
     });
     promise.catch((err) => {
       const erros = err.response.data;

@@ -47,6 +47,7 @@ const Title = styled.div`
   font-weight: 700;
   font-size: 49px;
   margin-left: 28px;
+  margin-top: 10px;
 `;
 
 const Logout = styled.div`
@@ -70,6 +71,7 @@ const Img = styled.div`
   width: 53px;
   border-radius: 26.5px;
   background-color: aqua;
+  margin-top: 8px;
 `;
 
 const Glueded = styled.div`
@@ -95,5 +97,5 @@ const Box = styled.div`
   border-radius: 0px 0px 0px 20px;
   position: fixed;
   right: 0;
-  margin-top: 17px;
+  margin-top: 10px;
 `;
