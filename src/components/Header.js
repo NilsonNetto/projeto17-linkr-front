@@ -1,10 +1,13 @@
-import styled from "styled-components";
+import { useNavigate, Link } from "react-router-dom";
 import { FiChevronDown } from "react-icons/fi";
+import styled from "styled-components";
 import { DebounceInput } from "react-debounce-input";
 import { useState } from "react";
 import { searchUser } from "../services/linkr";
-import { Link } from "react-router-dom";
+
 export default function Header() {
+  const [click, setClick] = useState(false);
+  const navigate = useNavigate();
   const [user, setUser] = useState([]);
   const token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2NjI4NTI3NCwiZXhwIjoxNjY4ODc3Mjc0fQ.XKUQZ1CZOy-FU8-ZIvv3Mz0NDgDFv5jeWjYYL6C6S3g";
@@ -12,36 +15,52 @@ export default function Header() {
     const promise = searchUser(token, value);
     promise.then((res) => setUser(res.data));
   }
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/");
+  };
 
   return (
     <Top>
-      <Title>linkr</Title>
-      <Search>
-        <DebounceInput
-          minLength={3}
-          debounceTimeout={300}
-          placeholder="Search for people"
-          name="person"
-          onChange={(e) => find(e.target.value)}
-        />
-        <UserFind>
-          {!user.length > 0
-            ? " "
-            : user.map((u) => (
-                <Link to={`/user/${u.id}`} key={u.id}>
-                  <User>
-                    <img src={u.profilePicture} />
-                    <p>{u.username}</p>
-                  </User>
-                </Link>
-              ))}
-        </UserFind>
-      </Search>
-
-      <Logout>
-        <FiChevronDown size={25} />
-        <Img></Img>
-      </Logout>
+      <Glueded>
+        <Title>linkr</Title>
+        <Search>
+          <DebounceInput
+            minLength={3}
+            debounceTimeout={300}
+            placeholder="Search for people"
+            name="person"
+            onChange={(e) => find(e.target.value)}
+          />
+          <UserFind>
+            {!user.length > 0
+              ? " "
+              : user.map((u) => (
+                  <Link to={`/user/${u.id}`} key={u.id}>
+                    <User>
+                      <img src={u.profilePicture} />
+                      <p>{u.username}</p>
+                    </User>
+                  </Link>
+                ))}
+          </UserFind>
+        </Search>
+        <Logout>
+          {click === false ? (
+            <ion-icon
+              name="chevron-down-outline"
+              onClick={() => setClick(!click)}
+            ></ion-icon>
+          ) : (
+            <ion-icon
+              name="chevron-up-outline"
+              onClick={() => setClick(!click)}
+            ></ion-icon>
+          )}
+          <Img onClick={() => setClick(!click)}></Img>
+        </Logout>
+      </Glueded>
+      {click === true ? <Box onClick={handleLogout}>Logout</Box> : <div></div>}
     </Top>
   );
 }
@@ -60,12 +79,23 @@ const Title = styled.div`
   font-weight: 700;
   font-size: 49px;
   margin-left: 28px;
+  margin-top: 10px;
 `;
 
 const Logout = styled.div`
   display: flex;
   align-items: center;
   margin-right: 26px;
+
+  ion-icon[name="chevron-down-outline"] {
+    height: 20px;
+    width: 30px;
+  }
+
+  ion-icon[name="chevron-up-outline"] {
+    height: 20px;
+    width: 30px;
+  }
 `;
 
 const Img = styled.div`
@@ -73,6 +103,33 @@ const Img = styled.div`
   width: 53px;
   border-radius: 26.5px;
   background-color: aqua;
+`;
+
+const Glueded = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+`;
+
+const Box = styled.div`
+  width: 150px;
+  height: 47px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #171717;
+  font-family: "Lato";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 20px;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  border-radius: 0px 0px 0px 20px;
+  position: fixed;
+  right: 0;
+  margin-top: 110px;
 `;
 const Search = styled.div`
   z-index: 2;
