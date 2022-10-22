@@ -1,4 +1,5 @@
 import styled from "styled-components";
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { likePost, unlikePost } from "../services/linkr";
@@ -89,38 +90,39 @@ export default function PostBox({ id, username, profilePicture, description, url
             </Right>
         </Post>
     );
-}
+
+
 
 const Post = styled.div`
-    height: 276px;
-    width: 611px;
-    border-radius: 16px;
-    background-color: #171717;
-    display: flex;
-    margin-bottom: 13px;
+  height: 276px;
+  width: 611px;
+  border-radius: 16px;
+  background-color: #171717;
+  display: flex;
+  margin-bottom: 13px;
 `;
 
 const Left = styled.div`
-    width: 50px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-left: 18px;
+  width: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 18px;
 `;
 
 const Img = styled.div`
+  height: 50px;
+  width: 50px;
+  border-radius: 26.5px;
+  margin-top: 17px;
+  background-color: blueviolet;
+
+  img {
     height: 50px;
     width: 50px;
     border-radius: 26.5px;
-    margin-top: 17px;
-    background-color: blueviolet;
-
-    img {
-        height: 50px;
-        width: 50px;
-        border-radius: 26.5px;
-        object-fit: fill;
-    }
+    object-fit: fill;
+  }
 `;
 
 const Likes = styled.div`
@@ -144,30 +146,42 @@ const LikeCount = styled.div`
     font-family: 'Lato', sans-serif;
     color: #FFFFFF;
     margin-top: 5px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 19px;
+
+  div {
+    font-size: 11px;
+    font-family: "Lato", sans-serif;
+    color: #ffffff;
+    margin-top: 5px;
+  }
+
 `;
 
 const Right = styled.div`
-    display: flex;
-    flex-direction: column;
-    margin-top: 17px;
-    margin-left: 18px;
-    width: 503px;
+  display: flex;
+  flex-direction: column;
+  margin-top: 17px;
+  margin-left: 18px;
+  width: 503px;
 `;
 
 const Top = styled.div`
-    display: flex;
-    justify-content: space-between;
-
+  display: flex;
+  justify-content: space-between;
 `;
 
 const Name = styled.div`
-    font-size: 19px;
-    font-family: 'Lato', sans-serif;
-    color: #FFFFFF;
+  font-size: 19px;
+  font-family: "Lato", sans-serif;
+  color: #ffffff;
 `;
 
 const Icons = styled.div`
-    display: flex;
+  display: flex;
 `;
 
 const Hashtag = styled.span`
@@ -178,5 +192,6 @@ const Hashtag = styled.span`
 const Description = styled.div`
 
 `;
+
 
 const Link = styled.div``;
