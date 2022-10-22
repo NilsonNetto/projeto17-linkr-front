@@ -1,4 +1,5 @@
-import { useNavigate,Link } from "react-router-dom";
+
+import { useNavigate, Link } from "react-router-dom";
 import { FiChevronDown } from "react-icons/fi";
 import styled from "styled-components";
 import { DebounceInput } from "react-debounce-input";
@@ -8,7 +9,9 @@ import { searchUser } from "../services/linkr";
 export default function Header() {
   const [click, setClick] = useState(false);
   const navigate = useNavigate();
+
  const [user, setUser] = useState([]);
+
   const token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2NjI4NTI3NCwiZXhwIjoxNjY4ODc3Mjc0fQ.XKUQZ1CZOy-FU8-ZIvv3Mz0NDgDFv5jeWjYYL6C6S3g";
   function find(value) {
@@ -24,27 +27,28 @@ export default function Header() {
     <Top>
       <Glueded>
         <Title>linkr</Title>
-         <Search>
-        <DebounceInput
-          minLength={3}
-          debounceTimeout={300}
-          placeholder="Search for people"
-          name="person"
-          onChange={(e) => find(e.target.value)}
-        />
-        <UserFind>
-          {!user.length > 0
-            ? " "
-            : user.map((u) => (
-                <Link to={`/user/${u.id}`} key={u.id}>
-                  <User>
-                    <img src={u.profilePicture} />
-                    <p>{u.username}</p>
-                  </User>
-                </Link>
-              ))}
-        </UserFind>
-      </Search>
+        <Search>
+          <DebounceInput
+            minLength={3}
+            debounceTimeout={300}
+            placeholder="Search for people"
+            name="person"
+            onChange={(e) => find(e.target.value)}
+          />
+          <UserFind>
+            {!user.length > 0
+              ? " "
+              : user.map((u) => (
+                  <Link to={`/user/${u.id}`} key={u.id}>
+                    <User>
+                      <img src={u.profilePicture} />
+                      <p>{u.username}</p>
+                    </User>
+                  </Link>
+                ))}
+          </UserFind>
+        </Search>
+
         <Logout>
           {click === false ? (
             <ion-icon
@@ -61,7 +65,6 @@ export default function Header() {
         </Logout>
       </Glueded>
       {click === true ? <Box onClick={handleLogout}>Logout</Box> : <div></div>}
-
     </Top>
   );
 }
@@ -82,7 +85,8 @@ const Title = styled.div`
   font-size: 49px;
   margin-left: 28px;
   margin-top: 10px;
-`
+`;
+
 
 const Logout = styled.div`
   display: flex;
@@ -133,8 +137,7 @@ const Box = styled.div`
   border-radius: 0px 0px 0px 20px;
   position: fixed;
   right: 0;
-  margin-top: 10px;
-
+  margin-top: 110px;
 `;
 const Search = styled.div`
   z-index: 2;
