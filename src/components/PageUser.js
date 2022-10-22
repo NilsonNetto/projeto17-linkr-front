@@ -82,6 +82,3 @@ const TimelineBox = styled.div`
 const Posts = styled.div`
   margin-top: 13px;
 `;
-const Posts = styled.div`
-  margin-top: 13px;
-`;
