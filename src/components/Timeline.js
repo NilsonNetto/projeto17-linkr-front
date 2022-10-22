@@ -12,23 +12,21 @@ export default function Timeline() {
     const [loadingPosts, setLoadingPosts] = useState(true);
     const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2NjI4NTI3NCwiZXhwIjoxNjY4ODc3Mjc0fQ.XKUQZ1CZOy-FU8-ZIvv3Mz0NDgDFv5jeWjYYL6C6S3g';
 
-    // useEffect(() => {
-    //     updating();
-    //     console.log(posts);
-    // });
+    useEffect(() => {
+        updating();
+    }, []);
 
-    // function updating() {
-    //     getPosts(token)
-    //         .then(resposta => {
-    //             setPosts(resposta.data);
-    //             setLoadingPosts(false);
-    //         })
-    //         .catch(resposta => {
-    //             console.log(resposta);
-    //             setLoadingPosts(false);
-    //         })
-    // }
-
+    async function updating() {
+        await getPosts(token)
+            .then(resposta => {
+                setPosts(resposta.data);
+                setLoadingPosts(false);
+            })
+            .catch(resposta => {
+                console.log(resposta);
+                setLoadingPosts(false);
+            })
+    }
 
     function post(event) {
         event.preventDefault();
@@ -96,7 +94,22 @@ export default function Timeline() {
                             loadingPosts ?
                                 <>Loading...</>
                                 :
-                                <PostBox />
+                                <>
+                                { posts.map((post, index) => {
+                                    return (
+                                        <PostBox 
+                                            key={index}
+                                            id={post.id}
+                                            username={post.username}
+                                            profilePicture={post.profilePicture}
+                                            description={post.description}
+                                            url={post.url}
+                                            userLike={post.userLike}
+                                            postLikes={post.postLikes}
+                                        />
+                                    )
+                                })}
+                                </>
                         }
 
                     </Posts>
