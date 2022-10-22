@@ -146,6 +146,7 @@ const Title = styled.h1`
     font-size: 43px;
     font-weight: 700;
     font-family: 'Oswald', sans-serif;
+    margin-bottom: 43px;
 `;
 
 const Publish = styled.div`
@@ -153,7 +154,6 @@ const Publish = styled.div`
     width: 611px;
     background-color: #FFFFFF;
     border-radius: 16px;
-    margin-top: 43px;
     display: flex;
 `;
 
