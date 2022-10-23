@@ -1,11 +1,13 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { likePost, unlikePost } from "../services/linkr";
+import { mountHeaders, likePost, unlikePost } from "../services/linkr";
 import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
 import ReactHashtag from "@mdnm/react-hashtag";
 import ReactTooltip from "react-tooltip";
+
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTY2NjM5MjEzNCwiZXhwIjoxNjY4OTg0MTM0fQ.VsaUgWtuR8bcYYH0JH87hKHoATfkQGxIaB_dlq_bkpg';
 
 export default function PostBox({
   id,
@@ -15,53 +17,54 @@ export default function PostBox({
   url,
   userLike,
   postLikes,
+  updateLike,
+  setUpdateLike
 }) {
   const [isLiked, setIsLiked] = useState(userLike);
   const navigate = useNavigate();
 
   function likesCount(likes) {
 
-    if (userLike) {
+    if (likes[0] === null) {
+      return 'No one likes this, be the first!';
+    }
 
+    if (userLike) {
       const filteredLikes = likes.filter(value => value !== username);
 
       switch (likes.length) {
-        case 0: return 'Erro'; break;
         case 1: return 'Você'; break;
         case 2: return `Você e ${filteredLikes[0]}`; break;
         default: return `Você, ${filteredLikes[0]} e outras ${likes.length - 2} pessoas`;
       }
-    }
-    switch (likes.length) {
-      case 0: return 'No one likes this, be the first!'; break;
-      case 1: return likes[0]; break;
-      case 2: return `${likes[0]} e ${likes[1]}`; break;
-      default: return `${likes[0]}, ${likes[1]} e outras ${likes.length - 2} pessoas`;
+    } else {
+      switch (likes.length) {
+        case 1: return likes[0]; break;
+        case 2: return `${likes[0]} e ${likes[1]}`; break;
+        default: return `${likes[0]}, ${likes[1]} e outras ${likes.length - 2} pessoas`;
+      }
     };
   }
 
-  function likeAndDislike({ postId }) {
-    const config = {
-      headers: {
-        Authorization: `Bearer `,
-      },
-    };
+  function likeAndDislike(postId) {
+
+    const headers = mountHeaders(token);
 
     if (isLiked) {
-      unlikePost(postId, config)
+      unlikePost(postId, headers)
         .then((res) => {
-          console.log(res.data);
           setIsLiked(false);
+          setUpdateLike(!updateLike);
         })
         .catch((res) => {
           console.log(res.message);
           alert("unlike error");
         });
     } else {
-      likePost(postId, config)
+      likePost(postId, headers)
         .then((res) => {
-          console.log(res.data);
           setIsLiked(true);
+          setUpdateLike(!updateLike);
         })
         .catch((res) => {
           console.log(res.message);
@@ -85,7 +88,7 @@ export default function PostBox({
           <LikeHeart isLiked={isLiked} onClick={() => likeAndDislike(id)}>
             {isLiked ? <BsHeartFill /> : <BsHeart />}
           </LikeHeart>
-          <a data-tip={likesCount(postLikes)}>{postLikes.length} likes</a>
+          <a data-tip={likesCount(postLikes)}>{postLikes[0] === null ? 0 : postLikes.length} likes</a>
         </Likes>
       </Left>
       <Right>
