@@ -6,15 +6,13 @@ import { useParams } from "react-router-dom";
 import Header from "./Header";
 import PostBox from "./PostBox";
 
-
 export default function UserPage() {
   const { id } = useParams();
   const [userPage, setUserPage] = useState([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
   const [updateLike, setUpdateLike] = useState(false);
-
+  const token = localStorage.user;
   useEffect(() => {
-
     const headers = mountHeaders(token);
 
     const promise = getPageUser(id, headers);
