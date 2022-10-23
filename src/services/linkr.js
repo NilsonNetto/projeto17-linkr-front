@@ -50,6 +50,10 @@ function unlikePost(postId, headers) {
   return axios.post(`${URL}/likes/${postId}/unlike`, {}, headers);
 }
 
+function newEditPost(dataPostEdited, headers) {
+  return axios.put(`${URL}/editPost`, dataPostEdited, headers);
+}
+
 export {
   mountHeaders,
   getTrendingHashtags,
@@ -61,5 +65,6 @@ export {
   postSignin,
   postSignup,
   likePost,
-  unlikePost
+  unlikePost,
+  newEditPost
 };
