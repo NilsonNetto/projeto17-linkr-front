@@ -10,8 +10,8 @@ export default function Header() {
   const [click, setClick] = useState(false);
   const navigate = useNavigate();
   const [user, setUser] = useState([]);
-
   const headers = mountHeaders(token);
+
 
   function find(value) {
     console.log("eu");

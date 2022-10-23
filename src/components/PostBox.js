@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { mountHeaders, likePost, unlikePost } from "../services/linkr";
+
 import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
 import ReactHashtag from "@mdnm/react-hashtag";
@@ -11,6 +12,7 @@ const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTY2
 
 export default function PostBox({
   id,
+  userId,
   username,
   profilePicture,
   description,
@@ -44,6 +46,7 @@ export default function PostBox({
         default: return `${likes[0]}, ${likes[1]} e outras ${likes.length - 2} pessoas`;
       }
     };
+
   }
 
   function likeAndDislike(postId) {
@@ -81,19 +84,25 @@ export default function PostBox({
   return (
     <Post>
       <Left>
-        <Img>
-          <img src={profilePicture} alt="profile" />
-        </Img>
+        <Link to={`/user/${userId}`}>
+          <Img>
+            <img src={profilePicture} alt="profile" />
+          </Img>
+        </Link>
         <Likes isLiked={isLiked}>
           <LikeHeart isLiked={isLiked} onClick={() => likeAndDislike(id)}>
             {isLiked ? <BsHeartFill /> : <BsHeart />}
           </LikeHeart>
           <a data-tip={likesCount(postLikes)}>{postLikes[0] === null ? 0 : postLikes.length} likes</a>
+
         </Likes>
       </Left>
       <Right>
         <Top>
-          <Name>{username}</Name>
+          <Link to={`/user/${userId}`}>
+            {" "}
+            <Name>{username}</Name>
+          </Link>
           <Icons>
             <div>
               <FaPencilAlt />
@@ -114,7 +123,7 @@ export default function PostBox({
             {description}
           </ReactHashtag>
         </Description>
-        <Link>{url}</Link>
+        <Url>{url}</Url>
       </Right>
       <ReactTooltip place="bottom" type="light" effect="solid" />
     </Post>
@@ -217,4 +226,4 @@ const Hashtag = styled.span`
 
 const Description = styled.div``;
 
-const Link = styled.div``;
+const Url = styled.div``;

@@ -8,6 +8,7 @@ import Sidebar from "./Sidebar";
 const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTY2NjM5MjEzNCwiZXhwIjoxNjY4OTg0MTM0fQ.VsaUgWtuR8bcYYH0JH87hKHoATfkQGxIaB_dlq_bkpg';
 
 export default function Timeline() {
+
   const [form, setForm] = useState({ description: '', link: '' });
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState([]);
@@ -133,6 +134,75 @@ export default function Timeline() {
     </>
   );
 
+
+  return (
+    <>
+      <Header />
+      <Container>
+        <TimelineBox>
+          <Title>timeline</Title>
+          <Publish>
+            <ImgDiv>
+              <Img></Img>
+            </ImgDiv>
+            <FormDiv>
+              <PublishTitle>What are you going to share today?</PublishTitle>
+              <Form onSubmit={post}>
+                <InputLink
+                  type="url"
+                  name="link"
+                  value={form.link}
+                  placeholder="https://..."
+                  required
+                  disabled={loading}
+                  onChange={(e) => setForm({ ...form, link: e.target.value })}
+                />
+                <InputDescription
+                  type="text"
+                  name="description"
+                  value={form.description}
+                  placeholder="Awesome article about #Javascript"
+                  disabled={loading}
+                  onChange={(e) =>
+                    setForm({ ...form, description: e.target.value })
+                  }
+                />
+                <button type="submit">
+                  {loading ? <>Publishing...</> : <>Publish</>}
+                </button>
+              </Form>
+            </FormDiv>
+          </Publish>
+          <Posts>
+            {loadingPosts ? (
+              <>Loading...</>
+            ) : (
+              <>
+                {posts.map((post, index) => {
+                  return (
+                    <PostBox
+                      key={index}
+                      id={post.id}
+                      userId={post.userId}
+                      username={post.username}
+                      profilePicture={post.profilePicture}
+                      description={post.description}
+                      url={post.url}
+                      userLike={post.userLike}
+                      postLikes={post.postLikes}
+                    />
+                  );
+                })}
+              </>
+            )}
+          </Posts>
+        </TimelineBox>
+        <SidebarBox>
+          <Sidebar />
+        </SidebarBox>
+      </Container>
+    </>
+  );
 }
 
 const Container = styled.div`
@@ -154,20 +224,18 @@ const SidebarBox = styled.div`
 `;
 
 const Title = styled.h1`
-
-    font-size: 43px;
-    font-weight: 700;
-    font-family: 'Oswald', sans-serif;
-    margin-bottom: 43px;
+  font-size: 43px;
+  font-weight: 700;
+  font-family: "Oswald", sans-serif;
+  margin-bottom: 43px;
 `;
 
 const Publish = styled.div`
-    height: 209px;
-    width: 611px;
-    background-color: #FFFFFF;
-    border-radius: 16px;
-    display: flex;
-
+  height: 209px;
+  width: 611px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  display: flex;
 `;
 
 const ImgDiv = styled.div`

@@ -6,12 +6,9 @@ import { useParams } from "react-router-dom";
 import Header from "./Header";
 import PostBox from "./PostBox";
 
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTY2NjM5MjEzNCwiZXhwIjoxNjY4OTg0MTM0fQ.VsaUgWtuR8bcYYH0JH87hKHoATfkQGxIaB_dlq_bkpg';
 
 export default function UserPage() {
   const { id } = useParams();
-  console.log(id);
-
   const [userPage, setUserPage] = useState([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
   const [updateLike, setUpdateLike] = useState(false);
@@ -43,6 +40,7 @@ export default function UserPage() {
                     <PostBox
                       key={index}
                       id={post.id}
+                      userId={post.userId}
                       username={post.username}
                       profilePicture={post.profilePicture}
                       description={post.description}
@@ -88,6 +86,7 @@ const TimelineBox = styled.div`
   margin-top: 78px;
   margin-bottom: 43px;
 `;
+
 const PostsWrapper = styled.div`
   margin-top: 13px;
 `;
