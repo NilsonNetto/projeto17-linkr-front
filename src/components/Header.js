@@ -2,19 +2,20 @@ import { useNavigate, Link } from "react-router-dom";
 import styled from "styled-components";
 import { DebounceInput } from "react-debounce-input";
 import { useState } from "react";
-import { searchUser } from "../services/linkr";
+import { mountHeaders, searchUser } from "../services/linkr";
+
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTY2NjM5MjEzNCwiZXhwIjoxNjY4OTg0MTM0fQ.VsaUgWtuR8bcYYH0JH87hKHoATfkQGxIaB_dlq_bkpg';
 
 export default function Header() {
   const [click, setClick] = useState(false);
   const navigate = useNavigate();
   const [user, setUser] = useState([]);
+  const headers = mountHeaders(token);
 
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2NjI4NTI3NCwiZXhwIjoxNjY4ODc3Mjc0fQ.XKUQZ1CZOy-FU8-ZIvv3Mz0NDgDFv5jeWjYYL6C6S3g";
 
   function find(value) {
     console.log("eu");
-    const promise = searchUser(token, value);
+    const promise = searchUser(value, headers);
 
     promise.then((res) => {
       setUser(res.data);
@@ -29,7 +30,7 @@ export default function Header() {
   return (
     <Top>
       <Glueded>
-        <Title>linkr</Title>
+        <Title><Link to='/timeline'>linkr</Link> </Title>
         <Search>
           <DebounceInput
             minLength={3}
@@ -42,13 +43,13 @@ export default function Header() {
             {!user.length > 0
               ? " "
               : user.map((u) => (
-                  <Link to={`/user/${u.id}`} key={u.id}>
-                    <User>
-                      <img src={u.profilePicture} />
-                      <p>{u.username}</p>
-                    </User>
-                  </Link>
-                ))}
+                <Link to={`/user/${u.id}`} key={u.id}>
+                  <User>
+                    <img src={u.profilePicture} />
+                    <p>{u.username}</p>
+                  </User>
+                </Link>
+              ))}
           </UserFind>
         </Search>
 
@@ -87,6 +88,11 @@ const Title = styled.div`
   font-size: 49px;
   margin-left: 28px;
   margin-top: 10px;
+
+  a{
+    text-decoration: none;
+    color: #ffffff;
+  }
 `;
 
 const Logout = styled.div`

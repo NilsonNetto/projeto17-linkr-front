@@ -1,26 +1,25 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getHashtagByName } from "../services/linkr";
+import { mountHeaders, getHashtagByName } from "../services/linkr";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import PostBox from "./PostBox";
+
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTY2NjM5MjEzNCwiZXhwIjoxNjY4OTg0MTM0fQ.VsaUgWtuR8bcYYH0JH87hKHoATfkQGxIaB_dlq_bkpg';
 
 export default function HashtagPage() {
 
   const [postsWithHashtag, setPostsWithHashtag] = useState([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
+  const [updateLike, setUpdateLike] = useState(false);
   const { hashtag } = useParams();
 
   useEffect(() => {
 
-    const config = {
-      headers: {
-        Authorization: `Bearer `
-      }
-    };
+    const headers = mountHeaders(token);
 
-    getHashtagByName(hashtag, config)
+    getHashtagByName(hashtag, headers)
       .then(res => {
         setPostsWithHashtag(res.data);
         setLoadingPosts(false);
@@ -29,9 +28,7 @@ export default function HashtagPage() {
         console.log(res.data);
         alert('Get posts with hashtags error');
       });
-  }, [hashtag]);
-
-  console.log(postsWithHashtag);
+  }, [hashtag, updateLike]);
 
   return (
     <>
@@ -55,6 +52,8 @@ export default function HashtagPage() {
                       url={post.url}
                       userLike={post.userLike}
                       postLikes={post.postLikes}
+                      updateLike={updateLike}
+                      setUpdateLike={setUpdateLike}
                     />
                   );
                 })}
