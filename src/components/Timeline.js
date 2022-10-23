@@ -5,7 +5,7 @@ import Header from "./Header";
 import PostBox from "./PostBox";
 import Sidebar from "./Sidebar";
 
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTY2NjM5MjEzNCwiZXhwIjoxNjY4OTg0MTM0fQ.VsaUgWtuR8bcYYH0JH87hKHoATfkQGxIaB_dlq_bkpg';
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2NjU1NzgzMCwiZXhwIjoxNjY5MTQ5ODMwfQ.dJ4EIEnNVZ9yFuZTdDR8jDhT1OXd5QDvHYWMiEcIpUk';
 
 export default function Timeline() {
 
@@ -49,6 +49,7 @@ export default function Timeline() {
         console.log(resposta);
         setLoading(false);
         setForm({ description: '', link: '' });
+        updating();
       })
       .catch(resposta => {
         console.log(resposta);
@@ -57,6 +58,36 @@ export default function Timeline() {
         setForm({ description: '', link: '' });
       });
   }
+
+  function postsLoading() {
+    if (posts.length > 0) {
+      return (
+        <>
+          {posts.map((post, index) => {
+            return (
+              <PostBox
+                key={index}
+                id={post.id}
+                username={post.username}
+                profilePicture={post.profilePicture}
+                description={post.description}
+                url={post.url}
+                userLike={post.userLike}
+                postLikes={post.postLikes}
+                updateLike={updateLike}
+                setUpdateLike={setUpdateLike}
+              />
+            );
+          })}
+        </>
+      )
+    } else {
+      return (
+        <>There are no posts yet</>
+      )
+    }
+  }
+
 
   return (
     <>
@@ -103,24 +134,7 @@ export default function Timeline() {
               loadingPosts ?
                 <>Loading...</>
                 :
-                <>
-                  {posts.map((post, index) => {
-                    return (
-                      <PostBox
-                        key={index}
-                        id={post.id}
-                        username={post.username}
-                        profilePicture={post.profilePicture}
-                        description={post.description}
-                        url={post.url}
-                        userLike={post.userLike}
-                        postLikes={post.postLikes}
-                        updateLike={updateLike}
-                        setUpdateLike={setUpdateLike}
-                      />
-                    );
-                  })}
-                </>
+                postsLoading()
             }
 
           </Posts>
