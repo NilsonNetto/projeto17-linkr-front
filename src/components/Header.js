@@ -4,7 +4,8 @@ import { DebounceInput } from "react-debounce-input";
 import { useState } from "react";
 import { mountHeaders, searchUser } from "../services/linkr";
 
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2NjU1NzgzMCwiZXhwIjoxNjY5MTQ5ODMwfQ.dJ4EIEnNVZ9yFuZTdDR8jDhT1OXd5QDvHYWMiEcIpUk';
+const token =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2NjU1NzgzMCwiZXhwIjoxNjY5MTQ5ODMwfQ.dJ4EIEnNVZ9yFuZTdDR8jDhT1OXd5QDvHYWMiEcIpUk";
 
 export default function Header() {
   const [click, setClick] = useState(false);
@@ -12,25 +13,26 @@ export default function Header() {
   const [user, setUser] = useState([]);
   const headers = mountHeaders(token);
 
-
   function find(value) {
-    console.log("eu");
     const promise = searchUser(value, headers);
-
-    promise.then((res) => {
-      setUser(res.data);
-      console.log(user);
-    });
+    promise
+      .then((res) => {
+        console.log(res.data);
+        setUser(res.data);
+      })
+      .catch(() => setUser([]));
   }
   const handleLogout = () => {
     localStorage.clear();
     navigate("/");
   };
-
+  console.log(user);
   return (
     <Top>
       <Glueded>
-        <Title><Link to='/timeline'>linkr</Link> </Title>
+        <Title>
+          <Link to="/timeline">linkr</Link>{" "}
+        </Title>
         <Search>
           <DebounceInput
             minLength={3}
@@ -43,13 +45,13 @@ export default function Header() {
             {!user.length > 0
               ? " "
               : user.map((u) => (
-                <Link to={`/user/${u.id}`} key={u.id}>
-                  <User>
-                    <img src={u.profilePicture} />
-                    <p>{u.username}</p>
-                  </User>
-                </Link>
-              ))}
+                  <Link to={`/user/${u.id}`} key={u.id}>
+                    <User>
+                      <img src={u.profilePicture} />
+                      <p>{u.username}</p>
+                    </User>
+                  </Link>
+                ))}
           </UserFind>
         </Search>
 
@@ -89,7 +91,7 @@ const Title = styled.div`
   margin-left: 28px;
   margin-top: 10px;
 
-  a{
+  a {
     text-decoration: none;
     color: #ffffff;
   }
