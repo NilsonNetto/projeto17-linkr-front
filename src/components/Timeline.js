@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import UserContext from "../context/UserContext";
-import { mountHeaders, postPost, getPosts } from "./../services/linkr";
+import { mountHeaders, postPost, getPosts, deletePost } from "./../services/linkr";
 import Header from "./Header";
 import PostBox from "./PostBox";
 import Sidebar from "./Sidebar";
@@ -13,7 +13,6 @@ export default function Timeline() {
   const [loadingPosts, setLoadingPosts] = useState(true);
   const [updateLike, setUpdateLike] = useState(false);
   const { userData } = useContext(UserContext);
-  console.log(userData);
 
   useEffect(() => {
     updating();

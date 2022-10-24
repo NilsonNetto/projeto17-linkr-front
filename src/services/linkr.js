@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const URL = "http://localhost:4000";
+const URL = "https://projeto17-linkr-agjnn.herokuapp.com/";
 
 function mountHeaders(token) {
   return {

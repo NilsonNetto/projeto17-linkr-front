@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { useState, useRef, useEffect, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { mountHeaders, likePost, unlikePost, newEditPost } from "../services/linkr.js";
+import { RotatingLines } from "react-loader-spinner";
+import { mountHeaders, likePost, unlikePost, newEditPost, deletePost } from "../services/linkr.js";
 import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
 import ReactHashtag from "@mdnm/react-hashtag";
@@ -151,13 +152,10 @@ export default function PostBox({
 
   function confirmDeletePost({ postId }) {
     setLoading(true);
-    const config = {
-      headers: {
-        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTY2NjM4Mzg0OCwiZXhwIjoxNjY4OTc1ODQ4fQ.Aq7PPccAwE-izvSBFx_458Bsvddju1Yp0WOetfnBmIo`,
-      },
-    };
 
-    deletePost(postId, config)
+    const headers = mountHeaders(userData.token);
+
+    deletePost(postId, headers)
       .then((res) => {
         setLoading(false);
         setUpdateLike(!updateLike);
