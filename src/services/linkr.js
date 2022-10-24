@@ -5,8 +5,8 @@ const URL = "http://localhost:4000";
 function mountHeaders(token) {
   return {
     headers: {
-      Authorization: `Bearer ${token}`
-    }
+      Authorization: `Bearer ${token}`,
+    },
   };
 }
 
@@ -40,7 +40,7 @@ function getPageUser(id, headers) {
 }
 
 function searchUser(name, headers) {
-  return axios.get(`${URL}/timeline/${name}`, headers);
+  return axios.get(`${URL}/users/${name}`, headers);
 }
 
 function likePost(postId, headers) {
@@ -52,7 +52,13 @@ function unlikePost(postId, headers) {
 }
 
 function newEditPost(dataPostEdited, headers) {
+  console.log(headers);
   return axios.put(`${URL}/editPost`, dataPostEdited, headers);
+}
+
+function deletePost(postId, headers) {
+  console.log(postId);
+  return axios.delete(`${URL}/deletePost/${postId}`, headers);
 }
 
 export {
@@ -67,5 +73,6 @@ export {
   postSignup,
   likePost,
   unlikePost,
-  newEditPost
+  newEditPost,
+  deletePost,
 };

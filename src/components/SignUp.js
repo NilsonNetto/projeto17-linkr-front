@@ -92,8 +92,8 @@ export default function SignUp() {
 }
 
 const SignUpStyle = styled.div`
-  width: 100vh;
-  height: 100vw;
+  width: 100%;
+  height: 100%;
   display: flex;
 
   @media (max-width: 450px) {
@@ -162,7 +162,7 @@ const LogUp = styled.div`
 const BoardLogUpInputs = styled.div`
   width: 429px;
   height: 267px;
-  margin-left: 100px;
+  margin-left: 55px;
   margin-top: 274px;
   margin-bottom: 440px;
   margin-right: 55px;
@@ -170,10 +170,10 @@ const BoardLogUpInputs = styled.div`
   @media (max-width: 450px) {
     width: 330px;
     height: auto;
-    margin-left: 23px;
+    margin-left: 20px;
     margin-top: 40px;
     margin-bottom: 91px;
-    margin-right: 22px;
+    margin-right: 0;
   }
 
   input {

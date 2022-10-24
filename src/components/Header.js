@@ -12,15 +12,14 @@ export default function Header() {
   const [user, setUser] = useState([]);
   const headers = mountHeaders(token);
 
-
   function find(value) {
-    console.log("eu");
     const promise = searchUser(value, headers);
-
-    promise.then((res) => {
-      setUser(res.data);
-      console.log(user);
-    });
+    promise
+      .then((res) => {
+        console.log(res.data);
+        setUser(res.data);
+      })
+      .catch(() => setUser([]));
   }
   const handleLogout = () => {
     localStorage.clear();
@@ -30,7 +29,9 @@ export default function Header() {
   return (
     <Top>
       <Glueded>
-        <Title><Link to='/timeline'>linkr</Link> </Title>
+        <Title>
+          <Link to="/timeline">linkr</Link>{" "}
+        </Title>
         <Search>
           <DebounceInput
             minLength={3}
@@ -89,7 +90,7 @@ const Title = styled.div`
   margin-left: 28px;
   margin-top: 10px;
 
-  a{
+  a {
     text-decoration: none;
     color: #ffffff;
   }
