@@ -51,11 +51,13 @@ function unlikePost(postId, headers) {
 }
 
 function newEditPost(dataPostEdited, headers) {
+  console.log(headers)
   return axios.put(`${URL}/editPost`, dataPostEdited, headers);
 }
 
 function deletePost(postId, headers) {
-  return axios.delete(`${URL}/deletePost`, postId, headers);
+  console.log(postId)
+  return axios.delete(`${URL}/deletePost/${postId}`, headers);
 }
 
 export {

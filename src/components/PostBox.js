@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useState, useRef, useEffect, React } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { RotatingLines } from "react-loader-spinner";
 import {
   mountHeaders,
   likePost,
@@ -34,7 +35,8 @@ export default function PostBox({
   const [timeToEdit, setTimeToEdit] = useState(false);
   const [newPost, setNewPost] = useState(description);
   const [disabled, setDisabled] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
+  const [loading, setLoading] = useState(false);
   const inputEditPost = useRef(null);
   const navigate = useNavigate();
 
@@ -159,23 +161,24 @@ export default function PostBox({
     setIsOpen(!isOpen);
   }
 
-  function confirmDeletePost(postId) {
+  function confirmDeletePost({ postId }) {
+    setLoading(true);
     const config = {
       headers: {
         Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTY2NjM4Mzg0OCwiZXhwIjoxNjY4OTc1ODQ4fQ.Aq7PPccAwE-izvSBFx_458Bsvddju1Yp0WOetfnBmIo`,
       },
     };
-    const dataDelete = { postId };
-    console.log(postId);
-    console.log(config);
-    deletePost(dataDelete, config)
+
+    deletePost(postId, config)
       .then((res) => {
-        //adicionar loading
+        setLoading(false);
+        setUpdateLike(!updateLike);
         console.log(res.data);
         setIsOpen(false);
       })
       .catch((err) => {
         setIsOpen(false);
+        setLoading(false);
         console.log(err.response);
         alert("Error deleting post");
       });
@@ -217,28 +220,39 @@ export default function PostBox({
               onRequestClose={toggleModal}
               style={{
                 overlay: {
-                  backgroundColor: "rgba(255, 255, 255, 0.9)",
+                  backgroundColor: "rgba(255, 255, 255, 0.4)",
+                  zIndex: "2",
                 },
                 content: {
-                  width: "60%",
-                  height: "20%",
-                  marginTop: "30%",
-                  marginRight: "20%",
-                  marginLeft: "20%",
-                  border: "1px solid #ccc",
-                  background: "#fff",
-                  overflow: "auto",
-                  borderRadius: "4px",
-                  outline: "none",
-                  padding: "20px",
+                  border: "none",
+                  backgroundColor: "rgba(255, 255, 255, 0)",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
                 },
               }}
             >
-              <p>Are you sure you want to delete this post?</p>
-              <button onClick={toggleModal}>No, go back</button>
-              <button onClick={() => confirmDeletePost({ postId: id })}>
-                Yes, delete it
-              </button>
+              <ModalContent>
+                {loading ? (
+                  <RotatingLines
+                    strokeColor="#1877f2"
+                    strokeWidth="2"
+                    animationDuration="1"
+                    width="96"
+                    visible={true}
+                  />
+                ) : (
+                  <>
+                    <p>Are you sure you want to delete this post?</p>
+                    <Buttons>
+                      <button onClick={toggleModal}>No, go back</button>
+                      <button onClick={() => confirmDeletePost({ postId: id })}>
+                        Yes, delete it
+                      </button>
+                    </Buttons>
+                  </>
+                )}
+              </ModalContent>
             </Modal>
           </Icons>
         </Top>
@@ -386,5 +400,50 @@ const InputNewPost = styled.div`
   input:disabled {
     background-color: #d9d9d9;
     color: #4c4c4c;
+  }
+`;
+
+const ModalContent = styled.div`
+  background-color: #333333;
+  width: 600px;
+  height: 262px ;
+  font-family: "Lato";
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-evenly;
+  border-radius: 40px;
+
+  p {
+    width: 70%;
+    font-size: 34px;
+    color: #fff;
+    text-align: center;
+    font-weight: bold;
+    line-height: 45px;
+  }
+`;
+
+const Buttons = styled.div`
+  width: 60%;
+  display: flex;
+  justify-content: space-around;
+
+  button {
+    height: 36px;
+    border-radius: 10px;
+    font-size: 18px;
+    border: solid 1px #333333;
+    padding: 0 16px;
+  }
+
+  button:nth-child(1) {
+    background-color: #fff;
+    color: #1877f2;
+  }
+
+  button:nth-child(2) {
+    background-color: #1877f2;
+    color: #fff;
   }
 `;
