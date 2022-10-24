@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { mountHeaders, likePost, unlikePost } from "../services/linkr";
+import { mountHeaders, likePost, unlikePost, newEditPost } from "../services/linkr.js";
 
 import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
@@ -24,6 +24,10 @@ export default function PostBox({
   setUpdateLike
 }) {
   const [isLiked, setIsLiked] = useState(userLike);
+  const [timeToEdit, setTimeToEdit] = useState(false);
+  const [newPost, setNewPost] = useState(description);
+  const [disabled, setDisabled] = useState(false);
+  const inputEditPost = useRef(null);
   const navigate = useNavigate();
 
   function likesCount(likes) {
@@ -82,6 +86,53 @@ export default function PostBox({
     navigate(`/hashtag/${redirect}`);
   }
 
+  function editPost() {
+    setNewPost(newPost);
+    setTimeToEdit(!timeToEdit);
+  }
+
+  function sendEditPost(postId) {
+    setDisabled(true);
+    console.log("enviar nova edição");
+    const config = {
+      headers: {
+        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTY2NjM4Mzg0OCwiZXhwIjoxNjY4OTc1ODQ4fQ.Aq7PPccAwE-izvSBFx_458Bsvddju1Yp0WOetfnBmIo`,
+      },
+    };
+
+    const dataPostEdited = { newPost, postId };
+
+    newEditPost(dataPostEdited, config)
+      .then((res) => {
+        setDisabled(false);
+        setNewPost(res.data);
+        setTimeToEdit(false);
+      })
+      .catch((err) => {
+        alert("Error editing the post!");
+        setDisabled(false);
+      });
+  }
+
+  useEffect(() => {
+    if (timeToEdit) {
+      inputEditPost.current.focus();
+    }
+  }, [timeToEdit]);
+
+  function cancelOrSend({ e, postId }) {
+    const key = e.keyCode;
+    const ESC = 27;
+    const ENTER = 13;
+    if (key === ESC) {
+      setTimeToEdit(false);
+      setNewPost(description);
+    }
+    if (key === ENTER) {
+      sendEditPost(postId);
+    }
+  }
+
   return (
     <Post>
       <Left>
@@ -94,8 +145,9 @@ export default function PostBox({
           <LikeHeart isLiked={isLiked} onClick={() => likeAndDislike(id)}>
             {isLiked ? <BsHeartFill /> : <BsHeart />}
           </LikeHeart>
-          <a data-tip={likesCount(postLikes)}>{postLikes[0] === null ? 0 : postLikes.length} likes</a>
-
+          <a data-tip={likesCount(postLikes)}>
+            {postLikes[0] === null ? 0 : postLikes.length} likes
+          </a>
         </Likes>
       </Left>
       <Right>
@@ -106,7 +158,7 @@ export default function PostBox({
           </Link>
           <Icons>
             <div>
-              <FaPencilAlt />
+              <FaPencilAlt onClick={editPost} />
             </div>
             <div>
               <FaTrash onClick={DeletePost}/>
@@ -121,8 +173,22 @@ export default function PostBox({
               </Hashtag>
             )}
           >
-            {description}
+            {timeToEdit ? "" : newPost}
           </ReactHashtag>
+          {timeToEdit ? (
+            <InputNewPost>
+              <input
+                name="newPost"
+                onChange={(e) => setNewPost(e.target.value)}
+                value={newPost}
+                ref={inputEditPost}
+                onKeyDown={(e) => cancelOrSend({ e, postId: id })}
+                disabled={disabled}
+              />
+            </InputNewPost>
+          ) : (
+            ""
+          )}
         </Description>
         <Url>{url}</Url>
       </Right>
@@ -228,3 +294,20 @@ const Hashtag = styled.span`
 const Description = styled.div``;
 
 const Url = styled.div``;
+
+const InputNewPost = styled.div`
+  margin: 6px 0 6px 0;
+  input {
+    background-color: #fff;
+    color: #4c4c4c;
+    border-radius: 7px;
+    border: solid 1px #171717;
+    padding: 6px;
+    width: 90%;
+    height: auto;
+  }
+  input:disabled {
+    background-color: #d9d9d9;
+    color: #4c4c4c;
+  }
+`;
