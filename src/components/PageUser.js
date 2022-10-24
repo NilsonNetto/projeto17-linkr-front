@@ -1,51 +1,46 @@
-import styled from "styled-components";
 import { useState, useEffect, useContext } from "react";
-import { useParams } from "react-router-dom";
-import { mountHeaders, getHashtagByName } from "../services/linkr";
-import Header from "./Header";
+import { mountHeaders, getPageUser } from "../services/linkr";
+import styled from "styled-components";
 import Sidebar from "./Sidebar";
+import { useParams } from "react-router-dom";
+import Header from "./Header";
 import PostBox from "./PostBox";
 import UserContext from "../context/UserContext";
 
-export default function HashtagPage() {
-
-  const [postsWithHashtag, setPostsWithHashtag] = useState([]);
+export default function UserPage() {
+  const { id } = useParams();
+  const [userPage, setUserPage] = useState([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
   const [updateLike, setUpdateLike] = useState(false);
-  const { hashtag } = useParams();
   const { userData } = useContext(UserContext);
 
   useEffect(() => {
-
     const headers = mountHeaders(userData.token);
 
-    getHashtagByName(hashtag, headers)
-      .then(res => {
-        setPostsWithHashtag(res.data);
-        setLoadingPosts(false);
-      })
-      .catch(res => {
-        console.log(res.data);
-        alert('Get posts with hashtags error');
-      });
-  }, [hashtag, updateLike]);
+    const promise = getPageUser(id, headers);
+    promise.then((res) => {
+      setUserPage(res.data);
+      setLoadingPosts(!loadingPosts);
+    });
+  }, [updateLike]);
 
   return (
     <>
       <Header />
       <Container>
         <TimelineBox>
-          <Title># {hashtag}</Title>
-          <Posts>
+          <Title>{userPage?.username} 's posts</Title>
+          <PostsWrapper>
             {loadingPosts ? (
               <>Loading...</>
             ) : (
               <>
-                {postsWithHashtag.map((post, index) => {
+                {userPage.posts.map((post, index) => {
                   return (
                     <PostBox
                       key={index}
                       id={post.id}
+                      userId={post.userId}
                       username={post.username}
                       profilePicture={post.profilePicture}
                       description={post.description}
@@ -53,7 +48,6 @@ export default function HashtagPage() {
                       urlTitle={post.metadata.title}
                       urlDescription={post.metadata.description}
                       urlImage={post.metadata.image}
-                      userLike={post.userLike}
                       postLikes={post.postLikes}
                       updateLike={updateLike}
                       setUpdateLike={setUpdateLike}
@@ -62,7 +56,7 @@ export default function HashtagPage() {
                 })}
               </>
             )}
-          </Posts>
+          </PostsWrapper>
         </TimelineBox>
         <SidebarBox>
           <Sidebar />
@@ -88,13 +82,14 @@ const Title = styled.h1`
   font-size: 43px;
   font-weight: 700;
   font-family: "Oswald", sans-serif;
-  margin-bottom: 43px;
 `;
 
 const TimelineBox = styled.div`
   width: 611px;
   margin-top: 78px;
+  margin-bottom: 43px;
 `;
-const Posts = styled.div`
+
+const PostsWrapper = styled.div`
   margin-top: 13px;
 `;

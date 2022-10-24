@@ -1,24 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { getTrendingHashtags } from "../services/linkr";
-
-
+import UserContext from "../context/UserContext";
+import { mountHeaders, getTrendingHashtags } from "../services/linkr";
 
 export default function Sidebar() {
 
   const [trendingHashtags, setTrendingHashtags] = useState([]);
   const navigate = useNavigate();
+  const { userData } = useContext(UserContext);
 
   useEffect(() => {
 
-    const config = {
-      headers: {
-        Authorization: `Bearer `
-      }
-    };
+    const headers = mountHeaders(userData.token);
 
-    getTrendingHashtags(config)
+    getTrendingHashtags(headers)
       .then(res => {
         setTrendingHashtags(res.data);
       })

@@ -1,7 +1,42 @@
+import { Link, useNavigate } from "react-router-dom";
+import { postSignup } from "../services/linkr";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { useState } from "react";
 
 export default function SignUp() {
+  const [username, setUsername] = useState();
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  const [profilePicture, setProfilePicture] = useState();
+  const [offButton, setOffButton] = useState(false);
+
+  const navigate = useNavigate();
+
+  function SendSignup(e) {
+    e.preventDefault();
+
+    const body = {
+      email,
+      password,
+      username,
+      profilePicture,
+    };
+
+    const promise = postSignup(body);
+    promise.then((res) => {
+      const result = [res];
+      if (result.length > 0) {
+        setOffButton(true);
+      }
+
+      navigate("/");
+    });
+    promise.catch((err) => {
+      const erros = err.response.data;
+      alert(erros);
+    });
+  }
+
   return (
     <SignUpStyle>
       <LogoSingUp>
@@ -14,15 +49,39 @@ export default function SignUp() {
       </LogoSingUp>
       <LogUp>
         <BoardLogUpInputs>
-          <input placeholder="e-mail" type="email" />
+          <input
+            placeholder="e-mail"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
           <br />
-          <input placeholder="password" type="password" />
+          <input
+            placeholder="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
           <br />
-          <input placeholder="username" type="text" />
+          <input
+            placeholder="username"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
           <br />
-          <input placeholder="picture url" type="text" />
+          <input
+            placeholder="picture url"
+            type="text"
+            value={profilePicture}
+            onChange={(e) => setProfilePicture(e.target.value)}
+            required
+          />
           <br />
-          <button>Sign Up</button>
+          <button onClick={SendSignup} disabled={offButton}>Sign Up</button>
           <Link to="/">
             <DescSignUp>Switch back to log in</DescSignUp>
           </Link>
@@ -33,11 +92,11 @@ export default function SignUp() {
 }
 
 const SignUpStyle = styled.div`
-  width: 100vh;
-  height: 100vw;
+  width: 100%;
+  height: 100%;
   display: flex;
 
-  @media (max-width: 375px) {
+  @media (max-width: 450px) {
     flex-direction: column;
   }
 `;
@@ -68,7 +127,7 @@ const DescriptionSignUp = styled.div`
   line-height: 64px;
   color: #ffffff;
 
-  @media (max-width: 375px) {
+  @media (max-width: 450px) {
     width: 237px;
     height: 68px;
     font-size: 23px;
@@ -83,7 +142,7 @@ const BoardSignUp = styled.div`
   margin-bottom: 478px;
   margin-right: 319px;
 
-  @media (max-width: 375px) {
+  @media (max-width: 450px) {
     width: 375px;
     height: 175px;
     margin-left: 69px;
@@ -96,25 +155,25 @@ const LogUp = styled.div`
   width: 535px;
   height: auto;
 
-  @media (max-width: 375px) {
+  @media (max-width: 450px) {
     width: 375px;
   }
 `;
 const BoardLogUpInputs = styled.div`
   width: 429px;
   height: 267px;
-  margin-left: 100px;
+  margin-left: 55px;
   margin-top: 274px;
   margin-bottom: 440px;
   margin-right: 55px;
 
-  @media (max-width: 375px) {
+  @media (max-width: 450px) {
     width: 330px;
     height: auto;
-    margin-left: 23px;
+    margin-left: 20px;
     margin-top: 40px;
     margin-bottom: 91px;
-    margin-right: 22px;
+    margin-right: 0;
   }
 
   input {
@@ -131,7 +190,7 @@ const BoardLogUpInputs = styled.div`
     color: #9f9f9f;
     margin-bottom: 13px;
 
-    @media (max-width: 375px) {
+    @media (max-width: 450px) {
       width: 330px;
       height: 55px;
       margin-bottom: 13px;
@@ -150,7 +209,7 @@ const BoardLogUpInputs = styled.div`
     color: #ffffff;
     margin-bottom: 22px;
 
-    @media (max-width: 375px) {
+    @media (max-width: 450px) {
       width: 330px;
       height: 55px;
       margin-bottom: 18px;
@@ -170,7 +229,7 @@ const DescSignUp = styled.div`
   margin-left: 130px;
   margin-right: 134px;
 
-  @media (max-width: 375px) {
+  @media (max-width: 450px) {
     margin-left: 70.5px;
     margin-right: 117px;
   }

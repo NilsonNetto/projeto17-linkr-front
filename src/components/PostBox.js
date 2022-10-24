@@ -1,114 +1,475 @@
-import { useEffect } from "react";
 import styled from "styled-components";
-import { AiOutlineHeart } from 'react-icons/ai';
-import { FaTrash, FaPencilAlt } from 'react-icons/fa';
+import { useState, useRef, useEffect, useContext } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { RotatingLines } from "react-loader-spinner";
+import { mountHeaders, likePost, unlikePost, newEditPost, deletePost } from "../services/linkr.js";
+import { FaTrash, FaPencilAlt } from "react-icons/fa";
+import { BsHeart, BsHeartFill } from "react-icons/bs";
+import ReactHashtag from "@mdnm/react-hashtag";
+import ReactTooltip from "react-tooltip";
+import UserContext from "../context/UserContext.js";
+import Modal from "react-modal";
 
-export default function PostBox({ id, username, profilePicture, description, url, userLike, postLikes }) {
+export default function PostBox({
+  id,
+  userId,
+  username,
+  profilePicture,
+  description,
+  url,
+  urlTitle,
+  urlDescription,
+  urlImage,
+  userLike,
+  postLikes,
+  updateLike,
+  setUpdateLike,
+}) {
+  const [isLiked, setIsLiked] = useState(userLike);
+  const [timeToEdit, setTimeToEdit] = useState(false);
+  const [newPost, setNewPost] = useState(description);
+  const [disabled, setDisabled] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const inputEditPost = useRef(null);
+  const navigate = useNavigate();
+  const { userData } = useContext(UserContext);
 
-    return (
-        <Post>
-            <Left>
-                <Img>
-                    <img src={profilePicture} alt='profile' />
-                </Img>
-                <Likes>
-                    <div>
-                        <AiOutlineHeart />
-                    </div>
-                    <div>likes</div>
-                </Likes>
-            </Left>
-            <Right>
-                <Top>
-                    <Name>{username}</Name>
-                    <Icons>
-                        <div>
-                            <FaPencilAlt />
-                        </div>
-                        <div>
-                            <FaTrash />
-                        </div>
-                    </Icons>
-                </Top>
-                <Description>{description}</Description>
-                <Link>{url}</Link>
-            </Right>
-        </Post>
-    );
+  function likesCount(likes) {
+    if (likes[0] === null) {
+      return "No one likes this, be the first!";
+    }
+
+    if (userLike) {
+      const filteredLikes = likes.filter((value) => value !== username);
+
+      switch (likes.length) {
+        case 1:
+          return "Você";
+          break;
+        case 2:
+          return `Você e ${filteredLikes[0]}`;
+          break;
+        default:
+          return `Você, ${filteredLikes[0]} e outras ${likes.length - 2
+            } pessoas`;
+      }
+    } else {
+      switch (likes.length) {
+        case 1:
+          return likes[0];
+          break;
+        case 2:
+          return `${likes[0]} e ${likes[1]}`;
+          break;
+        default:
+          return `${likes[0]}, ${likes[1]} e outras ${likes.length - 2
+            } pessoas`;
+      }
+    }
+  }
+
+  function likeAndDislike(postId) {
+
+    const headers = mountHeaders(userData.token);
+
+    if (isLiked) {
+      unlikePost(postId, headers)
+        .then((res) => {
+          setIsLiked(false);
+          setUpdateLike(!updateLike);
+        })
+        .catch((res) => {
+          console.log(res.message);
+          alert("unlike error");
+        });
+    } else {
+      likePost(postId, headers)
+        .then((res) => {
+          setIsLiked(true);
+          setUpdateLike(!updateLike);
+        })
+        .catch((res) => {
+          console.log(res.message);
+          alert("like error");
+        });
+    }
+  }
+
+  function redirectHashtag(hashtag) {
+    const redirect = hashtag.replace("#", "");
+    navigate(`/hashtag/${redirect}`);
+  }
+
+  function editPost() {
+    setNewPost(newPost);
+    setTimeToEdit(!timeToEdit);
+  }
+
+  function sendEditPost(postId) {
+    setDisabled(true);
+    console.log("enviar nova edição");
+
+    const headers = mountHeaders(userData.token);
+
+    const dataPostEdited = { newPost, postId };
+
+    newEditPost(dataPostEdited, headers)
+      .then((res) => {
+        setDisabled(false);
+        setNewPost(res.data);
+        setTimeToEdit(false);
+      })
+      .catch((err) => {
+        alert("Error editing the post!");
+        setDisabled(false);
+      });
+  }
+
+  useEffect(() => {
+    if (timeToEdit) {
+      inputEditPost.current.focus();
+    }
+  }, [timeToEdit]);
+
+  function cancelOrSend({ e, postId }) {
+    const key = e.keyCode;
+    const ESC = 27;
+    const ENTER = 13;
+    if (key === ESC) {
+      setTimeToEdit(false);
+      setNewPost(description);
+    }
+    if (key === ENTER) {
+      sendEditPost(postId);
+    }
+  }
+
+  function openChoicesForDelete() {
+    setIsOpen(true);
+  }
+
+  function toggleModal() {
+    setIsOpen(!isOpen);
+  }
+
+  function confirmDeletePost({ postId }) {
+    setLoading(true);
+
+    const headers = mountHeaders(userData.token);
+
+    deletePost(postId, headers)
+      .then((res) => {
+        setLoading(false);
+        setUpdateLike(!updateLike);
+        console.log(res.data);
+        setIsOpen(false);
+      })
+      .catch((err) => {
+        setIsOpen(false);
+        setLoading(false);
+        console.log(err.response);
+        alert("Error deleting post");
+      });
+  }
+
+  return (
+    <Post>
+      <Left>
+        <Link to={`/user/${userId}`}>
+          <Img>
+            <img src={profilePicture} alt="profile" />
+          </Img>
+        </Link>
+        <Likes isLiked={isLiked}>
+          <LikeHeart isLiked={isLiked} onClick={() => likeAndDislike(id)}>
+            {isLiked ? <BsHeartFill /> : <BsHeart />}
+          </LikeHeart>
+          <a data-tip={likesCount(postLikes)}>
+            {postLikes[0] === null ? 0 : postLikes.length} likes
+          </a>
+        </Likes>
+      </Left>
+      <Right>
+        <Top>
+          <Link to={`/user/${userId}`}>
+            {" "}
+            <Name>{username}</Name>
+          </Link>
+          <Icons>
+            <div>
+              <FaPencilAlt onClick={editPost} />
+            </div>
+            <div>
+              <FaTrash onClick={openChoicesForDelete} />
+            </div>
+
+            <Modal
+              isOpen={isOpen}
+              onRequestClose={toggleModal}
+              style={{
+                overlay: {
+                  backgroundColor: "rgba(255, 255, 255, 0.4)",
+                  zIndex: "2",
+                },
+                content: {
+                  border: "none",
+                  backgroundColor: "rgba(255, 255, 255, 0)",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                },
+              }}
+            >
+              <ModalContent>
+                {loading ? (
+                  <RotatingLines
+                    strokeColor="#1877f2"
+                    strokeWidth="2"
+                    animationDuration="1"
+                    width="96"
+                    visible={true}
+                  />
+                ) : (
+                  <>
+                    <p>Are you sure you want to delete this post?</p>
+                    <Buttons>
+                      <button onClick={toggleModal}>No, go back</button>
+                      <button onClick={() => confirmDeletePost({ postId: id })}>
+                        Yes, delete it
+                      </button>
+                    </Buttons>
+                  </>
+                )}
+              </ModalContent>
+            </Modal>
+          </Icons>
+        </Top>
+        <Description>
+          <ReactHashtag
+            renderHashtag={(hashtagValue) => (
+              <Hashtag onClick={() => redirectHashtag(hashtagValue)}>
+                {hashtagValue}
+              </Hashtag>
+            )}
+          >
+            {timeToEdit ? "" : newPost}
+          </ReactHashtag>
+          {timeToEdit ? (
+            <InputNewPost>
+              <input
+                name="newPost"
+                onChange={(e) => setNewPost(e.target.value)}
+                value={newPost}
+                ref={inputEditPost}
+                onKeyDown={(e) => cancelOrSend({ e, postId: id })}
+                disabled={disabled}
+              />
+            </InputNewPost>
+          ) : (
+            ""
+          )}
+        </Description>
+        <Metadata onClick={() => window.open(url)}>
+            <UrlInfo>
+                <UrlTitle>{urlTitle}</UrlTitle>
+                <UrlDescription>{urlDescription}</UrlDescription>
+                <Url>{url}</Url>
+            </UrlInfo>
+            <UrlImage>
+                <img src={urlImage} alt='urlImage'/>
+            </UrlImage>
+        </Metadata>
+        
+      </Right>
+      <ReactTooltip place="bottom" type="light" effect="solid" />
+    </Post>
+  );
 }
-
 const Post = styled.div`
-    height: 276px;
-    width: 611px;
-    border-radius: 16px;
-    background-color: #171717;
-    display: flex;
-    margin-bottom: 13px;
+  height: 276px;
+  width: 611px;
+  border-radius: 16px;
+  background-color: #171717;
+  display: flex;
+  margin-bottom: 13px;
 `;
 
 const Left = styled.div`
-    width: 50px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-left: 18px;
+  width: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 18px;
 `;
 
 const Img = styled.div`
+  height: 50px;
+  width: 50px;
+  border-radius: 26.5px;
+  margin-top: 17px;
+  background-color: blueviolet;
+
+  img {
     height: 50px;
     width: 50px;
     border-radius: 26.5px;
-    margin-top: 17px;
-    background-color: blueviolet;
-
-    img {
-        height: 50px;
-        width: 50px;
-        border-radius: 26.5px;
-        object-fit: fill;
-    }
+    object-fit: fill;
+  }
 `;
 
 const Likes = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 19px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 19px;
+`;
 
-    div {
-        font-size: 11px;
-        font-family: 'Lato', sans-serif;
-        color: #FFFFFF;
-        margin-top: 5px;
-    }
+const LikeHeart = styled.div`
+  width: 30px;
+  height: 30px;
+  margin-top: 20px;
+  font-size: 20px;
+  cursor: pointer;
+  color: ${({ isLiked }) => (isLiked ? "red" : "white")};
+`;
+
+const LikeCount = styled.div`
+  font-size: 11px;
+  font-family: "Lato", sans-serif;
+  color: #ffffff;
+  margin-top: 5px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 19px;
+
+  div {
+    font-size: 11px;
+    font-family: "Lato", sans-serif;
+    color: #ffffff;
+    margin-top: 5px;
+  }
 `;
 
 const Right = styled.div`
-    display: flex;
-    flex-direction: column;
-    margin-top: 17px;
-    margin-left: 18px;
-    width: 503px;
+  display: flex;
+  flex-direction: column;
+  margin-top: 17px;
+  margin-left: 18px;
+  width: 503px;
 `;
 
 const Top = styled.div`
-    display: flex;
-    justify-content: space-between;
-
+  display: flex;
+  justify-content: space-between;
 `;
 
 const Name = styled.div`
-    font-size: 19px;
-    font-family: 'Lato', sans-serif;
-    color: #FFFFFF;
+  font-size: 19px;
+  font-family: "Lato", sans-serif;
+  color: #ffffff;
 `;
 
 const Icons = styled.div`
+  display: flex;
+`;
+
+const Hashtag = styled.span`
+  font-weight: 700;
+  cursor: pointer;
+`;
+
+const Description = styled.div``;
+
+const Metadata = styled.div`
+    height: 155px;
+    width: 503px;
+    border-radius: 16px;
+    border: 1px #C4C4C4;
     display: flex;
+    justify-content: space-between;
 `;
 
-const Description = styled.div`
-
+const UrlInfo = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 349.56px;
 `;
 
-const Link = styled.div``;
+const UrlImage = styled.div`
+    height: 155px;
+    width: 153.44px;
+`;
+
+const UrlTitle = styled.div``
+
+const UrlDescription = styled.div``
+
+const Url = styled.div``;
+
+const InputNewPost = styled.div`
+  margin: 6px 0 6px 0;
+  input {
+    background-color: #fff;
+    color: #4c4c4c;
+    border-radius: 7px;
+    border: solid 1px #171717;
+    padding: 6px;
+    width: 90%;
+    height: auto;
+  }
+  input:disabled {
+    background-color: #d9d9d9;
+    color: #4c4c4c;
+  }
+`;
+
+const ModalContent = styled.div`
+  background-color: #333333;
+  width: 600px;
+  height: 262px ;
+  font-family: "Lato";
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-evenly;
+  border-radius: 40px;
+
+  p {
+    width: 70%;
+    font-size: 34px;
+    color: #fff;
+    text-align: center;
+    font-weight: bold;
+    line-height: 45px;
+  }
+`;
+
+const Buttons = styled.div`
+  width: 60%;
+  display: flex;
+  justify-content: space-around;
+
+  button {
+    height: 36px;
+    border-radius: 10px;
+    font-size: 18px;
+    border: solid 1px #333333;
+    padding: 0 16px;
+  }
+
+  button:nth-child(1) {
+    background-color: #fff;
+    color: #1877f2;
+  }
+
+  button:nth-child(2) {
+    background-color: #1877f2;
+    color: #fff;
+  }
+`;
