@@ -92,8 +92,8 @@ export default function SignIn() {
 }
 
 const SignInStyle = styled.div`
-  width: 100vh;
-  height: 100vw;
+  width: 100%;
+  height: 100%;
   display: flex;
 
   @media (max-width: 450px) {
@@ -115,6 +115,7 @@ const BoardLogIn = styled.div`
     margin-top: 10px;
     margin-bottom: 27px;
     margin-right: 69px;
+    box-sizing: border-box;
   }
 `;
 const Logo = styled.div`
@@ -157,12 +158,13 @@ const LogIn = styled.div`
 
   @media (max-width: 450px) {
     width: 375px;
+    box-sizing: border-box;
   }
 `;
 const BoardLogInInputs = styled.div`
   width: 429px;
   height: 267px;
-  margin-left: 100px;
+  margin-left: 55px;
   margin-top: 317px;
   margin-bottom: 440px;
   margin-right: 55px;
