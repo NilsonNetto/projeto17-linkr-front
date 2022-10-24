@@ -5,11 +5,11 @@ import Header from "./Header";
 import PostBox from "./PostBox";
 import Sidebar from "./Sidebar";
 
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTY2NjQ1NDUxMCwiZXhwIjoxNjY5MDQ2NTEwfQ.4Dgj_LO3ZE6pyGLu3p1HEEu66zwpk_50lwK4g_WMyRM';
+const token =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2NjU1NzgzMCwiZXhwIjoxNjY5MTQ5ODMwfQ.dJ4EIEnNVZ9yFuZTdDR8jDhT1OXd5QDvHYWMiEcIpUk";
 
 export default function Timeline() {
-
-  const [form, setForm] = useState({ description: '', link: '' });
+  const [form, setForm] = useState({ description: "", link: "" });
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
@@ -20,15 +20,14 @@ export default function Timeline() {
   }, [updateLike]);
 
   async function updating() {
-
     const headers = mountHeaders(token);
 
     await getPosts(headers)
-      .then(resposta => {
+      .then((resposta) => {
         setPosts(resposta.data);
         setLoadingPosts(false);
       })
-      .catch(resposta => {
+      .catch((resposta) => {
         console.log(resposta);
         setLoadingPosts(false);
       });
@@ -40,22 +39,22 @@ export default function Timeline() {
 
     const headers = mountHeaders(token);
     const body = {
-      "description": form.description,
-      "link": form.link
+      description: form.description,
+      link: form.link,
     };
 
     postPost(body, headers)
-      .then(resposta => {
+      .then((resposta) => {
         console.log(resposta);
         setLoading(false);
-        setForm({ description: '', link: '' });
+        setForm({ description: "", link: "" });
         updating();
       })
-      .catch(resposta => {
+      .catch((resposta) => {
         console.log(resposta);
-        alert('Houve um erro ao publicar seu link');
+        alert("Houve um erro ao publicar seu link");
         setLoading(false);
-        setForm({ description: '', link: '' });
+        setForm({ description: "", link: "" });
       });
   }
 
@@ -80,74 +79,11 @@ export default function Timeline() {
             );
           })}
         </>
-      )
+      );
     } else {
-      return (
-        <>There are no posts yet</>
-      )
+      return <>There are no posts yet</>;
     }
   }
-
-
-  return (
-    <>
-      <Header />
-      <Container>
-        <TimelineBox>
-          <Title>timeline</Title>
-          <Publish>
-            <ImgDiv>
-              <Img></Img>
-            </ImgDiv>
-            <FormDiv>
-              <PublishTitle>What are you going to share today?</PublishTitle>
-              <Form onSubmit={post}>
-                <InputLink
-                  type='url'
-                  name='link'
-                  value={form.link}
-                  placeholder='https://...'
-                  required
-                  disabled={loading}
-                  onChange={e => setForm({ ...form, link: e.target.value })}
-                />
-                <InputDescription
-                  type='text'
-                  name='description'
-                  value={form.description}
-                  placeholder='Awesome article about #Javascript'
-                  disabled={loading}
-                  onChange={e => setForm({ ...form, description: e.target.value })}
-                />
-                <button type="submit">
-                  {loading ?
-                    <>Publishing...</>
-                    :
-                    <>Publish</>
-                  }
-                </button>
-              </Form>
-            </FormDiv>
-          </Publish>
-          <Posts>
-            {
-              loadingPosts ?
-                <>Loading...</>
-                :
-                postsLoading()
-            }
-
-          </Posts>
-        </TimelineBox>
-        <SidebarBox>
-          <Sidebar />
-        </SidebarBox>
-      </Container>
-
-
-    </>
-  );
-
 
   return (
     <>
@@ -187,29 +123,7 @@ export default function Timeline() {
               </Form>
             </FormDiv>
           </Publish>
-          <Posts>
-            {loadingPosts ? (
-              <>Loading...</>
-            ) : (
-              <>
-                {posts.map((post, index) => {
-                  return (
-                    <PostBox
-                      key={index}
-                      id={post.id}
-                      userId={post.userId}
-                      username={post.username}
-                      profilePicture={post.profilePicture}
-                      description={post.description}
-                      url={post.url}
-                      userLike={post.userLike}
-                      postLikes={post.postLikes}
-                    />
-                  );
-                })}
-              </>
-            )}
-          </Posts>
+          <Posts>{loadingPosts ? <>Loading...</> : postsLoading()}</Posts>
         </TimelineBox>
         <SidebarBox>
           <Sidebar />
