@@ -47,7 +47,7 @@ export default function SignIn() {
 
   useEffect(() => {
     const userLogado = localStorage.getItem("user");
-    console.log(userLogado);
+
     if (userLogado) {
       const getUser = JSON.parse(userLogado);
       setUserData(getUser);
