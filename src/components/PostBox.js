@@ -17,6 +17,9 @@ export default function PostBox({
   profilePicture,
   description,
   url,
+  urlTitle,
+  urlDescription,
+  urlImage,
   userLike,
   postLikes,
   updateLike,
@@ -267,7 +270,17 @@ export default function PostBox({
             ""
           )}
         </Description>
-        <Url>{url}</Url>
+        <Metadata onClick={() => window.open(url)}>
+            <UrlInfo>
+                <UrlTitle>{urlTitle}</UrlTitle>
+                <UrlDescription>{urlDescription}</UrlDescription>
+                <Url>{url}</Url>
+            </UrlInfo>
+            <UrlImage>
+                <img src={urlImage} alt='urlImage'/>
+            </UrlImage>
+        </Metadata>
+        
       </Right>
       <ReactTooltip place="bottom" type="light" effect="solid" />
     </Post>
@@ -369,6 +382,33 @@ const Hashtag = styled.span`
 `;
 
 const Description = styled.div``;
+
+const Metadata = styled.div`
+    height: 155px;
+    width: 503px;
+    border-radius: 16px;
+    border: 1px #C4C4C4;
+    display: flex;
+    justify-content: space-between;
+`;
+
+const UrlInfo = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 349.56px;
+`;
+
+const UrlImage = styled.div`
+    height: 155px;
+    width: 153.44px;
+`;
+
+const UrlTitle = styled.div``
+
+const UrlDescription = styled.div``
 
 const Url = styled.div``;
 

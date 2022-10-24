@@ -71,6 +71,9 @@ export default function Timeline() {
                 profilePicture={post.profilePicture}
                 description={post.description}
                 url={post.url}
+                urlTitle={post.metadata.title}
+                urlDescription={post.metadata.description}
+                urlImage={post.metadata.image}
                 userLike={post.userLike}
                 postLikes={post.postLikes}
                 updateLike={updateLike}
@@ -95,7 +98,9 @@ export default function Timeline() {
           <Title>timeline</Title>
           <Publish>
             <ImgDiv>
-              <Img></Img>
+              <Img>
+                <img src={userData.img} alt='profile-pic'/>
+              </Img>
             </ImgDiv>
             <FormDiv>
               <PublishTitle>What are you going to share today?</PublishTitle>
