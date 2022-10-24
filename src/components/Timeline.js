@@ -80,13 +80,9 @@ export default function Timeline() {
         </>
       );
     } else {
-<<<<<<< HEAD
       return (
         <>There are no posts yet</>
       );
-=======
-      return <>There are no posts yet</>;
->>>>>>> fc49679c3907d814f8d960647285ce3ae8555a21
     }
   }
 
