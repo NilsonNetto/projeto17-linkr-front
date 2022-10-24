@@ -11,280 +11,280 @@ import UserContext from "../context/UserContext.js";
 import Modal from "react-modal";
 
 export default function PostBox({
-  id,
-  userId,
-  username,
-  profilePicture,
-  description,
-  url,
-  urlTitle,
-  urlDescription,
-  urlImage,
-  userLike,
-  postLikes,
-  updateLike,
-  setUpdateLike,
+    id,
+    userId,
+    username,
+    profilePicture,
+    description,
+    url,
+    urlTitle,
+    urlDescription,
+    urlImage,
+    userLike,
+    postLikes,
+    updateLike,
+    setUpdateLike,
 }) {
-  const [isLiked, setIsLiked] = useState(userLike);
-  const [timeToEdit, setTimeToEdit] = useState(false);
-  const [newPost, setNewPost] = useState(description);
-  const [disabled, setDisabled] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const inputEditPost = useRef(null);
-  const navigate = useNavigate();
-  const { userData } = useContext(UserContext);
+    const [isLiked, setIsLiked] = useState(userLike);
+    const [timeToEdit, setTimeToEdit] = useState(false);
+    const [newPost, setNewPost] = useState(description);
+    const [disabled, setDisabled] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const inputEditPost = useRef(null);
+    const navigate = useNavigate();
+    const { userData } = useContext(UserContext);
 
-  function likesCount(likes) {
-    if (likes[0] === null) {
-      return "No one likes this, be the first!";
+    function likesCount(likes) {
+        if (likes[0] === null) {
+            return "No one likes this, be the first!";
+        }
+
+        if (userLike) {
+            const filteredLikes = likes.filter((value) => value !== username);
+
+            switch (likes.length) {
+                case 1:
+                    return "Você";
+                    break;
+                case 2:
+                    return `Você e ${filteredLikes[0]}`;
+                    break;
+                default:
+                    return `Você, ${filteredLikes[0]} e outras ${likes.length - 2
+                        } pessoas`;
+            }
+        } else {
+            switch (likes.length) {
+                case 1:
+                    return likes[0];
+                    break;
+                case 2:
+                    return `${likes[0]} e ${likes[1]}`;
+                    break;
+                default:
+                    return `${likes[0]}, ${likes[1]} e outras ${likes.length - 2
+                        } pessoas`;
+            }
+        }
     }
 
-    if (userLike) {
-      const filteredLikes = likes.filter((value) => value !== username);
+    function likeAndDislike(postId) {
 
-      switch (likes.length) {
-        case 1:
-          return "Você";
-          break;
-        case 2:
-          return `Você e ${filteredLikes[0]}`;
-          break;
-        default:
-          return `Você, ${filteredLikes[0]} e outras ${likes.length - 2
-            } pessoas`;
-      }
-    } else {
-      switch (likes.length) {
-        case 1:
-          return likes[0];
-          break;
-        case 2:
-          return `${likes[0]} e ${likes[1]}`;
-          break;
-        default:
-          return `${likes[0]}, ${likes[1]} e outras ${likes.length - 2
-            } pessoas`;
-      }
+        const headers = mountHeaders(userData.token);
+
+        if (isLiked) {
+            unlikePost(postId, headers)
+                .then((res) => {
+                    setIsLiked(false);
+                    setUpdateLike(!updateLike);
+                })
+                .catch((res) => {
+                    console.log(res.message);
+                    alert("unlike error");
+                });
+        } else {
+            likePost(postId, headers)
+                .then((res) => {
+                    setIsLiked(true);
+                    setUpdateLike(!updateLike);
+                })
+                .catch((res) => {
+                    console.log(res.message);
+                    alert("like error");
+                });
+        }
     }
-  }
 
-  function likeAndDislike(postId) {
-
-    const headers = mountHeaders(userData.token);
-
-    if (isLiked) {
-      unlikePost(postId, headers)
-        .then((res) => {
-          setIsLiked(false);
-          setUpdateLike(!updateLike);
-        })
-        .catch((res) => {
-          console.log(res.message);
-          alert("unlike error");
-        });
-    } else {
-      likePost(postId, headers)
-        .then((res) => {
-          setIsLiked(true);
-          setUpdateLike(!updateLike);
-        })
-        .catch((res) => {
-          console.log(res.message);
-          alert("like error");
-        });
+    function redirectHashtag(hashtag) {
+        const redirect = hashtag.replace("#", "");
+        navigate(`/hashtag/${redirect}`);
     }
-  }
 
-  function redirectHashtag(hashtag) {
-    const redirect = hashtag.replace("#", "");
-    navigate(`/hashtag/${redirect}`);
-  }
-
-  function editPost() {
-    setNewPost(newPost);
-    setTimeToEdit(!timeToEdit);
-  }
-
-  function sendEditPost(postId) {
-    setDisabled(true);
-    console.log("enviar nova edição");
-
-    const headers = mountHeaders(userData.token);
-
-    const dataPostEdited = { newPost, postId };
-
-    newEditPost(dataPostEdited, headers)
-      .then((res) => {
-        setDisabled(false);
-        setNewPost(res.data);
-        setTimeToEdit(false);
-      })
-      .catch((err) => {
-        alert("Error editing the post!");
-        setDisabled(false);
-      });
-  }
-
-  useEffect(() => {
-    if (timeToEdit) {
-      inputEditPost.current.focus();
+    function editPost() {
+        setNewPost(newPost);
+        setTimeToEdit(!timeToEdit);
     }
-  }, [timeToEdit]);
 
-  function cancelOrSend({ e, postId }) {
-    const key = e.keyCode;
-    const ESC = 27;
-    const ENTER = 13;
-    if (key === ESC) {
-      setTimeToEdit(false);
-      setNewPost(description);
+    function sendEditPost(postId) {
+        setDisabled(true);
+        console.log("enviar nova edição");
+
+        const headers = mountHeaders(userData.token);
+
+        const dataPostEdited = { newPost, postId };
+
+        newEditPost(dataPostEdited, headers)
+            .then((res) => {
+                setDisabled(false);
+                setNewPost(res.data);
+                setTimeToEdit(false);
+            })
+            .catch((err) => {
+                alert("Error editing the post!");
+                setDisabled(false);
+            });
     }
-    if (key === ENTER) {
-      sendEditPost(postId);
+
+    useEffect(() => {
+        if (timeToEdit) {
+            inputEditPost.current.focus();
+        }
+    }, [timeToEdit]);
+
+    function cancelOrSend({ e, postId }) {
+        const key = e.keyCode;
+        const ESC = 27;
+        const ENTER = 13;
+        if (key === ESC) {
+            setTimeToEdit(false);
+            setNewPost(description);
+        }
+        if (key === ENTER) {
+            sendEditPost(postId);
+        }
     }
-  }
 
-  function openChoicesForDelete() {
-    setIsOpen(true);
-  }
+    function openChoicesForDelete() {
+        setIsOpen(true);
+    }
 
-  function toggleModal() {
-    setIsOpen(!isOpen);
-  }
+    function toggleModal() {
+        setIsOpen(!isOpen);
+    }
 
-  function confirmDeletePost({ postId }) {
-    setLoading(true);
+    function confirmDeletePost({ postId }) {
+        setLoading(true);
 
-    const headers = mountHeaders(userData.token);
+        const headers = mountHeaders(userData.token);
 
-    deletePost(postId, headers)
-      .then((res) => {
-        setLoading(false);
-        setUpdateLike(!updateLike);
-        console.log(res.data);
-        setIsOpen(false);
-      })
-      .catch((err) => {
-        setIsOpen(false);
-        setLoading(false);
-        console.log(err.response);
-        alert("Error deleting post");
-      });
-  }
+        deletePost(postId, headers)
+            .then((res) => {
+                setLoading(false);
+                setUpdateLike(!updateLike);
+                console.log(res.data);
+                setIsOpen(false);
+            })
+            .catch((err) => {
+                setIsOpen(false);
+                setLoading(false);
+                console.log(err.response);
+                alert("Error deleting post");
+            });
+    }
 
-  return (
-    <Post>
-      <Left>
-        <Link to={`/user/${userId}`}>
-          <Img>
-            <img src={profilePicture} alt="profile" />
-          </Img>
-        </Link>
-        <Likes isLiked={isLiked}>
-          <LikeHeart isLiked={isLiked} onClick={() => likeAndDislike(id)}>
-            {isLiked ? <BsHeartFill /> : <BsHeart />}
-          </LikeHeart>
-          <a data-tip={likesCount(postLikes)}>
-            {postLikes[0] === null ? 0 : postLikes.length} likes
-          </a>
-        </Likes>
-      </Left>
-      <Right>
-        <Top>
-          <Link to={`/user/${userId}`}>
-            {" "}
-            <Name>{username}</Name>
-          </Link>
-          <Icons>
-            <div>
-              <FaPencilAlt onClick={editPost} />
-            </div>
-            <div>
-              <FaTrash onClick={openChoicesForDelete} />
-            </div>
+    return (
+        <Post>
+            <Left>
+                <Link to={`/user/${userId}`}>
+                    <Img>
+                        <img src={profilePicture} alt="profile" />
+                    </Img>
+                </Link>
+                <Likes isLiked={isLiked}>
+                    <LikeHeart isLiked={isLiked} onClick={() => likeAndDislike(id)}>
+                        {isLiked ? <BsHeartFill /> : <BsHeart />}
+                    </LikeHeart>
+                    <a data-tip={likesCount(postLikes)}>
+                        {postLikes[0] === null ? 0 : postLikes.length} likes
+                    </a>
+                </Likes>
+            </Left>
+            <Right>
+                <Top>
+                    <Link to={`/user/${userId}`}>
+                        {" "}
+                        <Name>{username}</Name>
+                    </Link>
+                    <Icons>
+                        <div>
+                            <FaPencilAlt onClick={editPost} />
+                        </div>
+                        <div>
+                            <FaTrash onClick={openChoicesForDelete} />
+                        </div>
 
-            <Modal
-              isOpen={isOpen}
-              onRequestClose={toggleModal}
-              style={{
-                overlay: {
-                  backgroundColor: "rgba(255, 255, 255, 0.4)",
-                  zIndex: "2",
-                },
-                content: {
-                  border: "none",
-                  backgroundColor: "rgba(255, 255, 255, 0)",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                },
-              }}
-            >
-              <ModalContent>
-                {loading ? (
-                  <RotatingLines
-                    strokeColor="#1877f2"
-                    strokeWidth="2"
-                    animationDuration="1"
-                    width="96"
-                    visible={true}
-                  />
-                ) : (
-                  <>
-                    <p>Are you sure you want to delete this post?</p>
-                    <Buttons>
-                      <button onClick={toggleModal}>No, go back</button>
-                      <button onClick={() => confirmDeletePost({ postId: id })}>
-                        Yes, delete it
-                      </button>
-                    </Buttons>
-                  </>
-                )}
-              </ModalContent>
-            </Modal>
-          </Icons>
-        </Top>
-        <Description>
-          <ReactHashtag
-            renderHashtag={(hashtagValue) => (
-              <Hashtag onClick={() => redirectHashtag(hashtagValue)}>
-                {hashtagValue}
-              </Hashtag>
-            )}
-          >
-            {timeToEdit ? "" : newPost}
-          </ReactHashtag>
-          {timeToEdit ? (
-            <InputNewPost>
-              <input
-                name="newPost"
-                onChange={(e) => setNewPost(e.target.value)}
-                value={newPost}
-                ref={inputEditPost}
-                onKeyDown={(e) => cancelOrSend({ e, postId: id })}
-                disabled={disabled}
-              />
-            </InputNewPost>
-          ) : (
-            ""
-          )}
-        </Description>
-        <Metadata onClick={() => window.open(url)}>
-            <UrlInfo>
-                <UrlTitle>{urlTitle}</UrlTitle>
-                <UrlDescription>{urlDescription}</UrlDescription>
-                <Url>{url}</Url>
-            </UrlInfo>
-            <UrlImage>
-                <img src={urlImage} alt='urlImage'/>
-            </UrlImage>
-        </Metadata>
-        
-      </Right>
-      <ReactTooltip place="bottom" type="light" effect="solid" />
-    </Post>
-  );
+                        <Modal
+                            isOpen={isOpen}
+                            onRequestClose={toggleModal}
+                            style={{
+                                overlay: {
+                                    backgroundColor: "rgba(255, 255, 255, 0.4)",
+                                    zIndex: "2",
+                                },
+                                content: {
+                                    border: "none",
+                                    backgroundColor: "rgba(255, 255, 255, 0)",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                },
+                            }}
+                        >
+                            <ModalContent>
+                                {loading ? (
+                                    <RotatingLines
+                                        strokeColor="#1877f2"
+                                        strokeWidth="2"
+                                        animationDuration="1"
+                                        width="96"
+                                        visible={true}
+                                    />
+                                ) : (
+                                    <>
+                                        <p>Are you sure you want to delete this post?</p>
+                                        <Buttons>
+                                            <button onClick={toggleModal}>No, go back</button>
+                                            <button onClick={() => confirmDeletePost({ postId: id })}>
+                                                Yes, delete it
+                                            </button>
+                                        </Buttons>
+                                    </>
+                                )}
+                            </ModalContent>
+                        </Modal>
+                    </Icons>
+                </Top>
+                <Description>
+                    <ReactHashtag
+                        renderHashtag={(hashtagValue) => (
+                            <Hashtag onClick={() => redirectHashtag(hashtagValue)}>
+                                {hashtagValue}
+                            </Hashtag>
+                        )}
+                    >
+                        {timeToEdit ? "" : newPost}
+                    </ReactHashtag>
+                    {timeToEdit ? (
+                        <InputNewPost>
+                            <input
+                                name="newPost"
+                                onChange={(e) => setNewPost(e.target.value)}
+                                value={newPost}
+                                ref={inputEditPost}
+                                onKeyDown={(e) => cancelOrSend({ e, postId: id })}
+                                disabled={disabled}
+                            />
+                        </InputNewPost>
+                    ) : (
+                        ""
+                    )}
+                </Description>
+                <Metadata onClick={() => window.open(url)}>
+                    <UrlInfo>
+                        <UrlTitle>{urlTitle}</UrlTitle>
+                        <UrlDescription>{urlDescription}</UrlDescription>
+                        <Url>{url}</Url>
+                    </UrlInfo>
+                    <UrlImage>
+                        <img src={urlImage} alt='urlImage' />
+                    </UrlImage>
+                </Metadata>
+
+            </Right>
+            <ReactTooltip place="bottom" type="light" effect="solid" />
+        </Post>
+    );
 }
 const Post = styled.div`
   height: 276px;
@@ -404,6 +404,11 @@ const UrlInfo = styled.div`
 const UrlImage = styled.div`
     height: 155px;
     width: 153.44px;
+
+    img {
+        height: 155px;
+        width: 153.44px;
+    }
 `;
 
 const UrlTitle = styled.div``
