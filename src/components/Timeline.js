@@ -5,7 +5,7 @@ import Header from "./Header";
 import PostBox from "./PostBox";
 import Sidebar from "./Sidebar";
 
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2NjU1NzgzMCwiZXhwIjoxNjY5MTQ5ODMwfQ.dJ4EIEnNVZ9yFuZTdDR8jDhT1OXd5QDvHYWMiEcIpUk';
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTY2NjYxODgxNCwiZXhwIjoxNjY5MjEwODE0fQ.KzFhfszOkSswu6VhWTCOzOW7Xn5Sb_xrvLQAN0JxkyM';
 
 export default function Timeline() {
 
@@ -80,11 +80,11 @@ export default function Timeline() {
             );
           })}
         </>
-      )
+      );
     } else {
       return (
         <>There are no posts yet</>
-      )
+      );
     }
   }
 

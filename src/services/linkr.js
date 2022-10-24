@@ -27,6 +27,7 @@ function getHashtagByName(hashtag, headers) {
 }
 
 function postPost(body, headers) {
+
   return axios.post(`${URL}/publish`, body, headers);
 }
 
