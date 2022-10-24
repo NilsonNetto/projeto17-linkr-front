@@ -7,6 +7,7 @@ import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
 import ReactHashtag from "@mdnm/react-hashtag";
 import ReactTooltip from "react-tooltip";
+import DeletePost from "./DeletePost.js";
 
 const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2NjU1NzgzMCwiZXhwIjoxNjY5MTQ5ODMwfQ.dJ4EIEnNVZ9yFuZTdDR8jDhT1OXd5QDvHYWMiEcIpUk';
 
@@ -108,7 +109,7 @@ export default function PostBox({
               <FaPencilAlt />
             </div>
             <div>
-              <FaTrash />
+              <FaTrash onClick={DeletePost}/>
             </div>
           </Icons>
         </Top>
