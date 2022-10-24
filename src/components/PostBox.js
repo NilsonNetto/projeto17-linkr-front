@@ -1,14 +1,23 @@
 import styled from "styled-components";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, React } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { mountHeaders, likePost, unlikePost, newEditPost } from "../services/linkr.js";
+import { RotatingLines } from "react-loader-spinner";
+import {
+  mountHeaders,
+  likePost,
+  unlikePost,
+  newEditPost,
+  deletePost,
+} from "../services/linkr.js";
 
 import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
 import ReactHashtag from "@mdnm/react-hashtag";
 import ReactTooltip from "react-tooltip";
+import Modal from "react-modal";
 
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2NjU1NzgzMCwiZXhwIjoxNjY5MTQ5ODMwfQ.dJ4EIEnNVZ9yFuZTdDR8jDhT1OXd5QDvHYWMiEcIpUk';
+const token =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2NjU1NzgzMCwiZXhwIjoxNjY5MTQ5ODMwfQ.dJ4EIEnNVZ9yFuZTdDR8jDhT1OXd5QDvHYWMiEcIpUk";
 
 export default function PostBox({
   id,
@@ -20,41 +29,54 @@ export default function PostBox({
   userLike,
   postLikes,
   updateLike,
-  setUpdateLike
+  setUpdateLike,
 }) {
   const [isLiked, setIsLiked] = useState(userLike);
   const [timeToEdit, setTimeToEdit] = useState(false);
   const [newPost, setNewPost] = useState(description);
   const [disabled, setDisabled] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const inputEditPost = useRef(null);
   const navigate = useNavigate();
 
   function likesCount(likes) {
-
     if (likes[0] === null) {
-      return 'No one likes this, be the first!';
+      return "No one likes this, be the first!";
     }
 
     if (userLike) {
-      const filteredLikes = likes.filter(value => value !== username);
+      const filteredLikes = likes.filter((value) => value !== username);
 
       switch (likes.length) {
-        case 1: return 'Você'; break;
-        case 2: return `Você e ${filteredLikes[0]}`; break;
-        default: return `Você, ${filteredLikes[0]} e outras ${likes.length - 2} pessoas`;
+        case 1:
+          return "Você";
+          break;
+        case 2:
+          return `Você e ${filteredLikes[0]}`;
+          break;
+        default:
+          return `Você, ${filteredLikes[0]} e outras ${
+            likes.length - 2
+          } pessoas`;
       }
     } else {
       switch (likes.length) {
-        case 1: return likes[0]; break;
-        case 2: return `${likes[0]} e ${likes[1]}`; break;
-        default: return `${likes[0]}, ${likes[1]} e outras ${likes.length - 2} pessoas`;
+        case 1:
+          return likes[0];
+          break;
+        case 2:
+          return `${likes[0]} e ${likes[1]}`;
+          break;
+        default:
+          return `${likes[0]}, ${likes[1]} e outras ${
+            likes.length - 2
+          } pessoas`;
       }
-    };
-
+    }
   }
 
   function likeAndDislike(postId) {
-
     const headers = mountHeaders(token);
 
     if (isLiked) {
@@ -92,7 +114,6 @@ export default function PostBox({
 
   function sendEditPost(postId) {
     setDisabled(true);
-    console.log("enviar nova edição");
     const config = {
       headers: {
         Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTY2NjM4Mzg0OCwiZXhwIjoxNjY4OTc1ODQ4fQ.Aq7PPccAwE-izvSBFx_458Bsvddju1Yp0WOetfnBmIo`,
@@ -132,6 +153,37 @@ export default function PostBox({
     }
   }
 
+  function openChoicesForDelete() {
+    setIsOpen(true);
+  }
+
+  function toggleModal() {
+    setIsOpen(!isOpen);
+  }
+
+  function confirmDeletePost({ postId }) {
+    setLoading(true);
+    const config = {
+      headers: {
+        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTY2NjM4Mzg0OCwiZXhwIjoxNjY4OTc1ODQ4fQ.Aq7PPccAwE-izvSBFx_458Bsvddju1Yp0WOetfnBmIo`,
+      },
+    };
+
+    deletePost(postId, config)
+      .then((res) => {
+        setLoading(false);
+        setUpdateLike(!updateLike);
+        console.log(res.data);
+        setIsOpen(false);
+      })
+      .catch((err) => {
+        setIsOpen(false);
+        setLoading(false);
+        console.log(err.response);
+        alert("Error deleting post");
+      });
+  }
+
   return (
     <Post>
       <Left>
@@ -160,8 +212,48 @@ export default function PostBox({
               <FaPencilAlt onClick={editPost} />
             </div>
             <div>
-              <FaTrash />
+              <FaTrash onClick={openChoicesForDelete} />
             </div>
+
+            <Modal
+              isOpen={isOpen}
+              onRequestClose={toggleModal}
+              style={{
+                overlay: {
+                  backgroundColor: "rgba(255, 255, 255, 0.4)",
+                  zIndex: "2",
+                },
+                content: {
+                  border: "none",
+                  backgroundColor: "rgba(255, 255, 255, 0)",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                },
+              }}
+            >
+              <ModalContent>
+                {loading ? (
+                  <RotatingLines
+                    strokeColor="#1877f2"
+                    strokeWidth="2"
+                    animationDuration="1"
+                    width="96"
+                    visible={true}
+                  />
+                ) : (
+                  <>
+                    <p>Are you sure you want to delete this post?</p>
+                    <Buttons>
+                      <button onClick={toggleModal}>No, go back</button>
+                      <button onClick={() => confirmDeletePost({ postId: id })}>
+                        Yes, delete it
+                      </button>
+                    </Buttons>
+                  </>
+                )}
+              </ModalContent>
+            </Modal>
           </Icons>
         </Top>
         <Description>
@@ -308,5 +400,50 @@ const InputNewPost = styled.div`
   input:disabled {
     background-color: #d9d9d9;
     color: #4c4c4c;
+  }
+`;
+
+const ModalContent = styled.div`
+  background-color: #333333;
+  width: 600px;
+  height: 262px ;
+  font-family: "Lato";
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-evenly;
+  border-radius: 40px;
+
+  p {
+    width: 70%;
+    font-size: 34px;
+    color: #fff;
+    text-align: center;
+    font-weight: bold;
+    line-height: 45px;
+  }
+`;
+
+const Buttons = styled.div`
+  width: 60%;
+  display: flex;
+  justify-content: space-around;
+
+  button {
+    height: 36px;
+    border-radius: 10px;
+    font-size: 18px;
+    border: solid 1px #333333;
+    padding: 0 16px;
+  }
+
+  button:nth-child(1) {
+    background-color: #fff;
+    color: #1877f2;
+  }
+
+  button:nth-child(2) {
+    background-color: #1877f2;
+    color: #fff;
   }
 `;
