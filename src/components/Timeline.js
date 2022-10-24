@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
+import UserContext from "../context/UserContext";
 import { mountHeaders, postPost, getPosts } from "./../services/linkr";
 import Header from "./Header";
 import PostBox from "./PostBox";
 import Sidebar from "./Sidebar";
-
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTY2NjYxODgxNCwiZXhwIjoxNjY5MjEwODE0fQ.KzFhfszOkSswu6VhWTCOzOW7Xn5Sb_xrvLQAN0JxkyM';
 
 export default function Timeline() {
 
@@ -14,6 +13,8 @@ export default function Timeline() {
   const [posts, setPosts] = useState([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
   const [updateLike, setUpdateLike] = useState(false);
+  const { userData } = useContext(UserContext);
+  console.log(userData);
 
   useEffect(() => {
     updating();
@@ -21,7 +22,7 @@ export default function Timeline() {
 
   async function updating() {
 
-    const headers = mountHeaders(token);
+    const headers = mountHeaders(userData.token);
 
     await getPosts(headers)
       .then(resposta => {
@@ -38,7 +39,7 @@ export default function Timeline() {
     event.preventDefault();
     setLoading(true);
 
-    const headers = mountHeaders(token);
+    const headers = mountHeaders(userData.token);
     const body = {
       "description": form.description,
       "link": form.link
@@ -145,76 +146,6 @@ export default function Timeline() {
       </Container>
 
 
-    </>
-  );
-
-
-  return (
-    <>
-      <Header />
-      <Container>
-        <TimelineBox>
-          <Title>timeline</Title>
-          <Publish>
-            <ImgDiv>
-              <Img></Img>
-            </ImgDiv>
-            <FormDiv>
-              <PublishTitle>What are you going to share today?</PublishTitle>
-              <Form onSubmit={post}>
-                <InputLink
-                  type="url"
-                  name="link"
-                  value={form.link}
-                  placeholder="https://..."
-                  required
-                  disabled={loading}
-                  onChange={(e) => setForm({ ...form, link: e.target.value })}
-                />
-                <InputDescription
-                  type="text"
-                  name="description"
-                  value={form.description}
-                  placeholder="Awesome article about #Javascript"
-                  disabled={loading}
-                  onChange={(e) =>
-                    setForm({ ...form, description: e.target.value })
-                  }
-                />
-                <button type="submit">
-                  {loading ? <>Publishing...</> : <>Publish</>}
-                </button>
-              </Form>
-            </FormDiv>
-          </Publish>
-          <Posts>
-            {loadingPosts ? (
-              <>Loading...</>
-            ) : (
-              <>
-                {posts.map((post, index) => {
-                  return (
-                    <PostBox
-                      key={index}
-                      id={post.id}
-                      userId={post.userId}
-                      username={post.username}
-                      profilePicture={post.profilePicture}
-                      description={post.description}
-                      url={post.url}
-                      userLike={post.userLike}
-                      postLikes={post.postLikes}
-                    />
-                  );
-                })}
-              </>
-            )}
-          </Posts>
-        </TimelineBox>
-        <SidebarBox>
-          <Sidebar />
-        </SidebarBox>
-      </Container>
     </>
   );
 }

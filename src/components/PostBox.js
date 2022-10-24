@@ -1,14 +1,12 @@
 import styled from "styled-components";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { mountHeaders, likePost, unlikePost, newEditPost } from "../services/linkr.js";
-
 import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
 import ReactHashtag from "@mdnm/react-hashtag";
 import ReactTooltip from "react-tooltip";
-
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTY2NjYxODgxNCwiZXhwIjoxNjY5MjEwODE0fQ.KzFhfszOkSswu6VhWTCOzOW7Xn5Sb_xrvLQAN0JxkyM';
+import UserContext from "../context/UserContext.js";
 
 export default function PostBox({
   id,
@@ -28,6 +26,7 @@ export default function PostBox({
   const [disabled, setDisabled] = useState(false);
   const inputEditPost = useRef(null);
   const navigate = useNavigate();
+  const { userData } = useContext(UserContext);
 
   function likesCount(likes) {
 
@@ -55,7 +54,7 @@ export default function PostBox({
 
   function likeAndDislike(postId) {
 
-    const headers = mountHeaders(token);
+    const headers = mountHeaders(userData.token);
 
     if (isLiked) {
       unlikePost(postId, headers)
@@ -93,15 +92,12 @@ export default function PostBox({
   function sendEditPost(postId) {
     setDisabled(true);
     console.log("enviar nova edição");
-    const config = {
-      headers: {
-        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsImlhdCI6MTY2NjM4Mzg0OCwiZXhwIjoxNjY4OTc1ODQ4fQ.Aq7PPccAwE-izvSBFx_458Bsvddju1Yp0WOetfnBmIo`,
-      },
-    };
+
+    const headers = mountHeaders(userData.token);
 
     const dataPostEdited = { newPost, postId };
 
-    newEditPost(dataPostEdited, config)
+    newEditPost(dataPostEdited, headers)
       .then((res) => {
         setDisabled(false);
         setNewPost(res.data);

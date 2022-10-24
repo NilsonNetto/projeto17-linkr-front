@@ -1,20 +1,19 @@
 import { useNavigate, Link } from "react-router-dom";
 import styled from "styled-components";
 import { DebounceInput } from "react-debounce-input";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { mountHeaders, searchUser } from "../services/linkr";
-
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTY2NjYxODgxNCwiZXhwIjoxNjY5MjEwODE0fQ.KzFhfszOkSswu6VhWTCOzOW7Xn5Sb_xrvLQAN0JxkyM';
+import UserContext from "../context/UserContext";
 
 export default function Header() {
   const [click, setClick] = useState(false);
   const navigate = useNavigate();
   const [user, setUser] = useState([]);
-  const headers = mountHeaders(token);
-
+  const { userData } = useContext(UserContext);
 
   function find(value) {
-    console.log("eu");
+
+    const headers = mountHeaders(userData.token);
     const promise = searchUser(value, headers);
 
     promise.then((res) => {

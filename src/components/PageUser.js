@@ -1,19 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { mountHeaders, getPageUser } from "../services/linkr";
 import styled from "styled-components";
 import Sidebar from "./Sidebar";
 import { useParams } from "react-router-dom";
 import Header from "./Header";
 import PostBox from "./PostBox";
+import UserContext from "../context/UserContext";
 
 export default function UserPage() {
   const { id } = useParams();
   const [userPage, setUserPage] = useState([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
   const [updateLike, setUpdateLike] = useState(false);
-  const token = localStorage.user;
+  const { userData } = useContext(UserContext);
+
   useEffect(() => {
-    const headers = mountHeaders(token);
+    const headers = mountHeaders(userData.token);
 
     const promise = getPageUser(id, headers);
     promise.then((res) => {
