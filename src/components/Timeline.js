@@ -99,7 +99,7 @@ export default function Timeline() {
           <Publish>
             <ImgDiv>
               <Img>
-                <img src={userData.img} alt='profile-pic'/>
+                <img src={userData.profilePicture} alt='profile-pic' />
               </Img>
             </ImgDiv>
             <FormDiv>

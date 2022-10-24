@@ -68,7 +68,7 @@ export default function Header() {
             ></ion-icon>
           )}
           <Img onClick={() => setClick(!click)}>
-            <img src={userData.img} alt='profile-pic' />
+            <img src={userData.profilePicture} alt='profile-pic' />
           </Img>
         </Logout>
       </Glueded>
