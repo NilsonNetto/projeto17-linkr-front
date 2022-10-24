@@ -7,8 +7,7 @@ import PostBox from "./PostBox";
 import Sidebar from "./Sidebar";
 
 export default function Timeline() {
-
-  const [form, setForm] = useState({ description: '', link: '' });
+  const [form, setForm] = useState({ description: "", link: "" });
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
@@ -25,11 +24,11 @@ export default function Timeline() {
     const headers = mountHeaders(userData.token);
 
     await getPosts(headers)
-      .then(resposta => {
+      .then((resposta) => {
         setPosts(resposta.data);
         setLoadingPosts(false);
       })
-      .catch(resposta => {
+      .catch((resposta) => {
         console.log(resposta);
         setLoadingPosts(false);
       });
@@ -41,22 +40,22 @@ export default function Timeline() {
 
     const headers = mountHeaders(userData.token);
     const body = {
-      "description": form.description,
-      "link": form.link
+      description: form.description,
+      link: form.link,
     };
 
     postPost(body, headers)
-      .then(resposta => {
+      .then((resposta) => {
         console.log(resposta);
         setLoading(false);
-        setForm({ description: '', link: '' });
+        setForm({ description: "", link: "" });
         updating();
       })
-      .catch(resposta => {
+      .catch((resposta) => {
         console.log(resposta);
-        alert('Houve um erro ao publicar seu link');
+        alert("Houve um erro ao publicar seu link");
         setLoading(false);
-        setForm({ description: '', link: '' });
+        setForm({ description: "", link: "" });
       });
   }
 
@@ -89,7 +88,6 @@ export default function Timeline() {
     }
   }
 
-
   return (
     <>
       <Header />
@@ -104,48 +102,36 @@ export default function Timeline() {
               <PublishTitle>What are you going to share today?</PublishTitle>
               <Form onSubmit={post}>
                 <InputLink
-                  type='url'
-                  name='link'
+                  type="url"
+                  name="link"
                   value={form.link}
-                  placeholder='https://...'
+                  placeholder="https://..."
                   required
                   disabled={loading}
-                  onChange={e => setForm({ ...form, link: e.target.value })}
+                  onChange={(e) => setForm({ ...form, link: e.target.value })}
                 />
                 <InputDescription
-                  type='text'
-                  name='description'
+                  type="text"
+                  name="description"
                   value={form.description}
-                  placeholder='Awesome article about #Javascript'
+                  placeholder="Awesome article about #Javascript"
                   disabled={loading}
-                  onChange={e => setForm({ ...form, description: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, description: e.target.value })
+                  }
                 />
                 <button type="submit">
-                  {loading ?
-                    <>Publishing...</>
-                    :
-                    <>Publish</>
-                  }
+                  {loading ? <>Publishing...</> : <>Publish</>}
                 </button>
               </Form>
             </FormDiv>
           </Publish>
-          <Posts>
-            {
-              loadingPosts ?
-                <>Loading...</>
-                :
-                postsLoading()
-            }
-
-          </Posts>
+          <Posts>{loadingPosts ? <>Loading...</> : postsLoading()}</Posts>
         </TimelineBox>
         <SidebarBox>
           <Sidebar />
         </SidebarBox>
       </Container>
-
-
     </>
   );
 }

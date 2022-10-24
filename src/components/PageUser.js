@@ -54,10 +54,10 @@ export default function UserPage() {
               </>
             )}
           </PostsWrapper>
-          <SidebarBox>
-            <Sidebar />
-          </SidebarBox>
         </TimelineBox>
+        <SidebarBox>
+          <Sidebar />
+        </SidebarBox>
       </Container>
     </>
   );
