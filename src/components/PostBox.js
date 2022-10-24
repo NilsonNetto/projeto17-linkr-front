@@ -35,7 +35,7 @@ export default function PostBox({
   const [timeToEdit, setTimeToEdit] = useState(false);
   const [newPost, setNewPost] = useState(description);
   const [disabled, setDisabled] = useState(false);
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const inputEditPost = useRef(null);
   const navigate = useNavigate();
