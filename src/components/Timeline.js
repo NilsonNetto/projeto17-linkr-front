@@ -1,12 +1,10 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
-import { mountHeaders, postPost, getPosts } from "./../services/linkr";
+import UserContext from "../context/UserContext";
+import { mountHeaders, postPost, getPosts, deletePost } from "./../services/linkr";
 import Header from "./Header";
 import PostBox from "./PostBox";
 import Sidebar from "./Sidebar";
-
-const token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2NjU1NzgzMCwiZXhwIjoxNjY5MTQ5ODMwfQ.dJ4EIEnNVZ9yFuZTdDR8jDhT1OXd5QDvHYWMiEcIpUk";
 
 export default function Timeline() {
   const [form, setForm] = useState({ description: "", link: "" });
@@ -14,13 +12,15 @@ export default function Timeline() {
   const [posts, setPosts] = useState([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
   const [updateLike, setUpdateLike] = useState(false);
+  const { userData } = useContext(UserContext);
 
   useEffect(() => {
     updating();
   }, [updateLike]);
 
   async function updating() {
-    const headers = mountHeaders(token);
+
+    const headers = mountHeaders(userData.token);
 
     await getPosts(headers)
       .then((resposta) => {
@@ -37,7 +37,7 @@ export default function Timeline() {
     event.preventDefault();
     setLoading(true);
 
-    const headers = mountHeaders(token);
+    const headers = mountHeaders(userData.token);
     const body = {
       description: form.description,
       link: form.link,
@@ -81,7 +81,9 @@ export default function Timeline() {
         </>
       );
     } else {
-      return <>There are no posts yet</>;
+      return (
+        <>There are no posts yet</>
+      );
     }
   }
 

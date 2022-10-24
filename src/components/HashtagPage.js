@@ -1,12 +1,11 @@
 import styled from "styled-components";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { mountHeaders, getHashtagByName } from "../services/linkr";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import PostBox from "./PostBox";
-
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTY2NjM5MjEzNCwiZXhwIjoxNjY4OTg0MTM0fQ.VsaUgWtuR8bcYYH0JH87hKHoATfkQGxIaB_dlq_bkpg';
+import UserContext from "../context/UserContext";
 
 export default function HashtagPage() {
 
@@ -14,10 +13,11 @@ export default function HashtagPage() {
   const [loadingPosts, setLoadingPosts] = useState(true);
   const [updateLike, setUpdateLike] = useState(false);
   const { hashtag } = useParams();
+  const { userData } = useContext(UserContext);
 
   useEffect(() => {
 
-    const headers = mountHeaders(token);
+    const headers = mountHeaders(userData.token);
 
     getHashtagByName(hashtag, headers)
       .then(res => {

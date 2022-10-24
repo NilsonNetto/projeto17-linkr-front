@@ -1,18 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import UserContext from "../context/UserContext";
 import { mountHeaders, getTrendingHashtags } from "../services/linkr";
-
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2NjU1NzgzMCwiZXhwIjoxNjY5MTQ5ODMwfQ.dJ4EIEnNVZ9yFuZTdDR8jDhT1OXd5QDvHYWMiEcIpUk';
 
 export default function Sidebar() {
 
   const [trendingHashtags, setTrendingHashtags] = useState([]);
   const navigate = useNavigate();
+  const { userData } = useContext(UserContext);
 
   useEffect(() => {
 
-    const headers = mountHeaders(token);
+    const headers = mountHeaders(userData.token);
 
     getTrendingHashtags(headers)
       .then(res => {

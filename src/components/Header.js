@@ -1,19 +1,19 @@
 import { useNavigate, Link } from "react-router-dom";
 import styled from "styled-components";
 import { DebounceInput } from "react-debounce-input";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { mountHeaders, searchUser } from "../services/linkr";
-
-const token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2NjU1NzgzMCwiZXhwIjoxNjY5MTQ5ODMwfQ.dJ4EIEnNVZ9yFuZTdDR8jDhT1OXd5QDvHYWMiEcIpUk";
+import UserContext from "../context/UserContext";
 
 export default function Header() {
   const [click, setClick] = useState(false);
   const navigate = useNavigate();
   const [user, setUser] = useState([]);
-  const headers = mountHeaders(token);
+  const { userData } = useContext(UserContext);
 
   function find(value) {
+
+    const headers = mountHeaders(userData.token);
     const promise = searchUser(value, headers);
     promise
       .then((res) => {
@@ -45,13 +45,13 @@ export default function Header() {
             {!user.length > 0
               ? " "
               : user.map((u) => (
-                  <Link to={`/user/${u.id}`} key={u.id}>
-                    <User>
-                      <img src={u.profilePicture} />
-                      <p>{u.username}</p>
-                    </User>
-                  </Link>
-                ))}
+                <Link to={`/user/${u.id}`} key={u.id}>
+                  <User>
+                    <img src={u.profilePicture} />
+                    <p>{u.username}</p>
+                  </User>
+                </Link>
+              ))}
           </UserFind>
         </Search>
 

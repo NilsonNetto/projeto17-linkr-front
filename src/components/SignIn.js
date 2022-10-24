@@ -1,13 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
 import { postSignin } from "../services/linkr";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
+import UserContext from "../context/UserContext";
+
 
 export default function SignIn() {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
-  const [user, setUser] = useState();
   const [offButton, setOffButton] = useState(false);
+  const { setUserData } = useContext(UserContext);
 
   const navigate = useNavigate();
 
@@ -28,12 +30,13 @@ export default function SignIn() {
         setOffButton(true);
       }
 
-      navigate("/timeline");
-      setUser(data.token);
+      setUserData(data);
 
       localStorage.clear();
       localStorage.setItem("user", JSON.stringify(data.token));
       localStorage.setItem("userPicture", JSON.stringify(data.profilePicture));
+
+      navigate("/timeline");
     });
     promise.catch((err) => {
       const erros = err.response.data;
@@ -44,9 +47,10 @@ export default function SignIn() {
 
   useEffect(() => {
     const userLogado = localStorage.getItem("user");
+
     if (userLogado) {
       const getUser = JSON.parse(userLogado);
-      setUser(getUser);
+      setUserData(getUser);
       navigate("/timeline");
     } else {
       navigate("/");

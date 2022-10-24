@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const URL = "http://localhost:4000";
+const URL = "https://projeto17-linkr-agjnn.herokuapp.com";
 
 function mountHeaders(token) {
   return {
@@ -27,6 +27,7 @@ function getHashtagByName(hashtag, headers) {
 }
 
 function postPost(body, headers) {
+
   return axios.post(`${URL}/publish`, body, headers);
 }
 
