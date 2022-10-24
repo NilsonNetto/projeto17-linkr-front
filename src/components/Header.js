@@ -26,7 +26,7 @@ export default function Header() {
     localStorage.clear();
     navigate("/");
   };
-  console.log(user);
+
   return (
     <Top>
       <Glueded>
