@@ -67,9 +67,7 @@ export default function Header() {
               onClick={() => setClick(!click)}
             ></ion-icon>
           )}
-          <Img onClick={() => setClick(!click)}>
-            <img src={userData.profilePicture} alt='profile-pic' />
-          </Img>
+          <Img onClick={() => setClick(!click)} src={userData.profilePicture} alt='profile-pic' />
         </Logout>
       </Glueded>
       {click === true ? <Box onClick={handleLogout}>Logout</Box> : <div></div>}
@@ -115,11 +113,11 @@ const Logout = styled.div`
   }
 `;
 
-const Img = styled.div`
+const Img = styled.img`
   height: 53px;
   width: 53px;
   border-radius: 26.5px;
-  background-color: aqua;
+  background-color: #707070;
   margin-top: 8px;
 `;
 

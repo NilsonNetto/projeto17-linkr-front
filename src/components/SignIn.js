@@ -47,7 +47,8 @@ export default function SignIn() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const profilePicture = localStorage.getItem("profilePicture");;
+
+    const profilePicture = localStorage.getItem("profilePicture");
 
     if (token) {
       const getToken = JSON.parse(token);

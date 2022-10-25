@@ -200,11 +200,12 @@ const ImgDiv = styled.div`
   margin-right: 21px;
 `;
 
-const Img = styled.div`
+const Img = styled.img`
   height: 50px;
   width: 50px;
+  object-fit: cover;
   border-radius: 26.5px;
-  background-color: antiquewhite;
+  background-color: #707070;
   margin-top: 16px;
   margin-left: 18px;
 `;
