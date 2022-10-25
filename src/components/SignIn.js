@@ -33,24 +33,26 @@ export default function SignIn() {
       setUserData(data);
 
       localStorage.clear();
-      localStorage.setItem("user", JSON.stringify(data.token));
-      localStorage.setItem("userPicture", JSON.stringify(data.profilePicture));
+      localStorage.setItem("token", JSON.stringify(data.token));
+      localStorage.setItem("profilePicture", JSON.stringify(data.profilePicture));
 
       navigate("/timeline");
     });
     promise.catch((err) => {
-      const erros = err.response.data;
+      const erros = err;
       console.log(erros);
       alert(erros);
     });
   }
 
   useEffect(() => {
-    const userLogado = localStorage.getItem("user");
+    const token = localStorage.getItem("token");
+    const profilePicture = localStorage.getItem("profilePicture");;
 
-    if (userLogado) {
-      const getUser = JSON.parse(userLogado);
-      setUserData(getUser);
+    if (token) {
+      const getToken = JSON.parse(token);
+      const getProfilePicture = JSON.parse(profilePicture);
+      setUserData({ token: getToken, profilePicture: getProfilePicture });
       navigate("/timeline");
     } else {
       navigate("/");
