@@ -1,36 +1,55 @@
 import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import UserContext from "../context/UserContext";
 import { mountHeaders, postPost, getPosts, deletePost } from "./../services/linkr";
 import Header from "./Header";
 import PostBox from "./PostBox";
 import Sidebar from "./Sidebar";
+import LoadingPage from "./LoadingPage";
 
 export default function Timeline() {
   const [form, setForm] = useState({ description: "", link: "" });
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState([]);
-  const [loadingPosts, setLoadingPosts] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [updateLike, setUpdateLike] = useState(false);
-  const { userData } = useContext(UserContext);
+  const { userData, setUserData } = useContext(UserContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const profilePicture = localStorage.getItem("profilePicture");;
+
+    if (token) {
+      const getToken = JSON.parse(token);
+      const getProfilePicture = JSON.parse(profilePicture);
+      setUserData({ token: getToken, profilePicture: getProfilePicture });
+      navigate(`/timeline`);
+    } else {
+      navigate("/");
+    }
+  }, []);
 
   useEffect(() => {
     updating();
-  }, [updateLike]);
+  }, [updateLike, userData]);
 
   async function updating() {
 
-    const headers = mountHeaders(userData.token);
+    if (userData) {
+      const headers = mountHeaders(userData.token);
 
-    await getPosts(headers)
-      .then((resposta) => {
-        setPosts(resposta.data);
-        setLoadingPosts(false);
-      })
-      .catch((resposta) => {
-        console.log(resposta);
-        setLoadingPosts(false);
-      });
+      await getPosts(headers)
+        .then((resposta) => {
+          setPosts(resposta.data);
+          setIsLoading(false);
+        })
+        .catch((resposta) => {
+          console.log(resposta);
+          setIsLoading(false);
+        });
+    }
   }
 
   function post(event) {
@@ -91,50 +110,56 @@ export default function Timeline() {
   }
 
   return (
-    <>
-      <Header />
-      <Container>
-        <TimelineBox>
-          <Title>timeline</Title>
-          <Publish>
-            <ImgDiv>
-              <Img src={userData.profilePicture} alt='profile-pic' />
-            </ImgDiv>
-            <FormDiv>
-              <PublishTitle>What are you going to share today?</PublishTitle>
-              <Form onSubmit={post}>
-                <InputLink
-                  type="url"
-                  name="link"
-                  value={form.link}
-                  placeholder="https://..."
-                  required
-                  disabled={loading}
-                  onChange={(e) => setForm({ ...form, link: e.target.value })}
-                />
-                <InputDescription
-                  type="text"
-                  name="description"
-                  value={form.description}
-                  placeholder="Awesome article about #Javascript"
-                  disabled={loading}
-                  onChange={(e) =>
-                    setForm({ ...form, description: e.target.value })
-                  }
-                />
-                <button type="submit">
-                  {loading ? <>Publishing...</> : <>Publish</>}
-                </button>
-              </Form>
-            </FormDiv>
-          </Publish>
-          <Posts>{loadingPosts ? <>Loading...</> : postsLoading()}</Posts>
-        </TimelineBox>
-        <SidebarBox>
-          <Sidebar />
-        </SidebarBox>
-      </Container>
-    </>
+    isLoading ? (
+      <LoadingPage />
+    ) : (
+      <>
+        <Header />
+        <Container>
+          <TimelineBox>
+            <Title>timeline</Title>
+            <Publish>
+              <ImgDiv>
+                <Img>
+                  <img src={userData.profilePicture} alt='profile-pic' />
+                </Img>
+              </ImgDiv>
+              <FormDiv>
+                <PublishTitle>What are you going to share today?</PublishTitle>
+                <Form onSubmit={post}>
+                  <InputLink
+                    type="url"
+                    name="link"
+                    value={form.link}
+                    placeholder="https://..."
+                    required
+                    disabled={loading}
+                    onChange={(e) => setForm({ ...form, link: e.target.value })}
+                  />
+                  <InputDescription
+                    type="text"
+                    name="description"
+                    value={form.description}
+                    placeholder="Awesome article about #Javascript"
+                    disabled={loading}
+                    onChange={(e) =>
+                      setForm({ ...form, description: e.target.value })
+                    }
+                  />
+                  <button type="submit">
+                    {loading ? <>Publishing...</> : <>Publish</>}
+                  </button>
+                </Form>
+              </FormDiv>
+            </Publish>
+            <Posts>{postsLoading()}</Posts>
+          </TimelineBox>
+          <SidebarBox>
+            <Sidebar />
+          </SidebarBox>
+        </Container>
+      </>
+    )
   );
 }
 

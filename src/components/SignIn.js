@@ -39,7 +39,7 @@ export default function SignIn() {
       navigate("/timeline");
     });
     promise.catch((err) => {
-      const erros = err.response.data;
+      const erros = err;
       console.log(erros);
       alert(erros);
     });
@@ -47,6 +47,7 @@ export default function SignIn() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+
     const profilePicture = localStorage.getItem("profilePicture");
 
     if (token) {

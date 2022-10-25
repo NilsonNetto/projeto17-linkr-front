@@ -1,39 +1,86 @@
 import { useState, useEffect, useContext } from "react";
-import { mountHeaders, getPageUser } from "../services/linkr";
+import { mountHeaders, followUser, unfollowUser, getPageUser } from "../services/linkr";
 import styled from "styled-components";
 import Sidebar from "./Sidebar";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Header from "./Header";
 import PostBox from "./PostBox";
 import UserContext from "../context/UserContext";
+import LoadingPage from "./LoadingPage.js";
 
 export default function UserPage() {
   const { id } = useParams();
   const [userPage, setUserPage] = useState([]);
-  const [loadingPosts, setLoadingPosts] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [updateLike, setUpdateLike] = useState(false);
-  const { userData } = useContext(UserContext);
+  const { userData, setUserData } = useContext(UserContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    const profilePicture = localStorage.getItem("profilePicture");;
+
+    if (token) {
+      const getToken = JSON.parse(token);
+      const getProfilePicture = JSON.parse(profilePicture);
+      setUserData({ token: getToken, profilePicture: getProfilePicture });
+      navigate(`/user/${id}`);
+    } else {
+      navigate("/");
+    }
+  }, []);
+
+  useEffect(() => {
+
+    if (userData) {
+      const headers = mountHeaders(userData.token);
+
+      const promise = getPageUser(id, headers);
+      promise.then((res) => {
+        setUserPage(res.data);
+        setIsLoading(false);
+      });
+    }
+  }, [updateLike, userData, id, isLoading]);
+
+  function followAndUnfollow(userId) {
+    setIsLoading(true);
     const headers = mountHeaders(userData.token);
 
-    const promise = getPageUser(id, headers);
-    promise.then((res) => {
-      setUserPage(res.data);
-      setLoadingPosts(!loadingPosts);
-    });
-  }, [updateLike]);
+    if (userPage.follow) {
+      unfollowUser(userId, headers)
+        .then(res => {
+          console.log('unfollow');
+        })
+        .catch(res => {
+          console.log(res.message);
+          alert('unfollow error');
+        });
+    } else {
+      followUser(userId, headers)
+        .then(res => {
+          console.log('follow');
+        })
+        .catch(res => {
+          console.log(res.message);
+          alert('follow error');
+        });
+    }
+  }
 
   return (
-    <>
-      <Header />
-      <Container>
-        <TimelineBox>
-          <Title>{userPage?.username} 's posts</Title>
-          <PostsWrapper>
-            {loadingPosts ? (
-              <>Loading...</>
-            ) : (
+    (isLoading ? (
+      <LoadingPage />
+    ) : (
+      <>
+        <Header />
+        <Container>
+          <TimelineBox>
+            <Title follow={userPage.follow}>
+              <Username>{userPage?.username} 's posts</Username>
+              <FollowButton follow={userPage.follow} onClick={() => followAndUnfollow(id)}>{userPage.follow ? 'Unfollow' : 'Follow'}</FollowButton>
+            </Title>
+            <PostsWrapper>
               <>
                 {userPage.posts.map((post, index) => {
                   return (
@@ -55,14 +102,15 @@ export default function UserPage() {
                   );
                 })}
               </>
-            )}
-          </PostsWrapper>
-        </TimelineBox>
-        <SidebarBox>
-          <Sidebar />
-        </SidebarBox>
-      </Container>
-    </>
+            </PostsWrapper>
+          </TimelineBox>
+          <SidebarBox>
+            <Sidebar />
+          </SidebarBox>
+        </Container>
+      </>
+    ))
+
   );
 }
 
@@ -78,10 +126,29 @@ const SidebarBox = styled.div`
     display: none;
   }
 `;
-const Title = styled.h1`
+const Title = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const Username = styled.div`
   font-size: 43px;
   font-weight: 700;
   font-family: "Oswald", sans-serif;
+`;
+
+const FollowButton = styled.div`
+  width: 115px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: ${({ follow }) => (follow ? "#1877F2" : "#FFFFFF")};
+  background-color: ${({ follow }) => (follow ? "#FFFFFF" : "#1877F2")};
+  border-radius: 5px;
+  cursor: pointer;
 `;
 
 const TimelineBox = styled.div`
