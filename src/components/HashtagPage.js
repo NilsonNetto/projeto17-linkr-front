@@ -50,6 +50,9 @@ export default function HashtagPage() {
                       profilePicture={post.profilePicture}
                       description={post.description}
                       url={post.url}
+                      urlTitle={post.metadata.title}
+                      urlDescription={post.metadata.description}
+                      urlImage={post.metadata.image}
                       userLike={post.userLike}
                       postLikes={post.postLikes}
                       updateLike={updateLike}

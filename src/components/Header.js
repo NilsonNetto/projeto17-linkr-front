@@ -67,7 +67,9 @@ export default function Header() {
               onClick={() => setClick(!click)}
             ></ion-icon>
           )}
-          <Img onClick={() => setClick(!click)}></Img>
+          <Img onClick={() => setClick(!click)}>
+            <img src={userData.profilePicture} alt='profile-pic' />
+          </Img>
         </Logout>
       </Glueded>
       {click === true ? <Box onClick={handleLogout}>Logout</Box> : <div></div>}
