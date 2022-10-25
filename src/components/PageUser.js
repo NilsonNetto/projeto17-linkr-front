@@ -41,10 +41,10 @@ export default function UserPage() {
         setIsLoading(false);
       });
     }
-  }, [updateLike, userData]);
+  }, [updateLike, userData, id, isLoading]);
 
   function followAndUnfollow(userId) {
-
+    setIsLoading(true);
     const headers = mountHeaders(userData.token);
 
     if (userPage.follow) {
@@ -68,7 +68,6 @@ export default function UserPage() {
     }
   }
 
-
   return (
     (isLoading ? (
       <LoadingPage />
@@ -79,7 +78,7 @@ export default function UserPage() {
           <TimelineBox>
             <Title follow={userPage.follow}>
               <Username>{userPage?.username} 's posts</Username>
-              <FollowButton onClick={(id) => followAndUnfollow(id)}>{userPage.follow ? 'Unfollow' : 'Follow'}</FollowButton>
+              <FollowButton follow={userPage.follow} onClick={() => followAndUnfollow(id)}>{userPage.follow ? 'Unfollow' : 'Follow'}</FollowButton>
             </Title>
             <PostsWrapper>
               <>
