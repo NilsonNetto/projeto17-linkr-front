@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const URL = "localhost:4000";
+//const URL = "https://projeto17-linkr-agjnn.herokuapp.com";
+const URL = "http://localhost:4000";
 
 function mountHeaders(token) {
   return {
@@ -51,6 +52,14 @@ function unlikePost(postId, headers) {
   return axios.post(`${URL}/likes/${postId}/unlike`, {}, headers);
 }
 
+function followUser(userId, headers) {
+  return axios.post(`${URL}/follow/${userId}/follow`, {}, headers);
+}
+
+function unfollowUser(userId, headers) {
+  return axios.post(`${URL}/follow/${userId}/unfollow`, {}, headers);
+}
+
 function newEditPost(dataPostEdited, headers) {
   console.log(headers);
   return axios.put(`${URL}/editPost`, dataPostEdited, headers);
@@ -73,6 +82,8 @@ export {
   postSignup,
   likePost,
   unlikePost,
+  followUser,
+  unfollowUser,
   newEditPost,
   deletePost,
 };

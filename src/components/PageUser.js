@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import { mountHeaders, getPageUser } from "../services/linkr";
+import { mountHeaders, followUser, unfollowUser, getPageUser } from "../services/linkr";
 import styled from "styled-components";
 import Sidebar from "./Sidebar";
 import { useParams } from "react-router-dom";
@@ -24,12 +24,41 @@ export default function UserPage() {
     });
   }, [updateLike]);
 
+  function followAndUnfollow(userId) {
+
+    const headers = mountHeaders(userData.token);
+
+    if (userPage.follow) {
+      unfollowUser(userId, headers)
+        .then(res => {
+          console.log('unfollow');
+        })
+        .catch(res => {
+          console.log(res.message);
+          alert('unfollow error');
+        });
+    } else {
+      followUser(userId, headers)
+        .then(res => {
+          console.log('follow');
+        })
+        .catch(res => {
+          console.log(res.message);
+          alert('follow error');
+        });
+    }
+  }
+
+
   return (
     <>
       <Header />
       <Container>
         <TimelineBox>
-          <Title>{userPage?.username} 's posts</Title>
+          <Title follow={userPage.follow}>
+            <Username>{userPage?.username} 's posts</Username>
+            <FollowButton onClick={(id) => followAndUnfollow(id)}>{userPage.follow ? 'Unfollow' : 'Follow'}</FollowButton>
+          </Title>
           <PostsWrapper>
             {loadingPosts ? (
               <>Loading...</>
@@ -78,10 +107,29 @@ const SidebarBox = styled.div`
     display: none;
   }
 `;
-const Title = styled.h1`
+const Title = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const Username = styled.div`
   font-size: 43px;
   font-weight: 700;
   font-family: "Oswald", sans-serif;
+`;
+
+const FollowButton = styled.div`
+  width: 115px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: ${({ follow }) => (follow ? "#1877F2" : "#FFFFFF")};
+  background-color: ${({ follow }) => (follow ? "#FFFFFF" : "#1877F2")};
+  border-radius: 5px;
+  cursor: pointer;
 `;
 
 const TimelineBox = styled.div`
