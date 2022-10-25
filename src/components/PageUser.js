@@ -2,27 +2,46 @@ import { useState, useEffect, useContext } from "react";
 import { mountHeaders, followUser, unfollowUser, getPageUser } from "../services/linkr";
 import styled from "styled-components";
 import Sidebar from "./Sidebar";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Header from "./Header";
 import PostBox from "./PostBox";
 import UserContext from "../context/UserContext";
+import LoadingPage from "./LoadingPage.js";
 
 export default function UserPage() {
   const { id } = useParams();
   const [userPage, setUserPage] = useState([]);
-  const [loadingPosts, setLoadingPosts] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [updateLike, setUpdateLike] = useState(false);
-  const { userData } = useContext(UserContext);
+  const { userData, setUserData } = useContext(UserContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const headers = mountHeaders(userData.token);
+    const token = localStorage.getItem("token");
+    const profilePicture = localStorage.getItem("profilePicture");;
 
-    const promise = getPageUser(id, headers);
-    promise.then((res) => {
-      setUserPage(res.data);
-      setLoadingPosts(!loadingPosts);
-    });
-  }, [updateLike]);
+    if (token) {
+      const getToken = JSON.parse(token);
+      const getProfilePicture = JSON.parse(profilePicture);
+      setUserData({ token: getToken, profilePicture: getProfilePicture });
+      navigate(`/user/${id}`);
+    } else {
+      navigate("/");
+    }
+  }, []);
+
+  useEffect(() => {
+
+    if (userData) {
+      const headers = mountHeaders(userData.token);
+
+      const promise = getPageUser(id, headers);
+      promise.then((res) => {
+        setUserPage(res.data);
+        setIsLoading(false);
+      });
+    }
+  }, [updateLike, userData]);
 
   function followAndUnfollow(userId) {
 
@@ -51,18 +70,18 @@ export default function UserPage() {
 
 
   return (
-    <>
-      <Header />
-      <Container>
-        <TimelineBox>
-          <Title follow={userPage.follow}>
-            <Username>{userPage?.username} 's posts</Username>
-            <FollowButton onClick={(id) => followAndUnfollow(id)}>{userPage.follow ? 'Unfollow' : 'Follow'}</FollowButton>
-          </Title>
-          <PostsWrapper>
-            {loadingPosts ? (
-              <>Loading...</>
-            ) : (
+    (isLoading ? (
+      <LoadingPage />
+    ) : (
+      <>
+        <Header />
+        <Container>
+          <TimelineBox>
+            <Title follow={userPage.follow}>
+              <Username>{userPage?.username} 's posts</Username>
+              <FollowButton onClick={(id) => followAndUnfollow(id)}>{userPage.follow ? 'Unfollow' : 'Follow'}</FollowButton>
+            </Title>
+            <PostsWrapper>
               <>
                 {userPage.posts.map((post, index) => {
                   return (
@@ -84,14 +103,15 @@ export default function UserPage() {
                   );
                 })}
               </>
-            )}
-          </PostsWrapper>
-        </TimelineBox>
-        <SidebarBox>
-          <Sidebar />
-        </SidebarBox>
-      </Container>
-    </>
+            </PostsWrapper>
+          </TimelineBox>
+          <SidebarBox>
+            <Sidebar />
+          </SidebarBox>
+        </Container>
+      </>
+    ))
+
   );
 }
 

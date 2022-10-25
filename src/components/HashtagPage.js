@@ -1,74 +1,89 @@
 import styled from "styled-components";
 import { useState, useEffect, useContext } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { mountHeaders, getHashtagByName } from "../services/linkr";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import PostBox from "./PostBox";
 import UserContext from "../context/UserContext";
+import LoadingPage from "./LoadingPage.js";
 
 export default function HashtagPage() {
 
   const [postsWithHashtag, setPostsWithHashtag] = useState([]);
-  const [loadingPosts, setLoadingPosts] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [updateLike, setUpdateLike] = useState(false);
   const { hashtag } = useParams();
-  const { userData } = useContext(UserContext);
+  const { userData, setUserData } = useContext(UserContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const profilePicture = localStorage.getItem("profilePicture");;
+
+    if (token) {
+      const getToken = JSON.parse(token);
+      const getProfilePicture = JSON.parse(profilePicture);
+      setUserData({ token: getToken, profilePicture: getProfilePicture });
+      navigate(`/hashtag/${hashtag}`);
+    } else {
+      navigate("/");
+    }
+  }, []);
 
   useEffect(() => {
 
-    const headers = mountHeaders(userData.token);
+    if (userData) {
+      const headers = mountHeaders(userData.token);
 
-    getHashtagByName(hashtag, headers)
-      .then(res => {
-        setPostsWithHashtag(res.data);
-        setLoadingPosts(false);
-      })
-      .catch(res => {
-        console.log(res.data);
-        alert('Get posts with hashtags error');
-      });
-  }, [hashtag, updateLike]);
+      getHashtagByName(hashtag, headers)
+        .then(res => {
+          setPostsWithHashtag(res.data);
+          setIsLoading(false);
+        })
+        .catch(res => {
+          console.log(res.data);
+          alert('Get posts with hashtags error');
+        });
+    }
+  }, [hashtag, updateLike, userData]);
 
-  return (
-    <>
-      <Header />
-      <Container>
-        <TimelineBox>
-          <Title># {hashtag}</Title>
-          <Posts>
-            {loadingPosts ? (
-              <>Loading...</>
-            ) : (
-              <>
-                {postsWithHashtag.map((post, index) => {
-                  return (
-                    <PostBox
-                      key={index}
-                      id={post.id}
-                      username={post.username}
-                      profilePicture={post.profilePicture}
-                      description={post.description}
-                      url={post.url}
-                      urlTitle={post.metadata.title}
-                      urlDescription={post.metadata.description}
-                      urlImage={post.metadata.image}
-                      userLike={post.userLike}
-                      postLikes={post.postLikes}
-                      updateLike={updateLike}
-                      setUpdateLike={setUpdateLike}
-                    />
-                  );
-                })}
-              </>
-            )}
-          </Posts>
-        </TimelineBox>
-        <SidebarBox>
-          <Sidebar />
-        </SidebarBox>
-      </Container>
-    </>
+  return (isLoading ? (
+    <LoadingPage />
+  ) : (<>
+    <Header />
+    <Container>
+      <TimelineBox>
+        <Title># {hashtag}</Title>
+        <Posts>
+          <>
+            {postsWithHashtag.map((post, index) => {
+              return (
+                <PostBox
+                  key={index}
+                  id={post.id}
+                  username={post.username}
+                  profilePicture={post.profilePicture}
+                  description={post.description}
+                  url={post.url}
+                  urlTitle={post.metadata.title}
+                  urlDescription={post.metadata.description}
+                  urlImage={post.metadata.image}
+                  userLike={post.userLike}
+                  postLikes={post.postLikes}
+                  updateLike={updateLike}
+                  setUpdateLike={setUpdateLike}
+                />
+              );
+            })}
+          </>
+        </Posts>
+      </TimelineBox>
+      <SidebarBox>
+        <Sidebar />
+      </SidebarBox>
+    </Container>
+  </>)
   );
 }
 
