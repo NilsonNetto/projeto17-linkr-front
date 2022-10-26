@@ -60,17 +60,17 @@ export default function SignIn() {
   }
 
   return (
-    <SignInStyle>
+    <SigninStyle>
       <Logo>
-        <BoardLogIn>
-          <Title>linkr</Title>
-          <Description>
-            save, share and discover the best links on the web{" "}
-          </Description>
-        </BoardLogIn>
+        <div>
+          <h1>linkr</h1>
+          <h3>
+            save, share and discover <br />the best links on the web
+          </h3>
+        </div>
       </Logo>
-      <LogIn>
-        <BoardLogInInputs>
+      <LoginStyle>
+        <LoginInputs>
           <input
             placeholder="e-mail"
             type="email"
@@ -78,7 +78,6 @@ export default function SignIn() {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          <br />
           <input
             placeholder="password"
             type="password"
@@ -86,20 +85,19 @@ export default function SignIn() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <br />
           <button onClick={Login} disabled={offButton}>Log In</button>
           <Link to="/signup">
             <SignDesc>First time? Create an account!</SignDesc>
           </Link>
-        </BoardLogInInputs>
-      </LogIn>
-    </SignInStyle>
+        </LoginInputs>
+      </LoginStyle>
+    </SigninStyle>
   );
 }
 
-const SignInStyle = styled.div`
-  width: 100%;
-  height: 100%;
+const SigninStyle = styled.div`
+  width: 100vw;
+  height: 100vh;
   display: flex;
 
   @media (max-width: 450px) {
@@ -108,34 +106,31 @@ const SignInStyle = styled.div`
 `;
 
 const Logo = styled.div`
-  width: 100%;
-  height: auto;
+  width: 60%;
   background: #151515;
   box-shadow: 4px 0px 4px rgba(0, 0, 0, 0.25);
-`;
-
-const BoardLogIn = styled.div`
-  width: 442px;
-  height: 245px;
-  margin-left: 144px;
-  margin-top: 301px;
-  margin-bottom: 478px;
-  margin-right: 319px;
 
   @media (max-width: 450px) {
-    width: 375px;
-    height: 175px;
-    margin-left: 69px;
-    margin-top: 10px;
-    margin-bottom: 27px;
-    margin-right: 69px;
-    box-sizing: border-box;
+    width: 100%;
+    min-height: 175px;
   }
-`;
 
-const Title = styled.div`
-  width: 233px;
-  height: 117px;
+ div{
+  width: 100%;
+  margin-left: 15%;
+  margin-top: 30vh;
+
+  @media (max-width: 450px) {
+    width: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  }
+
+  h1{
   font-family: "Passion One";
   font-style: normal;
   font-weight: 700;
@@ -143,10 +138,19 @@ const Title = styled.div`
   line-height: 117px;
   letter-spacing: 0.05em;
   color: #ffffff;
-`;
-const Description = styled.div`
-  width: 442px;
-  height: 128px;
+
+  @media (max-width: 900px) {
+    font-size: 90px;
+    line-height: 100px;
+  }
+
+  @media (max-width: 450px) {
+    font-size: 76px;
+    line-height: 84px;
+  }
+  }
+
+  h3{
   font-family: "Oswald";
   font-style: normal;
   font-weight: 700;
@@ -154,41 +158,44 @@ const Description = styled.div`
   line-height: 64px;
   color: #ffffff;
 
+  @media (max-width: 900px) {
+    max-width: 270px;
+    font-size: 33px;
+    line-height: 49px;
+  }
+
   @media (max-width: 450px) {
-    width: 237px;
-    height: 68px;
     font-size: 23px;
     line-height: 34px;
   }
-`;
-const LogIn = styled.div`
-  width: 535px;
-  height: auto;
-
-  @media (max-width: 450px) {
-    width: 375px;
-    box-sizing: border-box;
   }
 `;
-const BoardLogInInputs = styled.div`
-  width: 429px;
-  height: 267px;
-  margin-left: 55px;
-  margin-top: 317px;
-  margin-bottom: 440px;
-  margin-right: 55px;
+
+const LoginStyle = styled.div`
+  width: 40%;
+  height: 100%;
+  display: flex;
+  align-items: center;
 
   @media (max-width: 450px) {
-    width: 330px;
-    height: auto;
-    margin-left: 23px;
-    margin-right: 22px;
-    margin-top: 40px;
-    margin-bottom: 91px;
+    width: 100%;
+    align-items: flex-start;
+  }
+`;
+const LoginInputs = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+  @media (max-width: 450px) {
+    width: 100%;
+    margin: 40px 20px;
   }
 
   input {
-    width: 429px;
+    width: 90%;
     height: 65px;
     background: #ffffff;
     border-radius: 6px;
@@ -202,14 +209,14 @@ const BoardLogInInputs = styled.div`
     margin-bottom: 13px;
 
     @media (max-width: 450px) {
-      width: 330px;
+      width: 100%;
       height: 55px;
       margin-bottom: 13px;
     }
   }
 
   button {
-    width: 429px;
+    width: 90%;
     height: 65px;
     background: #1877f2;
     border-radius: 6px;
@@ -222,7 +229,7 @@ const BoardLogInInputs = styled.div`
     margin-bottom: 22px;
 
     @media (max-width: 450px) {
-      width: 330px;
+      width: 100%;
       height: 55px;
       margin-bottom: 18px;
     }
@@ -230,20 +237,9 @@ const BoardLogInInputs = styled.div`
 `;
 
 const SignDesc = styled.div`
-  width: 262px;
-  height: 24px;
-  font-family: "Lato";
-  font-style: normal;
-  font-weight: 400;
   font-size: 20px;
   line-height: 24px;
   text-decoration-line: underline;
   color: #ffffff;
-  margin-left: 90px;
-  margin-right: 134px;
 
-  @media (max-width: 450px) {
-    margin-left: 35px;
-    margin-right: 117px;
-  }
 `;
