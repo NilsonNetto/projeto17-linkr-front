@@ -54,7 +54,6 @@ export default function UserPage() {
     if (following) {
       unfollowUser(userId, headers)
         .then(res => {
-          console.log('unfollow');
           setFollowing(false);
           setFollowLoading(false);
         })
@@ -66,7 +65,6 @@ export default function UserPage() {
     } else {
       followUser(userId, headers)
         .then(res => {
-          console.log('follow');
           setFollowing(true);
           setFollowLoading(false);
         })
@@ -88,7 +86,7 @@ export default function UserPage() {
           <TimelineBox>
             <Title follow={following}>
               <Username>{userPage?.username} 's posts</Username>
-              <FollowButton follow={following} onClick={() => followAndUnfollow(id)}>
+              <FollowButton follow={following} followLoading={followLoading} onClick={() => followAndUnfollow(id)}>
                 {followLoading ?
                   (<ThreeDots height={13} color={following ? '#1877F2' : '#FFFFFF'} />) :
                   (following ? 'Unfollow' : 'Follow')
@@ -165,6 +163,7 @@ const FollowButton = styled.div`
   background-color: ${({ follow }) => (follow ? "#FFFFFF" : "#1877F2")};
   border-radius: 5px;
   cursor: pointer;
+  pointer-events: ${({ followLoading }) => (followLoading ? 'none' : 'auto')};
 `;
 
 const TimelineBox = styled.div`
