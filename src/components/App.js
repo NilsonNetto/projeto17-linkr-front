@@ -1,5 +1,5 @@
 import GlobalStyle from "../assets/GlobalStyle.js";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import HashtagPage from "./HashtagPage.js";
 import SignIn from "./SignIn.js";
 import SignUp from "./SignUp.js";
@@ -23,6 +23,7 @@ export default function App() {
           <Route path="/timeline" element={<Timeline />} />
           <Route path="/hashtag/:hashtag" element={<HashtagPage />} />
           <Route path="/user/:id" element={<UserPage />} />
+          <Route path="/*" element={<Navigate to="/" />} />
         </Routes>
       </BrowserRouter>
     </UserContext.Provider>

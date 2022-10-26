@@ -7,6 +7,7 @@ import Header from "./Header";
 import PostBox from "./PostBox";
 import Sidebar from "./Sidebar";
 import LoadingPage from "./LoadingPage";
+import Microlink from '@microlink/react';
 
 export default function Timeline() {
   const [form, setForm] = useState({ description: "", link: "" });
@@ -76,7 +77,7 @@ export default function Timeline() {
         setForm({ description: "", link: "" });
       });
   }
-
+  console.log(posts);
   function postsLoading() {
     if (posts.length > 0) {
       return (
@@ -86,13 +87,14 @@ export default function Timeline() {
               <PostBox
                 key={index}
                 id={post.id}
+                userId={post.userId}
                 username={post.username}
                 profilePicture={post.profilePicture}
                 description={post.description}
                 url={post.url}
-                urlTitle={post.metadata.title}
-                urlDescription={post.metadata.description}
-                urlImage={post.metadata.image}
+                //urlTitle={post.metadata.title}
+                //urlDescription={post.metadata.description}
+                //urlImage={post.metadata.image}
                 userLike={post.userLike}
                 postLikes={post.postLikes}
                 updateLike={updateLike}
@@ -120,9 +122,7 @@ export default function Timeline() {
             <Title>timeline</Title>
             <Publish>
               <ImgDiv>
-                <Img>
-                  <img src={userData.profilePicture} alt='profile-pic' />
-                </Img>
+                <Img src={userData.profilePicture} alt='profile-pic' />
               </ImgDiv>
               <FormDiv>
                 <PublishTitle>What are you going to share today?</PublishTitle>

@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@mdnm/react-hashtag": "^3.0.2",
+    "@microlink/react": "^5.5.9",
     "axios": "^1.1.3",
     "react": "^17.0.2",
     "react-debounce-input": "^3.3.0",

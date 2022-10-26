@@ -92,9 +92,9 @@ export default function UserPage() {
                       profilePicture={post.profilePicture}
                       description={post.description}
                       url={post.url}
-                      urlTitle={post.metadata.title}
-                      urlDescription={post.metadata.description}
-                      urlImage={post.metadata.image}
+                      //urlTitle={post.metadata.title}
+                      //urlDescription={post.metadata.description}
+                      //urlImage={post.metadata.image}
                       postLikes={post.postLikes}
                       updateLike={updateLike}
                       setUpdateLike={setUpdateLike}

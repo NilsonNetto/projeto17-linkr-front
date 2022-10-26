@@ -6,12 +6,26 @@ import UserContext from "../context/UserContext";
 
 
 export default function SignIn() {
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [offButton, setOffButton] = useState(false);
   const { setUserData } = useContext(UserContext);
-
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    const profilePicture = localStorage.getItem("profilePicture");
+
+    if (token && profilePicture) {
+      const getToken = JSON.parse(token);
+      const getProfilePicture = JSON.parse(profilePicture);
+      setUserData({ token: getToken, profilePicture: getProfilePicture });
+      navigate("/timeline");
+    } else {
+      navigate("/");
+    }
+  }, []);
 
   function Login(e) {
     e.preventDefault();
@@ -44,21 +58,6 @@ export default function SignIn() {
       alert(erros);
     });
   }
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    const profilePicture = localStorage.getItem("profilePicture");
-
-    if (token) {
-      const getToken = JSON.parse(token);
-      const getProfilePicture = JSON.parse(profilePicture);
-      setUserData({ token: getToken, profilePicture: getProfilePicture });
-      navigate("/timeline");
-    } else {
-      navigate("/");
-    }
-  }, []);
 
   return (
     <SignInStyle>
