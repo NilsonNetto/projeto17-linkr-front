@@ -2,18 +2,20 @@ import { Link, useNavigate } from "react-router-dom";
 import { postSignup } from "../services/linkr";
 import styled from "styled-components";
 import { useState } from "react";
+import { ThreeDots } from "react-loader-spinner";
 
 export default function SignUp() {
   const [username, setUsername] = useState();
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [profilePicture, setProfilePicture] = useState();
-  const [offButton, setOffButton] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
   function SendSignup(e) {
     e.preventDefault();
+    setLoading(true);
 
     const body = {
       email,
@@ -22,19 +24,16 @@ export default function SignUp() {
       profilePicture,
     };
 
-    const promise = postSignup(body);
-    promise.then((res) => {
-      const result = [res];
-      if (result.length > 0) {
-        setOffButton(true);
-      }
-
-      navigate("/");
-    });
-    promise.catch((err) => {
-      const erros = err.response.data;
-      alert(erros);
-    });
+    postSignup(body)
+      .then(res => {
+        setLoading(false);
+        navigate("/");
+      })
+      .catch(res => {
+        setLoading(false);
+        const erros = res.response.data;
+        alert(erros);
+      });
   }
 
   return (
@@ -53,6 +52,7 @@ export default function SignUp() {
             placeholder="e-mail"
             type="email"
             value={email}
+            disabled={loading}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
@@ -60,6 +60,7 @@ export default function SignUp() {
             placeholder="password"
             type="password"
             value={password}
+            disabled={loading}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
@@ -67,6 +68,7 @@ export default function SignUp() {
             placeholder="username"
             type="text"
             value={username}
+            disabled={loading}
             onChange={(e) => setUsername(e.target.value)}
             required
           />
@@ -74,10 +76,15 @@ export default function SignUp() {
             placeholder="picture url"
             type="text"
             value={profilePicture}
+            disabled={loading}
             onChange={(e) => setProfilePicture(e.target.value)}
             required
           />
-          <button onClick={SendSignup} disabled={offButton}>Sign Up</button>
+          <button onClick={SendSignup} disabled={loading}>
+            {loading ?
+              <ThreeDots height={20} color='white' /> :
+              'Sign up'}
+          </button>
           <Link to="/">
             <DescSignUp>Switch back to log in</DescSignUp>
           </Link>
@@ -218,6 +225,9 @@ const LogupInputs = styled.div`
     line-height: 40px;
     color: #ffffff;
     margin-bottom: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     @media (max-width: 450px) {
       width: 100%;
