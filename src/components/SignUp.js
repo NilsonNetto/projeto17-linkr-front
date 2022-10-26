@@ -38,17 +38,17 @@ export default function SignUp() {
   }
 
   return (
-    <SignUpStyle>
-      <LogoSingUp>
-        <BoardSignUp>
-          <TitleSignUp>linkr</TitleSignUp>
-          <DescriptionSignUp>
-            save, share and discover the best links on the web{" "}
-          </DescriptionSignUp>
-        </BoardSignUp>
-      </LogoSingUp>
-      <LogUp>
-        <BoardLogUpInputs>
+    <SignupStyle>
+      <Logo>
+        <div>
+          <h1>linkr</h1>
+          <h3>
+            save, share and discover <br />the best links on the web
+          </h3>
+        </div>
+      </Logo>
+      <LogupStyle>
+        <LogupInputs>
           <input
             placeholder="e-mail"
             type="email"
@@ -56,7 +56,6 @@ export default function SignUp() {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          <br />
           <input
             placeholder="password"
             type="password"
@@ -64,7 +63,6 @@ export default function SignUp() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <br />
           <input
             placeholder="username"
             type="text"
@@ -72,7 +70,6 @@ export default function SignUp() {
             onChange={(e) => setUsername(e.target.value)}
             required
           />
-          <br />
           <input
             placeholder="picture url"
             type="text"
@@ -80,35 +77,52 @@ export default function SignUp() {
             onChange={(e) => setProfilePicture(e.target.value)}
             required
           />
-          <br />
           <button onClick={SendSignup} disabled={offButton}>Sign Up</button>
           <Link to="/">
             <DescSignUp>Switch back to log in</DescSignUp>
           </Link>
-        </BoardLogUpInputs>
-      </LogUp>
-    </SignUpStyle>
+        </LogupInputs>
+      </LogupStyle>
+    </SignupStyle>
   );
 }
 
-const SignUpStyle = styled.div`
-  width: 100%;
-  height: 100%;
+const SignupStyle = styled.div`
+  width: 100vw;
+  height: 100vh;
   display: flex;
 
   @media (max-width: 450px) {
     flex-direction: column;
   }
 `;
-const LogoSingUp = styled.div`
-  width: 100%;
-  height: auto;
+
+const Logo = styled.div`
+  width: 60%;
   background: #151515;
   box-shadow: 4px 0px 4px rgba(0, 0, 0, 0.25);
-`;
-const TitleSignUp = styled.div`
-  width: 233px;
-  height: 117px;
+
+  @media (max-width: 450px) {
+    width: 100%;
+    min-height: 175px;
+  }
+
+  div{
+  width: 100%;
+  margin-left: 15%;
+  margin-top: 30vh;
+
+  @media (max-width: 450px) {
+    width: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  }
+
+  h1{
   font-family: "Passion One";
   font-style: normal;
   font-weight: 700;
@@ -116,10 +130,19 @@ const TitleSignUp = styled.div`
   line-height: 117px;
   letter-spacing: 0.05em;
   color: #ffffff;
-`;
-const DescriptionSignUp = styled.div`
-  width: 442px;
-  height: 128px;
+
+  @media (max-width: 900px) {
+    font-size: 90px;
+    line-height: 100px;
+  }
+
+  @media (max-width: 450px) {
+    font-size: 76px;
+    line-height: 84px;
+  }
+  }
+
+  h3{
   font-family: "Oswald";
   font-style: normal;
   font-weight: 700;
@@ -127,57 +150,43 @@ const DescriptionSignUp = styled.div`
   line-height: 64px;
   color: #ffffff;
 
+  @media (max-width: 900px) {
+    max-width: 270px;
+    font-size: 33px;
+    line-height: 49px;
+  }
+
   @media (max-width: 450px) {
-    width: 237px;
-    height: 68px;
     font-size: 23px;
     line-height: 34px;
   }
-`;
-const BoardSignUp = styled.div`
-  width: 442px;
-  height: 245px;
-  margin-left: 144px;
-  margin-top: 301px;
-  margin-bottom: 478px;
-  margin-right: 319px;
-
-  @media (max-width: 450px) {
-    width: 375px;
-    height: 175px;
-    margin-left: 69px;
-    margin-top: 10px;
-    margin-bottom: 27px;
-    margin-right: 69px;
   }
 `;
-const LogUp = styled.div`
-  width: 535px;
-  height: auto;
+
+const LogupStyle = styled.div`
+  width: 40%;
+  height: 100%;
+  display: flex;
 
   @media (max-width: 450px) {
-    width: 375px;
+    width: 100%;
+    align-items: flex-start
   }
 `;
-const BoardLogUpInputs = styled.div`
-  width: 429px;
-  height: 267px;
-  margin-left: 55px;
-  margin-top: 274px;
-  margin-bottom: 440px;
-  margin-right: 55px;
-
+const LogupInputs = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
   @media (max-width: 450px) {
-    width: 330px;
-    height: auto;
-    margin-left: 20px;
-    margin-top: 40px;
-    margin-bottom: 91px;
-    margin-right: 0;
+    width: 100%;
+    margin: 40px 20px;
   }
 
   input {
-    width: 429px;
+    width: 90%;
     height: 65px;
     background: #ffffff;
     border-radius: 6px;
@@ -191,13 +200,14 @@ const BoardLogUpInputs = styled.div`
     margin-bottom: 13px;
 
     @media (max-width: 450px) {
-      width: 330px;
+      width: 100%;
       height: 55px;
       margin-bottom: 13px;
     }
   }
+
   button {
-    width: 429px;
+    width: 90%;
     height: 65px;
     background: #1877f2;
     border-radius: 6px;
@@ -210,15 +220,17 @@ const BoardLogUpInputs = styled.div`
     margin-bottom: 22px;
 
     @media (max-width: 450px) {
-      width: 330px;
+      width: 100%;
       height: 55px;
       margin-bottom: 18px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 `;
+
 const DescSignUp = styled.div`
-  width: 262px;
-  height: 24px;
   font-family: "Lato";
   font-style: normal;
   font-weight: 400;
@@ -226,11 +238,4 @@ const DescSignUp = styled.div`
   line-height: 24px;
   text-decoration-line: underline;
   color: #ffffff;
-  margin-left: 130px;
-  margin-right: 134px;
-
-  @media (max-width: 450px) {
-    margin-left: 70.5px;
-    margin-right: 117px;
-  }
 `;
