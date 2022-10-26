@@ -8,6 +8,7 @@ import { BsHeart, BsHeartFill } from "react-icons/bs";
 import ReactHashtag from "@mdnm/react-hashtag";
 import ReactTooltip from "react-tooltip";
 import UserContext from "../context/UserContext.js";
+import { ReactTinyLink } from 'react-tiny-link';
 import Modal from "react-modal";
 
 export default function PostBox({
@@ -270,17 +271,13 @@ export default function PostBox({
                         ""
                     )}
                 </Description>
-                <Metadata onClick={() => window.open(url)}>
-                    <UrlInfo>
-                        <UrlTitle>{urlTitle}</UrlTitle>
-                        <UrlDescription>{urlDescription}</UrlDescription>
-                        <Url>{url}</Url>
-                    </UrlInfo>
-                    <UrlImage>
-                        <img src={urlImage} alt='urlImage' />
-                    </UrlImage>
-                </Metadata>
-
+                <ReactTinyLink
+                    url={url}
+                    cardSize='small'
+                    showGraphic={true}
+                    maxLine={2}
+                    minLine={1}
+                />
             </Right>
             <ReactTooltip place="bottom" type="light" effect="solid" />
         </Post>
@@ -334,25 +331,6 @@ const LikeHeart = styled.div`
   color: ${({ isLiked }) => (isLiked ? "red" : "white")};
 `;
 
-const LikeCount = styled.div`
-  font-size: 11px;
-  font-family: "Lato", sans-serif;
-  color: #ffffff;
-  margin-top: 5px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 19px;
-
-  div {
-    font-size: 11px;
-    font-family: "Lato", sans-serif;
-    color: #ffffff;
-    margin-top: 5px;
-  }
-`;
-
 const Right = styled.div`
   display: flex;
   flex-direction: column;
@@ -382,40 +360,6 @@ const Hashtag = styled.span`
 `;
 
 const Description = styled.div``;
-
-const Metadata = styled.div`
-    height: 155px;
-    width: 503px;
-    border-radius: 16px;
-    border: 1px #C4C4C4;
-    display: flex;
-    justify-content: space-between;
-`;
-
-const UrlInfo = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    width: 349.56px;
-`;
-
-const UrlImage = styled.div`
-    height: 155px;
-    width: 153.44px;
-
-    img {
-        height: 155px;
-        width: 153.44px;
-    }
-`;
-
-const UrlTitle = styled.div``
-
-const UrlDescription = styled.div``
-
-const Url = styled.div``;
 
 const InputNewPost = styled.div`
   margin: 6px 0 6px 0;
