@@ -106,6 +106,14 @@ const SignInStyle = styled.div`
     flex-direction: column;
   }
 `;
+
+const Logo = styled.div`
+  width: 100%;
+  height: auto;
+  background: #151515;
+  box-shadow: 4px 0px 4px rgba(0, 0, 0, 0.25);
+`;
+
 const BoardLogIn = styled.div`
   width: 442px;
   height: 245px;
@@ -124,12 +132,7 @@ const BoardLogIn = styled.div`
     box-sizing: border-box;
   }
 `;
-const Logo = styled.div`
-  width: 100%;
-  height: auto;
-  background: #151515;
-  box-shadow: 4px 0px 4px rgba(0, 0, 0, 0.25);
-`;
+
 const Title = styled.div`
   width: 233px;
   height: 117px;

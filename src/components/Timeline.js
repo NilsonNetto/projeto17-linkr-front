@@ -8,7 +8,6 @@ import PostBox from "./PostBox";
 import Sidebar from "./Sidebar";
 import LoadingPage from "./LoadingPage";
 import { ThreeDots } from 'react-loader-spinner';
-//import Microlink from '@microlink/react';
 
 export default function Timeline() {
   const [form, setForm] = useState({ description: "", link: "" });
@@ -78,7 +77,6 @@ export default function Timeline() {
         setForm({ description: "", link: "" });
       });
   }
-  console.log(posts);
   function postsLoading() {
     if (posts.length > 0) {
       return (
