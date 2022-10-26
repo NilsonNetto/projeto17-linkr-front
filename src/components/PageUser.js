@@ -7,11 +7,14 @@ import Header from "./Header";
 import PostBox from "./PostBox";
 import UserContext from "../context/UserContext";
 import LoadingPage from "./LoadingPage.js";
+import { ThreeDots } from "react-loader-spinner";
 
 export default function UserPage() {
   const { id } = useParams();
   const [userPage, setUserPage] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [followLoading, setFollowLoading] = useState(false);
+  const [following, setFollowing] = useState(false);
   const [updateLike, setUpdateLike] = useState(false);
   const { userData, setUserData } = useContext(UserContext);
   const navigate = useNavigate();
@@ -38,32 +41,39 @@ export default function UserPage() {
       const promise = getPageUser(id, headers);
       promise.then((res) => {
         setUserPage(res.data);
+        setFollowing(res.data.follow);
         setIsLoading(false);
       });
     }
   }, [updateLike, userData, id, isLoading]);
 
   function followAndUnfollow(userId) {
-    setIsLoading(true);
+    setFollowLoading(true);
     const headers = mountHeaders(userData.token);
 
-    if (userPage.follow) {
+    if (following) {
       unfollowUser(userId, headers)
         .then(res => {
           console.log('unfollow');
+          setFollowing(false);
+          setFollowLoading(false);
         })
         .catch(res => {
           console.log(res.message);
           alert('unfollow error');
+          setFollowLoading(false);
         });
     } else {
       followUser(userId, headers)
         .then(res => {
           console.log('follow');
+          setFollowing(true);
+          setFollowLoading(false);
         })
         .catch(res => {
           console.log(res.message);
           alert('follow error');
+          setFollowLoading(false);
         });
     }
   }
@@ -76,9 +86,15 @@ export default function UserPage() {
         <Header />
         <Container>
           <TimelineBox>
-            <Title follow={userPage.follow}>
+            <Title follow={following}>
               <Username>{userPage?.username} 's posts</Username>
-              <FollowButton follow={userPage.follow} onClick={() => followAndUnfollow(id)}>{userPage.follow ? 'Unfollow' : 'Follow'}</FollowButton>
+              <FollowButton follow={following} onClick={() => followAndUnfollow(id)}>
+                {followLoading ?
+                  (<ThreeDots height={13} color={following ? '#1877F2' : '#FFFFFF'} />) :
+                  (following ? 'Unfollow' : 'Follow')
+                }
+
+              </FollowButton>
             </Title>
             <PostsWrapper>
               <>
