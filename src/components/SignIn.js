@@ -4,10 +4,9 @@ import { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import UserContext from "../context/UserContext";
 
-
 export default function SignIn() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [offButton, setOffButton] = useState(false);
   const { setUserData } = useContext(UserContext);
   const navigate = useNavigate();
@@ -32,7 +31,7 @@ export default function SignIn() {
 
     const body = {
       email,
-      password
+      password,
     };
 
     const promise = postSignin(body);
@@ -48,7 +47,10 @@ export default function SignIn() {
 
       localStorage.clear();
       localStorage.setItem("token", JSON.stringify(data.token));
-      localStorage.setItem("profilePicture", JSON.stringify(data.profilePicture));
+      localStorage.setItem(
+        "profilePicture",
+        JSON.stringify(data.profilePicture)
+      );
 
       navigate("/timeline");
     });
@@ -65,7 +67,8 @@ export default function SignIn() {
         <div>
           <h1>linkr</h1>
           <h3>
-            save, share and discover <br />the best links on the web
+            save, share and discover <br />
+            the best links on the web
           </h3>
         </div>
       </Logo>
@@ -85,7 +88,9 @@ export default function SignIn() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <button onClick={Login} disabled={offButton}>Log In</button>
+          <button onClick={Login} disabled={offButton}>
+            Log In
+          </button>
           <Link to="/signup">
             <SignDesc>First time? Create an account!</SignDesc>
           </Link>
@@ -115,59 +120,59 @@ const Logo = styled.div`
     min-height: 175px;
   }
 
- div{
-  width: 100%;
-  margin-left: 15%;
-  margin-top: 30vh;
-
-  @media (max-width: 450px) {
+  div {
     width: 100%;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
+    margin-left: 15%;
+    margin-top: 30vh;
+
+    @media (max-width: 450px) {
+      width: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
   }
 
-  h1{
-  font-family: "Passion One";
-  font-style: normal;
-  font-weight: 700;
-  font-size: 106px;
-  line-height: 117px;
-  letter-spacing: 0.05em;
-  color: #ffffff;
+  h1 {
+    font-family: "Passion One";
+    font-style: normal;
+    font-weight: 700;
+    font-size: 106px;
+    line-height: 117px;
+    letter-spacing: 0.05em;
+    color: #ffffff;
 
-  @media (max-width: 900px) {
-    font-size: 90px;
-    line-height: 100px;
+    @media (max-width: 900px) {
+      font-size: 90px;
+      line-height: 100px;
+    }
+
+    @media (max-width: 450px) {
+      font-size: 76px;
+      line-height: 84px;
+    }
   }
 
-  @media (max-width: 450px) {
-    font-size: 76px;
-    line-height: 84px;
-  }
-  }
+  h3 {
+    font-family: "Oswald";
+    font-style: normal;
+    font-weight: 700;
+    font-size: 43px;
+    line-height: 64px;
+    color: #ffffff;
 
-  h3{
-  font-family: "Oswald";
-  font-style: normal;
-  font-weight: 700;
-  font-size: 43px;
-  line-height: 64px;
-  color: #ffffff;
+    @media (max-width: 900px) {
+      max-width: 270px;
+      font-size: 33px;
+      line-height: 49px;
+    }
 
-  @media (max-width: 900px) {
-    max-width: 270px;
-    font-size: 33px;
-    line-height: 49px;
-  }
-
-  @media (max-width: 450px) {
-    font-size: 23px;
-    line-height: 34px;
-  }
+    @media (max-width: 450px) {
+      font-size: 23px;
+      line-height: 34px;
+    }
   }
 `;
 
@@ -188,7 +193,7 @@ const LoginInputs = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  
+
   @media (max-width: 450px) {
     width: 100%;
     margin: 40px 20px;
@@ -241,5 +246,4 @@ const SignDesc = styled.div`
   line-height: 24px;
   text-decoration-line: underline;
   color: #ffffff;
-
 `;

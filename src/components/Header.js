@@ -12,7 +12,6 @@ export default function Header() {
   const { userData } = useContext(UserContext);
 
   function find(value) {
-
     const headers = mountHeaders(userData.token);
     const promise = searchUser(value, headers);
     promise
@@ -45,13 +44,25 @@ export default function Header() {
             {!user.length > 0
               ? " "
               : user.map((u) => (
-                <Link to={`/user/${u.id}`} key={u.id}>
-                  <User>
-                    <img src={u.profilePicture} />
-                    <p>{u.username}</p>
-                  </User>
-                </Link>
-              ))}
+                  <Link to={`/user/${u.id}`} key={u.id}>
+                    <User>
+                      <img src={u.profilePicture} />
+                      <div>
+                        <h1>{u.username}</h1>
+                        <p>
+                          {u.following !== null ? (
+                            <span>
+                              <div></div>
+                              following
+                            </span>
+                          ) : (
+                            ""
+                          )}
+                        </p>
+                      </div>
+                    </User>
+                  </Link>
+                ))}
           </UserFind>
         </Search>
 
@@ -67,7 +78,11 @@ export default function Header() {
               onClick={() => setClick(!click)}
             ></ion-icon>
           )}
-          <Img onClick={() => setClick(!click)} src={userData.profilePicture} alt='profile-pic' />
+          <Img
+            onClick={() => setClick(!click)}
+            src={userData.profilePicture}
+            alt="profile-pic"
+          />
         </Logout>
       </Glueded>
       {click === true ? <Box onClick={handleLogout}>Logout</Box> : <div></div>}
@@ -180,9 +195,34 @@ const User = styled.div`
     border-radius: 304px;
     margin: auto 10px;
   }
-  p {
+  div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  h1 {
+    font-weight: 400;
     font-size: 19px;
     line-height: 23px;
     color: #515151;
+  }
+  p {
+    margin-left: 10px;
+    font-weight: 400;
+    font-size: 19px;
+    line-height: 23px;
+    color: #c5c5c5;
+    div {
+      width: 5px;
+      height: 5px;
+      border-radius: 50px;
+      background-color: #c5c5c5;
+      margin-right: 3px;
+    }
+  }
+  span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 `;
