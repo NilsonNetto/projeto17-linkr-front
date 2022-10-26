@@ -110,10 +110,6 @@ const SignInStyle = styled.div`
 const BoardLogIn = styled.div`
   width: 442px;
   height: 245px;
-  margin-left: 144px;
-  margin-top: 301px;
-  margin-bottom: 478px;
-  margin-right: 319px;
 
   @media (max-width: 450px) {
     width: 375px;
@@ -171,10 +167,6 @@ const LogIn = styled.div`
 const BoardLogInInputs = styled.div`
   width: 429px;
   height: 267px;
-  margin-left: 55px;
-  margin-top: 317px;
-  margin-bottom: 440px;
-  margin-right: 55px;
 
   @media (max-width: 450px) {
     width: 330px;
