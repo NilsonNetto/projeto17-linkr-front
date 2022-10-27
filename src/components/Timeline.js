@@ -6,7 +6,6 @@ import {
   mountHeaders,
   postPost,
   getPosts,
-  deletePost,
 } from "./../services/linkr";
 import Header from "./Header";
 import PostBox from "./PostBox";
@@ -57,7 +56,7 @@ export default function Timeline() {
     }
   }
 
-  console.log(posts);
+  //console.log(posts);
 
   function post(event) {
     event.preventDefault();
