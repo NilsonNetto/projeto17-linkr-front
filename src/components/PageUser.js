@@ -45,7 +45,7 @@ export default function UserPage() {
         setIsLoading(false);
       });
     }
-  }, [updateLike, userData, id, isLoading]);
+  }, [updateLike, userData, id]);
 
   function followAndUnfollow(userId) {
     setFollowLoading(true);
