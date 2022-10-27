@@ -2,12 +2,17 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import UserContext from "../context/UserContext";
-import { mountHeaders, postPost, getPosts, deletePost } from "./../services/linkr";
+import {
+  mountHeaders,
+  postPost,
+  getPosts,
+  deletePost,
+} from "./../services/linkr";
 import Header from "./Header";
 import PostBox from "./PostBox";
 import Sidebar from "./Sidebar";
 import LoadingPage from "./LoadingPage";
-import { ThreeDots } from 'react-loader-spinner';
+import { ThreeDots } from "react-loader-spinner";
 
 export default function Timeline() {
   const [form, setForm] = useState({ description: "", link: "" });
@@ -20,7 +25,7 @@ export default function Timeline() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const profilePicture = localStorage.getItem("profilePicture");;
+    const profilePicture = localStorage.getItem("profilePicture");
 
     if (token) {
       const getToken = JSON.parse(token);
@@ -37,7 +42,6 @@ export default function Timeline() {
   }, [updateLike, userData]);
 
   async function updating() {
-
     if (userData) {
       const headers = mountHeaders(userData.token);
 
@@ -79,6 +83,7 @@ export default function Timeline() {
         setForm({ description: "", link: "" });
       });
   }
+
   function postsLoading() {
     if (posts.length > 0) {
       return (
@@ -105,62 +110,64 @@ export default function Timeline() {
           })}
         </>
       );
+    } else if (posts.message) {
+      return `${posts.message}`;
     } else {
-      return (
-        <>There are no posts yet</>
-      );
+      return <>No posts found from your friends</>;
     }
   }
 
-  return (
-    isLoading ? (
-      <LoadingPage />
-    ) : (
-      <>
-        <Header />
-        <Container>
-          <TimelineBox>
-            <Title>timeline</Title>
-            <Publish>
-              <ImgDiv>
-                <Img src={userData.profilePicture} alt='profile-pic' />
-              </ImgDiv>
-              <FormDiv>
-                <PublishTitle>What are you going to share today?</PublishTitle>
-                <Form onSubmit={post}>
-                  <InputLink
-                    type="url"
-                    name="link"
-                    value={form.link}
-                    placeholder="https://..."
-                    required
-                    disabled={loading}
-                    onChange={(e) => setForm({ ...form, link: e.target.value })}
-                  />
-                  <InputDescription
-                    type="text"
-                    name="description"
-                    value={form.description}
-                    placeholder="Awesome article about #Javascript"
-                    disabled={loading}
-                    onChange={(e) =>
-                      setForm({ ...form, description: e.target.value })
-                    }
-                  />
-                  <button type="submit">
-                    {loading ? <ThreeDots height={13} color={'white'} /> : <>Publish</>}
-                  </button>
-                </Form>
-              </FormDiv>
-            </Publish>
-            <Posts>{postsLoading()}</Posts>
-          </TimelineBox>
-          <SidebarBox>
-            <Sidebar />
-          </SidebarBox>
-        </Container>
-      </>
-    )
+  return isLoading ? (
+    <LoadingPage />
+  ) : (
+    <>
+      <Header />
+      <Container>
+        <TimelineBox>
+          <Title>timeline</Title>
+          <Publish>
+            <ImgDiv>
+              <Img src={userData.profilePicture} alt="profile-pic" />
+            </ImgDiv>
+            <FormDiv>
+              <PublishTitle>What are you going to share today?</PublishTitle>
+              <Form onSubmit={post}>
+                <InputLink
+                  type="url"
+                  name="link"
+                  value={form.link}
+                  placeholder="https://..."
+                  required
+                  disabled={loading}
+                  onChange={(e) => setForm({ ...form, link: e.target.value })}
+                />
+                <InputDescription
+                  type="text"
+                  name="description"
+                  value={form.description}
+                  placeholder="Awesome article about #Javascript"
+                  disabled={loading}
+                  onChange={(e) =>
+                    setForm({ ...form, description: e.target.value })
+                  }
+                />
+                <button type="submit">
+                  {loading ? (
+                    <ThreeDots height={13} color={"white"} />
+                  ) : (
+                    <>Publish</>
+                  )}
+                </button>
+              </Form>
+            </FormDiv>
+          </Publish>
+          <Posts>{postsLoading()}</Posts>
+        </TimelineBox>
+        <SidebarBox>
+          <Sidebar />
+        </SidebarBox>
+      </Container>
+    </>
   );
 }
 
