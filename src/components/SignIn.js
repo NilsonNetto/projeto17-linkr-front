@@ -106,7 +106,7 @@ const SigninStyle = styled.div`
   height: 100vh;
   display: flex;
 
-  @media (max-width: 450px) {
+  @media (max-width: 650px) {
     flex-direction: column;
   }
 `;
@@ -116,7 +116,7 @@ const Logo = styled.div`
   background: #151515;
   box-shadow: 4px 0px 4px rgba(0, 0, 0, 0.25);
 
-  @media (max-width: 450px) {
+  @media (max-width: 650px) {
     width: 100%;
     min-height: 175px;
   }
@@ -126,7 +126,7 @@ const Logo = styled.div`
     margin-left: 15%;
     margin-top: 30vh;
 
-    @media (max-width: 450px) {
+    @media (max-width: 650px) {
       width: 100%;
       margin: 0;
       display: flex;
@@ -150,7 +150,7 @@ const Logo = styled.div`
       line-height: 100px;
     }
 
-    @media (max-width: 450px) {
+    @media (max-width: 650px) {
       font-size: 76px;
       line-height: 84px;
     }
@@ -170,7 +170,7 @@ const Logo = styled.div`
       line-height: 49px;
     }
 
-    @media (max-width: 450px) {
+    @media (max-width: 650px) {
       font-size: 23px;
       line-height: 34px;
     }
@@ -183,7 +183,7 @@ const LoginStyle = styled.div`
   display: flex;
   align-items: center;
 
-  @media (max-width: 450px) {
+  @media (max-width: 650px) {
     width: 100%;
     align-items: flex-start;
   }
@@ -195,7 +195,7 @@ const LoginInputs = styled.div`
   justify-content: center;
   align-items: center;
 
-  @media (max-width: 450px) {
+  @media (max-width: 650px) {
     width: 100%;
     margin: 40px 20px;
   }
@@ -214,7 +214,7 @@ const LoginInputs = styled.div`
     color: #9f9f9f;
     margin-bottom: 13px;
 
-    @media (max-width: 450px) {
+    @media (max-width: 650px) {
       width: 100%;
       height: 55px;
       margin-bottom: 13px;
@@ -237,7 +237,7 @@ const LoginInputs = styled.div`
     justify-content: center;
     align-items: center;
 
-    @media (max-width: 450px) {
+    @media (max-width: 650px) {
       width: 100%;
       height: 55px;
       margin-bottom: 18px;

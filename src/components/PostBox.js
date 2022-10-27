@@ -347,18 +347,21 @@ export default function PostBox({
 }
 const Post = styled.div`
   height: 275px;
-  width: 100%;
-  max-width: 610px;
+  width: 610px;
   border-radius: 16px;
   background-color: #171717;
   display: flex;
-  margin-top: 13px;
-  flex-direction: column;
-  z-index: 1;
-`;
+  margin-bottom: 13px;
 
-const ContainerPost = styled.div`
-  display: flex;
+  @media (max-width: 650px) {
+    width: 100%;
+    height: 232px;
+    display: flex;
+    justify-content: space-between;
+    border-radius: 0;
+    padding: 10px 15px 15px 15px;
+    gap: 20px;
+  }
 `;
 
 const Left = styled.div`
@@ -367,6 +370,10 @@ const Left = styled.div`
   flex-direction: column;
   align-items: center;
   margin-left: 18px;
+
+  @media (max-width:650px) {
+    margin: 0;
+  }
 `;
 
 const Img = styled.div`
@@ -376,11 +383,21 @@ const Img = styled.div`
   margin-top: 17px;
   background-color: blueviolet;
 
+  @media (max-width: 650px) {
+      height: 40px;
+      width: 40px;
+    }
+
   img {
     height: 50px;
     width: 50px;
     border-radius: 26.5px;
-    object-fit: fill;
+    object-fit: cover;
+
+    @media (max-width: 650px) {
+      height: 40px;
+      width: 40px;
+    }
   }
 `;
 
@@ -388,7 +405,7 @@ const Options = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 70%;
+  height: 100%;
   justify-content: space-evenly;
   font-size: 20px;
   width: 80px;
@@ -432,26 +449,38 @@ const Right = styled.div`
   justify-content: space-between;
   margin: 20px;
   width: 503px;
+
+  @media (max-width:650px) {
+   width: 100% ;
+   margin:0;
+  }
 `;
 
 const Top = styled.div`
   display: flex;
   justify-content: space-between;
+
+  @media (max-width:650px) {
+   width: 100%;
+  }
 `;
 
 const Name = styled.div`
   font-size: 19px;
   font-family: "Lato", sans-serif;
   color: #ffffff;
+
+  @media (max-width:650px) {
+  font-size: 17px;
+  }
 `;
 
 const Icons = styled.div`
   display: flex;
   justify-content: space-between;
   width: 50px;
-  margin-right: 6px;
-
-  div {
+  
+  div{
     cursor: pointer;
   }
 `;
@@ -464,26 +493,40 @@ const Hashtag = styled.span`
 
 const Description = styled.div`
   font-size: 17px;
-  color: #b7b7b7;
+  color: #B7B7B7;
+
+  @media (max-width:650px) {
+   font-size: 15px;
+  }
 `;
 
 const Metadata = styled.div`
-  height: 155px;
-  width: 503px;
-  border-radius: 16px;
-  border: 1px solid #4d4d4d;
-  display: flex;
-  justify-content: space-between;
-  cursor: pointer;
+    height: 155px;
+    width: 503px;
+    border-radius: 16px;
+    border: 1px solid #4D4D4D;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+
+    @media (max-width:650px) {
+    width:100%;
+    height: 115px;
+  }
 `;
 
 const UrlInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin: 25px 20px;
-  width: 349.56px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin: 25px 20px;
+    width: 349.56px;
+
+    @media (max-width:650px) {
+    width: 100%;
+    margin: 10px;
+  }
 `;
 
 const UrlImage = styled.div`
@@ -495,20 +538,37 @@ const UrlImage = styled.div`
     width: 153.44px;
     border-radius: 0 16px 16px 0;
     object-fit: cover;
+
+    @media (max-width:650px) {
+    width: 95px;
+    height: 113px;
+  }
   }
 `;
 
 const UrlTitle = styled.div`
   font-size: 16px;
-  color: #cecece;
+  color: #CECECE;
+
+  @media (max-width:650px) {
+  font-size: 11px;
+  }
 `;
 const UrlDescription = styled.div`
   font: 11px;
-  color: #cecece;
+  color: #CECECE;
+
+  @media (max-width:650px) {
+    font-size: 9px;
+  }
 `;
 const Url = styled.div`
   font-size: 11px;
-  color: #cecece;
+  color: #CECECE;
+
+  @media (max-width:650px) {
+    font-size: 11px;
+  }
 `;
 
 const InputNewPost = styled.div`
