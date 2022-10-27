@@ -53,35 +53,37 @@ export default function HashtagPage() {
   ) : (<>
     <Header />
     <Container>
-      <TimelineBox>
-        <Title># {hashtag}</Title>
-        <Posts>
-          <>
-            {postsWithHashtag.map((post, index) => {
-              return (
-                <PostBox
-                  key={index}
-                  id={post.id}
-                  username={post.username}
-                  profilePicture={post.profilePicture}
-                  description={post.description}
-                  url={post.url}
-                  urlTitle={post.metadata.title}
-                  urlDescription={post.metadata.description}
-                  urlImage={post.metadata.image}
-                  userLike={post.userLike}
-                  postLikes={post.postLikes}
-                  updateLike={updateLike}
-                  setUpdateLike={setUpdateLike}
-                />
-              );
-            })}
-          </>
-        </Posts>
-      </TimelineBox>
-      <SidebarBox>
-        <Sidebar />
-      </SidebarBox>
+      <Title># {hashtag}</Title>
+      <Feed>
+        <TimelineBox>
+          <Posts>
+            <>
+              {postsWithHashtag.map((post, index) => {
+                return (
+                  <PostBox
+                    key={index}
+                    id={post.id}
+                    username={post.username}
+                    profilePicture={post.profilePicture}
+                    description={post.description}
+                    url={post.url}
+                    urlTitle={post.metadata.title}
+                    urlDescription={post.metadata.description}
+                    urlImage={post.metadata.image}
+                    userLike={post.userLike}
+                    postLikes={post.postLikes}
+                    updateLike={updateLike}
+                    setUpdateLike={setUpdateLike}
+                  />
+                );
+              })}
+            </>
+          </Posts>
+        </TimelineBox>
+        <SidebarBox>
+          <Sidebar />
+        </SidebarBox>
+      </Feed>
     </Container>
   </>)
   );
@@ -90,27 +92,36 @@ export default function HashtagPage() {
 const Container = styled.div`
   width: 100%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   margin-top: 72px;
 `;
 
-const SidebarBox = styled.div`
-  margin: 164px 0 0 25px;
-  @media (max-width: 950px) {
-    display: none;
-  }
-`;
 const Title = styled.h1`
+  width: 937px;
   font-size: 43px;
   font-weight: 700;
   font-family: "Oswald", sans-serif;
+  margin-top: 78px;
   margin-bottom: 43px;
+  text-align: left;
+`;
+
+const Feed = styled.div`
+  display: flex;
 `;
 
 const TimelineBox = styled.div`
   width: 611px;
-  margin-top: 78px;
 `;
+
+const SidebarBox = styled.div`
+  margin-left: 25px;
+  @media (max-width: 950px) {
+    display: none;
+  }
+`;
+
 const Posts = styled.div`
-  margin-top: 13px;
+  margin-bottom: 13px;
 `;

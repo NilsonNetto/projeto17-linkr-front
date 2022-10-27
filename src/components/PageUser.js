@@ -83,44 +83,47 @@ export default function UserPage() {
       <>
         <Header />
         <Container>
-          <TimelineBox>
-            <Title follow={following}>
-              <Username>{userPage?.username} 's posts</Username>
-              <FollowButton follow={following} followLoading={followLoading} onClick={() => followAndUnfollow(id)}>
-                {followLoading ?
-                  (<ThreeDots height={13} color={following ? '#1877F2' : '#FFFFFF'} />) :
-                  (following ? 'Unfollow' : 'Follow')
-                }
+          <Title follow={following}>
+            <Username>{userPage?.username} 's posts</Username>
+            <FollowButton follow={following} followLoading={followLoading} onClick={() => followAndUnfollow(id)}>
+              {followLoading ?
+                (<ThreeDots height={13} color={following ? '#1877F2' : '#FFFFFF'} />) :
+                (following ? 'Unfollow' : 'Follow')
+              }
 
-              </FollowButton>
-            </Title>
-            <PostsWrapper>
-              <>
-                {userPage.posts.map((post, index) => {
-                  return (
-                    <PostBox
-                      key={index}
-                      id={post.id}
-                      userId={post.userId}
-                      username={post.username}
-                      profilePicture={post.profilePicture}
-                      description={post.description}
-                      url={post.url}
-                      urlTitle={post.metadata.title}
-                      urlDescription={post.metadata.description}
-                      urlImage={post.metadata.image}
-                      postLikes={post.postLikes}
-                      updateLike={updateLike}
-                      setUpdateLike={setUpdateLike}
-                    />
-                  );
-                })}
-              </>
-            </PostsWrapper>
-          </TimelineBox>
-          <SidebarBox>
-            <Sidebar />
-          </SidebarBox>
+            </FollowButton>
+          </Title>
+          <Feed>
+            <TimelineBox>
+
+              <PostsWrapper>
+                <>
+                  {userPage.posts.map((post, index) => {
+                    return (
+                      <PostBox
+                        key={index}
+                        id={post.id}
+                        userId={post.userId}
+                        username={post.username}
+                        profilePicture={post.profilePicture}
+                        description={post.description}
+                        url={post.url}
+                        urlTitle={post.metadata.title}
+                        urlDescription={post.metadata.description}
+                        urlImage={post.metadata.image}
+                        postLikes={post.postLikes}
+                        updateLike={updateLike}
+                        setUpdateLike={setUpdateLike}
+                      />
+                    );
+                  })}
+                </>
+              </PostsWrapper>
+            </TimelineBox>
+            <SidebarBox>
+              <Sidebar />
+            </SidebarBox>
+          </Feed>
         </Container>
       </>
     ))
@@ -131,21 +134,23 @@ export default function UserPage() {
 const Container = styled.div`
   width: 100%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   margin-top: 72px;
 `;
 
-const SidebarBox = styled.div`
-  margin: 164px 0 0 25px;
-  @media (max-width: 950px) {
-    display: none;
-  }
-`;
 const Title = styled.div`
-  width: 100%;
+  width: 937px;
+  margin-top: 78px;
+  margin-bottom: 43px;
+  text-align: left;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+`;
+
+const Feed = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;
 
 const Username = styled.div`
@@ -169,10 +174,15 @@ const FollowButton = styled.div`
 
 const TimelineBox = styled.div`
   width: 611px;
-  margin-top: 78px;
-  margin-bottom: 43px;
+`;
+
+const SidebarBox = styled.div`
+  margin-left: 25px;
+  @media (max-width: 950px) {
+    display: none;
+  }
 `;
 
 const PostsWrapper = styled.div`
-  margin-top: 13px;
+  margin-bottom: 13px;
 `;

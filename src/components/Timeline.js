@@ -6,7 +6,6 @@ import {
   mountHeaders,
   postPost,
   getPosts,
-  deletePost,
 } from "./../services/linkr";
 import Header from "./Header";
 import PostBox from "./PostBox";
@@ -16,9 +15,10 @@ import { ThreeDots } from "react-loader-spinner";
 
 export default function Timeline() {
   const [form, setForm] = useState({ description: "", link: "" });
-  const [loading, setLoading] = useState(false);
+  const [loadingPage, setLoadingPage] = useState(true);
+  const [loadingPosts, setLoadingPosts] = useState(true);
+  const [loadingPublish, setLoadingPublish] = useState(false);
   const [posts, setPosts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [updateLike, setUpdateLike] = useState(false);
   const { userData, setUserData } = useContext(UserContext);
   const navigate = useNavigate();
@@ -38,30 +38,28 @@ export default function Timeline() {
   }, []);
 
   useEffect(() => {
-    updating();
-  }, [updateLike, userData]);
-
-  async function updating() {
     if (userData) {
+      setLoadingPosts(true);
       const headers = mountHeaders(userData.token);
 
-      await getPosts(headers)
+      getPosts(headers)
         .then((resposta) => {
           setPosts(resposta.data);
-          setIsLoading(false);
+          setLoadingPosts(false);
+          setLoadingPage(false);
         })
         .catch((resposta) => {
           console.log(resposta);
-          setIsLoading(false);
+          setLoadingPosts(false);
+          setLoadingPage(false);
         });
     }
-  }
-
-  console.log(posts);
+  }, [updateLike, userData, loadingPublish]);
 
   function post(event) {
     event.preventDefault();
-    setLoading(true);
+    setLoadingPublish(true);
+    setLoadingPosts(true);
 
     const headers = mountHeaders(userData.token);
     const body = {
@@ -72,14 +70,13 @@ export default function Timeline() {
     postPost(body, headers)
       .then((resposta) => {
         console.log(resposta);
-        setLoading(false);
+        setLoadingPublish(false);
         setForm({ description: "", link: "" });
-        updating();
       })
       .catch((resposta) => {
         console.log(resposta);
         alert("Houve um erro ao publicar seu link");
-        setLoading(false);
+        setLoadingPublish(false);
         setForm({ description: "", link: "" });
       });
   }
@@ -112,60 +109,65 @@ export default function Timeline() {
       );
     } else if (posts.message) {
       return `${posts.message}`;
-    } else {
-      return <>No posts found from your friends</>;
     }
   }
 
-  return isLoading ? (
+  return loadingPage ? (
     <LoadingPage />
   ) : (
     <>
       <Header />
       <Container>
-        <TimelineBox>
-          <Title>timeline</Title>
-          <Publish>
-            <ImgDiv>
-              <Img src={userData.profilePicture} alt="profile-pic" />
-            </ImgDiv>
-            <FormDiv>
-              <PublishTitle>What are you going to share today?</PublishTitle>
-              <Form onSubmit={post}>
-                <InputLink
-                  type="url"
-                  name="link"
-                  value={form.link}
-                  placeholder="https://..."
-                  required
-                  disabled={loading}
-                  onChange={(e) => setForm({ ...form, link: e.target.value })}
-                />
-                <InputDescription
-                  type="text"
-                  name="description"
-                  value={form.description}
-                  placeholder="Awesome article about #Javascript"
-                  disabled={loading}
-                  onChange={(e) =>
-                    setForm({ ...form, description: e.target.value })
-                  }
-                />
-                <button type="submit">
-                  {loading ? (
-                    <ThreeDots height={13} color={"white"} />
-                  ) : (
-                    <>Publish</>
-                  )}
-                </button>
-              </Form>
-            </FormDiv>
-          </Publish>
-          <Posts>{postsLoading()}</Posts>
-        </TimelineBox>
-        <SidebarBox>
-          <Sidebar />
-        </SidebarBox>
+        <Title>timeline</Title>
+        <Feed>
+          <TimelineBox>
+            <Publish>
+              <ImgDiv>
+                <Img src={userData.profilePicture} alt="profile-pic" />
+              </ImgDiv>
+              <FormDiv>
+                <PublishTitle>What are you going to share today?</PublishTitle>
+                <Form onSubmit={post}>
+                  <InputLink
+                    type="url"
+                    name="link"
+                    value={form.link}
+                    placeholder="https://..."
+                    required
+                    disabled={loadingPublish}
+                    onChange={(e) => setForm({ ...form, link: e.target.value })}
+                  />
+                  <InputDescription
+                    type="text"
+                    name="description"
+                    value={form.description}
+                    placeholder="Awesome article about #Javascript"
+                    disabled={loadingPublish}
+                    onChange={(e) =>
+                      setForm({ ...form, description: e.target.value })
+                    }
+                  />
+                  <button type="submit">
+                    {loadingPublish ? (
+                      <ThreeDots height={13} color={"white"} />
+                    ) : (
+                      <>Publish</>
+                    )}
+                  </button>
+                </Form>
+              </FormDiv>
+            </Publish>
+            <Posts>
+              {loadingPosts ? (
+                <ThreeDots height={40} color={"white"} />
+              ) : (
+                postsLoading()
+              )}</Posts>
+          </TimelineBox>
+          <SidebarBox>
+            <Sidebar />
+          </SidebarBox>
+        </Feed>
       </Container>
     </>
   );
@@ -174,27 +176,34 @@ export default function Timeline() {
 const Container = styled.div`
   width: 100%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   margin-top: 72px;
+`;
+
+const Title = styled.div`
+  width: 937px;
+  font-size: 43px;
+  font-weight: 700;
+  font-family: "Oswald", sans-serif;
+  margin-top: 78px;
+  margin-bottom: 43px;
+  text-align: left;
+`;
+
+const Feed = styled.div`
+  display: flex;
 `;
 
 const TimelineBox = styled.div`
   width: 611px;
-  margin-top: 78px;
 `;
 
 const SidebarBox = styled.div`
-  margin: 164px 0 0 25px;
+  margin-left:25px;
   @media (max-width: 950px) {
     display: none;
   }
-`;
-
-const Title = styled.h1`
-  font-size: 43px;
-  font-weight: 700;
-  font-family: "Oswald", sans-serif;
-  margin-bottom: 43px;
 `;
 
 const Publish = styled.div`
@@ -203,6 +212,7 @@ const Publish = styled.div`
   background-color: #ffffff;
   border-radius: 16px;
   display: flex;
+  margin-bottom: 15px;  
 `;
 
 const ImgDiv = styled.div`
@@ -219,7 +229,8 @@ const Img = styled.img`
   margin-left: 18px;
 `;
 
-const FormDiv = styled.div``;
+const FormDiv = styled.div`
+`;
 
 const PublishTitle = styled.div`
   font-family: "Lato", sans-serif;
@@ -281,5 +292,8 @@ const InputDescription = styled.input`
 `;
 
 const Posts = styled.div`
-  margin-top: 13px;
+  display:flex ;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 13px;
 `;
