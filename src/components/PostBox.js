@@ -320,7 +320,7 @@ export default function PostBox({
         </Right>
         <ReactTooltip place="bottom" type="light" effect="solid" />
       </Post>
-      <RenderComments>
+      <RenderComments commentsIsOpen={commentsIsOpen}>
         {commentsIsOpen
           ? comments.map((cmt, i) => {
             return (
@@ -347,7 +347,8 @@ const Post = styled.div`
   border-radius: 16px;
   background-color: #171717;
   display: flex;
-  margin-bottom: 13px;
+  padding: 20px;
+  gap: 20px;
 
   @media (max-width: 650px) {
     width: 100%;
@@ -356,7 +357,6 @@ const Post = styled.div`
     justify-content: space-between;
     border-radius: 0;
     padding: 10px 15px 15px 15px;
-    gap: 20px;
   }
 `;
 
@@ -365,18 +365,12 @@ const Left = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-left: 18px;
-
-  @media (max-width:650px) {
-    margin: 0;
-  }
 `;
 
 const Img = styled.div`
   height: 50px;
   width: 50px;
-  border-radius: 26.5px;
-  margin-top: 17px;
+  border-radius: 50%;
   background-color: blueviolet;
 
   @media (max-width: 650px) {
@@ -387,9 +381,8 @@ const Img = styled.div`
   img {
     height: 50px;
     width: 50px;
-    border-radius: 26.5px;
+    border-radius: 50%;
     object-fit: cover;
-
     @media (max-width: 650px) {
       height: 40px;
       width: 40px;
@@ -405,12 +398,14 @@ const Options = styled.div`
   justify-content: space-evenly;
   font-size: 20px;
   width: 80px;
-  margin-left: 10px;
 
   a {
     font-size: 13px;
     text-align: center;
-    margin-top: 4px;
+
+    @media (max-width:650px) {
+      font-size: 9px;
+    }
   }
 `;
 
@@ -443,19 +438,17 @@ const Right = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin: 20px;
+  height: 100%;
   width: 503px;
 
   @media (max-width:650px) {
    width: 100% ;
-   margin:0;
   }
 `;
 
 const Top = styled.div`
   display: flex;
   justify-content: space-between;
-
   @media (max-width:650px) {
    width: 100%;
   }
@@ -465,7 +458,6 @@ const Name = styled.div`
   font-size: 19px;
   font-family: "Lato", sans-serif;
   color: #ffffff;
-
   @media (max-width:650px) {
   font-size: 17px;
   }
@@ -490,7 +482,6 @@ const Hashtag = styled.span`
 const Description = styled.div`
   font-size: 17px;
   color: #B7B7B7;
-
   @media (max-width:650px) {
    font-size: 15px;
   }
@@ -504,7 +495,6 @@ const Metadata = styled.div`
     display: flex;
     justify-content: space-between;
     cursor: pointer;
-
     @media (max-width:650px) {
     width:100%;
     height: 115px;
@@ -517,7 +507,7 @@ const UrlInfo = styled.div`
     align-items: flex-start;
     justify-content: space-between;
     margin: 25px 20px;
-    width: 349.56px;
+    width: 350px;
 
     @media (max-width:650px) {
     width: 100%;
@@ -531,7 +521,7 @@ const UrlImage = styled.div`
     justify-content: center;
     align-items: center;
     height: 153px;
-    width: 153.44px;
+    width: 153px;
     border-radius: 0 16px 16px 0;
     object-fit: cover;
 
@@ -545,7 +535,6 @@ const UrlImage = styled.div`
 const UrlTitle = styled.div`
   font-size: 16px;
   color: #CECECE;
-
   @media (max-width:650px) {
   font-size: 11px;
   }
@@ -553,7 +542,6 @@ const UrlTitle = styled.div`
 const UrlDescription = styled.div`
   font: 11px;
   color: #CECECE;
-
   @media (max-width:650px) {
     font-size: 9px;
   }
@@ -561,7 +549,6 @@ const UrlDescription = styled.div`
 const Url = styled.div`
   font-size: 11px;
   color: #CECECE;
-
   @media (max-width:650px) {
     font-size: 11px;
   }
@@ -594,7 +581,6 @@ const ModalContent = styled.div`
   flex-direction: column;
   justify-content: space-evenly;
   border-radius: 40px;
-
   p {
     width: 70%;
     font-size: 34px;
@@ -609,7 +595,6 @@ const Buttons = styled.div`
   width: 60%;
   display: flex;
   justify-content: space-around;
-
   button {
     height: 36px;
     border-radius: 10px;
@@ -617,12 +602,10 @@ const Buttons = styled.div`
     border: solid 1px #333333;
     padding: 0 16px;
   }
-
   button:nth-child(1) {
     background-color: #fff;
     color: #1877f2;
   }
-
   button:nth-child(2) {
     background-color: #1877f2;
     color: #fff;
@@ -630,6 +613,7 @@ const Buttons = styled.div`
 `;
 
 const RenderComments = styled.div`
+  display: ${({ commentsIsOpen }) => commentsIsOpen ? 'initial' : 'none'};
   margin-bottom: 40px;
   margin-top: -10px;
   border-radius: 100px;

@@ -85,39 +85,38 @@ export default function UserPage() {
         <Container>
           <Title follow={following}>
             <Username>{userPage?.username} 's posts</Username>
-            <FollowButton follow={following} followLoading={followLoading} onClick={() => followAndUnfollow(id)}>
-              {followLoading ?
-                (<ThreeDots height={13} color={following ? '#1877F2' : '#FFFFFF'} />) :
-                (following ? 'Unfollow' : 'Follow')
-              }
-
-            </FollowButton>
+            {userPage.username === userPage.posts[0].username ? '' :
+              (
+                <FollowButton follow={following} followLoading={followLoading} onClick={() => followAndUnfollow(id)}>
+                  {followLoading ?
+                    (<ThreeDots height={13} color={following ? '#1877F2' : '#FFFFFF'} />) :
+                    (following ? 'Unfollow' : 'Follow')
+                  }
+                </FollowButton>
+              )}
           </Title>
           <Feed>
             <TimelineBox>
-
               <PostsWrapper>
-                <>
-                  {userPage.posts.map((post, index) => {
-                    return (
-                      <PostBox
-                        key={index}
-                        id={post.id}
-                        userId={post.userId}
-                        username={post.username}
-                        profilePicture={post.profilePicture}
-                        description={post.description}
-                        url={post.url}
-                        urlTitle={post.metadata.title}
-                        urlDescription={post.metadata.description}
-                        urlImage={post.metadata.image}
-                        postLikes={post.postLikes}
-                        updateLike={updateLike}
-                        setUpdateLike={setUpdateLike}
-                      />
-                    );
-                  })}
-                </>
+                {userPage.posts.map((post, index) => {
+                  return (
+                    <PostBox
+                      key={index}
+                      id={post.id}
+                      userId={post.userId}
+                      username={post.username}
+                      profilePicture={post.profilePicture}
+                      description={post.description}
+                      url={post.url}
+                      urlTitle={post.metadata.title}
+                      urlDescription={post.metadata.description}
+                      urlImage={post.metadata.image}
+                      postLikes={post.postLikes}
+                      updateLike={updateLike}
+                      setUpdateLike={setUpdateLike}
+                    />
+                  );
+                })}
               </PostsWrapper>
             </TimelineBox>
             <SidebarBox>
@@ -146,6 +145,16 @@ const Title = styled.div`
   text-align: left;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+
+  @media (max-width: 950px) {
+    width: 611px;
+  }
+  @media (max-width: 650px) {
+    width: 100%;
+    padding: 0 20px ;
+  }
 `;
 
 const Feed = styled.div`
@@ -173,7 +182,7 @@ const FollowButton = styled.div`
 `;
 
 const TimelineBox = styled.div`
-  width: 611px;
+  width: 100%;
 `;
 
 const SidebarBox = styled.div`
@@ -184,5 +193,8 @@ const SidebarBox = styled.div`
 `;
 
 const PostsWrapper = styled.div`
-  margin-bottom: 13px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
 `;

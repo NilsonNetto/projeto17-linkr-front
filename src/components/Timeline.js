@@ -129,7 +129,7 @@ export default function Timeline() {
           if (resposta.data > postsNumber) {
             setNewPosts(resposta.data - postsNumber);
           }
-          console.log(newPosts)
+          console.log(newPosts);
 
         })
         .catch((resposta) => {
@@ -234,7 +234,7 @@ const Title = styled.div`
   @media (max-width: 950px) {
     width: 611px;
   }
-
+  
   @media (max-width: 650px) {
     width: 100%;
     padding-left: 20px;
@@ -255,7 +255,6 @@ const TimelineBox = styled.div`
 
 const SidebarBox = styled.div`
   margin-left:25px;
-
   @media (max-width: 950px) {
     display: none;
   }
@@ -268,7 +267,6 @@ const Publish = styled.div`
   border-radius: 16px;
   display: flex;
   margin-bottom: 15px;  
-
   @media (max-width:650px) {
     display: flex;
     flex-direction: column;
@@ -281,7 +279,6 @@ const Publish = styled.div`
 
 const ImgDiv = styled.div`
   margin-right: 21px;
-
   @media (max-width: 650px) {
     display: none;
   }
@@ -312,7 +309,6 @@ const PublishTitle = styled.div`
   color: #707070;
   margin-top: 21px;
   margin-bottom: 10px;
-
   @media (max-width: 650px) {
     width: 100%;
     margin: 15px 0;
@@ -326,24 +322,20 @@ const Form = styled.form`
   align-items: flex-end;
   margin-right: 22px;
   gap: 5px;
-
   @media (max-width: 650px) {
     width: 100%;
     padding: 0 15px;
     margin: 0;
   }
-
   input {
     width: 503px;
     background-color: #efefef;
     border-radius: 5px;
     border: #efefef;
-
     @media (max-width: 650px) {
       width: 100%;
     }
   }
-
   button {
     height: 31px;
     width: 112px;
@@ -354,7 +346,6 @@ const Form = styled.form`
     color: #ffffff;
     font-size: 14px;
     font-family: "Lato", sans-serif;
-
     @media (max-width: 650px) {
       height: 20px;
     }
@@ -363,7 +354,6 @@ const Form = styled.form`
 
 const InputLink = styled.input`
   height: 30px;
-
   ::placeholder {
     color: #949494;
     font-family: "Lato", sans-serif;
@@ -374,7 +364,6 @@ const InputLink = styled.input`
 
 const InputDescription = styled.input`
   height: 66px;
-
   ::placeholder {
     color: #949494;
     font-family: "Lato", sans-serif;
@@ -410,5 +399,5 @@ const Posts = styled.div`
   display:flex ;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 13px;
+  gap: 15px;
 `;

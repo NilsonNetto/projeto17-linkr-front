@@ -105,14 +105,27 @@ const Title = styled.h1`
   margin-top: 78px;
   margin-bottom: 43px;
   text-align: left;
+
+  @media (max-width: 950px) {
+    width: 611px;
+  }
+
+  @media (max-width: 650px) {
+    width: 100%;
+    padding-left: 20px;
+  }
 `;
 
 const Feed = styled.div`
   display: flex;
+
+  @media (max-width: 650px) {
+    width: 100%;
+  }
 `;
 
 const TimelineBox = styled.div`
-  width: 611px;
+  width: 100%;
 `;
 
 const SidebarBox = styled.div`
@@ -123,5 +136,8 @@ const SidebarBox = styled.div`
 `;
 
 const Posts = styled.div`
-  margin-bottom: 13px;
+  display:flex ;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;;
 `;
