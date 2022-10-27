@@ -189,18 +189,32 @@ const Title = styled.div`
   margin-top: 78px;
   margin-bottom: 43px;
   text-align: left;
+
+  @media (max-width: 950px) {
+    width: 611px;
+  }
+
+  @media (max-width: 650px) {
+    width: 100%;
+    margin-left: 20px;
+  }
 `;
 
 const Feed = styled.div`
   display: flex;
+
+  @media (max-width: 650px) {
+    width: 100%;
+  }
 `;
 
 const TimelineBox = styled.div`
-  width: 611px;
+  width: 100%;
 `;
 
 const SidebarBox = styled.div`
   margin-left:25px;
+
   @media (max-width: 950px) {
     display: none;
   }
@@ -208,15 +222,28 @@ const SidebarBox = styled.div`
 
 const Publish = styled.div`
   height: 209px;
-  width: 611px;
+  width: 100%;
   background-color: #ffffff;
   border-radius: 16px;
   display: flex;
   margin-bottom: 15px;  
+
+  @media (max-width:650px) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0px;
+    box-shadow: 0 4px 4px 0 rgba(0,0,0,0.25);
+  }
 `;
 
 const ImgDiv = styled.div`
   margin-right: 21px;
+
+  @media (max-width: 650px) {
+    display: none;
+  }
 `;
 
 const Img = styled.img`
@@ -230,6 +257,12 @@ const Img = styled.img`
 `;
 
 const FormDiv = styled.div`
+  @media (max-width: 650px) {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 const PublishTitle = styled.div`
@@ -238,6 +271,12 @@ const PublishTitle = styled.div`
   color: #707070;
   margin-top: 21px;
   margin-bottom: 10px;
+
+  @media (max-width: 650px) {
+    width: 100%;
+    margin: 15px 0;
+    text-align: center;
+  }
 `;
 
 const Form = styled.form`
@@ -245,12 +284,23 @@ const Form = styled.form`
   flex-direction: column;
   align-items: flex-end;
   margin-right: 22px;
+  gap: 5px;
+
+  @media (max-width: 650px) {
+    width: 100%;
+    padding: 0 15px;
+    margin: 0;
+  }
 
   input {
     width: 503px;
     background-color: #efefef;
     border-radius: 5px;
     border: #efefef;
+
+    @media (max-width: 650px) {
+      width: 100%;
+    }
   }
 
   button {
@@ -263,6 +313,10 @@ const Form = styled.form`
     color: #ffffff;
     font-size: 14px;
     font-family: "Lato", sans-serif;
+
+    @media (max-width: 650px) {
+      height: 20px;
+    }
   }
 `;
 
@@ -279,7 +333,6 @@ const InputLink = styled.input`
 
 const InputDescription = styled.input`
   height: 66px;
-  margin-top: 5px;
 
   ::placeholder {
     color: #949494;
