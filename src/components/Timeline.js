@@ -6,6 +6,7 @@ import {
   mountHeaders,
   postPost,
   getPosts,
+  getNewPosts,
   deletePost,
 } from "./../services/linkr";
 import Header from "./Header";
