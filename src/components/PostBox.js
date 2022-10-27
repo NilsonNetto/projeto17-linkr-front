@@ -5,6 +5,8 @@ import { RotatingLines } from "react-loader-spinner";
 import { mountHeaders, likePost, unlikePost, newEditPost, deletePost } from "../services/linkr.js";
 import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
+import { AiOutlineComment } from "react-icons/ai";
+import { BiRepost } from "react-icons/bi";
 import ReactHashtag from "@mdnm/react-hashtag";
 import ReactTooltip from "react-tooltip";
 import UserContext from "../context/UserContext.js";
@@ -47,6 +49,7 @@ export default function PostBox({
     const [disabled, setDisabled] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [openComments, setOpenComments] = useState(false);
     const inputEditPost = useRef(null);
     const navigate = useNavigate();
     const { userData } = useContext(UserContext);
@@ -190,115 +193,127 @@ export default function PostBox({
     }
 
     return (
-        <Post>
-            <Left>
-                <Link to={`/user/${userId}`}>
-                    <Img>
-                        <img src={profilePicture} alt="profile" />
-                    </Img>
-                </Link>
-                <Likes isLiked={isLiked}>
-                    <LikeHeart isLiked={isLiked} onClick={() => likeAndDislike(id)}>
-                        {isLiked ? <BsHeartFill /> : <BsHeart />}
-                    </LikeHeart>
-                    <a data-tip={likesCount(postLikes)}>
-                        {postLikes[0] === null ? 0 : postLikes.length} likes
-                    </a>
-                </Likes>
-            </Left>
-            <Right>
-                <Top>
-                    <Link to={`/user/${userId}`}>
-                        {" "}
-                        <Name>{username}</Name>
-                    </Link>
-                    <Icons>
-                        <div>
-                            <FaPencilAlt onClick={editPost} />
-                        </div>
-                        <div>
-                            <FaTrash onClick={openChoicesForDelete} />
-                        </div>
+      <Post>
+        <Left>
+          <Link to={`/user/${userId}`}>
+            <Img>
+              <img src={profilePicture} alt="profile" />
+            </Img>
+          </Link>
+          <Options>
+            <Likes isLiked={isLiked}>
+              <LikeHeart isLiked={isLiked} onClick={() => likeAndDislike(id)}>
+                {isLiked ? <BsHeartFill /> : <BsHeart />}
+              </LikeHeart>
+              <a data-tip={likesCount(postLikes)}>
+                {postLikes[0] === null ? 0 : postLikes.length} likes
+              </a>
+            </Likes>
+            <Comments>
+              <AiOutlineComment style={{cursor: 'pointer'}} />
+              <a>0 comments </a>
+            </Comments>
+            <Repost>
+              <BiRepost style={{cursor: 'pointer'}} />
+              <a> re-post </a>
+            </Repost>
+          </Options>
+        </Left>
+        <Right>
+          <Top>
+            <Link to={`/user/${userId}`}>
+              {" "}
+              <Name>{username}</Name>
+            </Link>
+            <Icons>
+              <div>
+                <FaPencilAlt onClick={editPost} />
+              </div>
+              <div>
+                <FaTrash onClick={openChoicesForDelete} />
+              </div>
 
-                        <Modal
-                            isOpen={isOpen}
-                            onRequestClose={toggleModal}
-                            style={{
-                                overlay: {
-                                    backgroundColor: "rgba(255, 255, 255, 0.4)",
-                                    zIndex: "2",
-                                },
-                                content: {
-                                    border: "none",
-                                    backgroundColor: "rgba(255, 255, 255, 0)",
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                },
-                            }}
+              <Modal
+                isOpen={isOpen}
+                onRequestClose={toggleModal}
+                style={{
+                  overlay: {
+                    backgroundColor: "rgba(255, 255, 255, 0.4)",
+                    zIndex: "2",
+                  },
+                  content: {
+                    border: "none",
+                    backgroundColor: "rgba(255, 255, 255, 0)",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  },
+                }}
+              >
+                <ModalContent>
+                  {loading ? (
+                    <RotatingLines
+                      strokeColor="#1877f2"
+                      strokeWidth="2"
+                      animationDuration="1"
+                      width="96"
+                      visible={true}
+                    />
+                  ) : (
+                    <>
+                      <p>Are you sure you want to delete this post?</p>
+                      <Buttons>
+                        <button onClick={toggleModal}>No, go back</button>
+                        <button
+                          onClick={() => confirmDeletePost({ postId: id })}
                         >
-                            <ModalContent>
-                                {loading ? (
-                                    <RotatingLines
-                                        strokeColor="#1877f2"
-                                        strokeWidth="2"
-                                        animationDuration="1"
-                                        width="96"
-                                        visible={true}
-                                    />
-                                ) : (
-                                    <>
-                                        <p>Are you sure you want to delete this post?</p>
-                                        <Buttons>
-                                            <button onClick={toggleModal}>No, go back</button>
-                                            <button onClick={() => confirmDeletePost({ postId: id })}>
-                                                Yes, delete it
-                                            </button>
-                                        </Buttons>
-                                    </>
-                                )}
-                            </ModalContent>
-                        </Modal>
-                    </Icons>
-                </Top>
-                <Description>
-                    <ReactHashtag
-                        renderHashtag={(hashtagValue) => (
-                            <Hashtag onClick={() => redirectHashtag(hashtagValue)}>
-                                {hashtagValue}
-                            </Hashtag>
-                        )}
-                    >
-                        {timeToEdit ? "" : newPost}
-                    </ReactHashtag>
-                    {timeToEdit ? (
-                        <InputNewPost>
-                            <input
-                                name="newPost"
-                                onChange={(e) => setNewPost(e.target.value)}
-                                value={newPost}
-                                ref={inputEditPost}
-                                onKeyDown={(e) => cancelOrSend({ e, postId: id })}
-                                disabled={disabled}
-                            />
-                        </InputNewPost>
-                    ) : (
-                        ""
-                    )}
-                </Description>
-                <Metadata onClick={() => window.open(url)}>
-                    <UrlInfo>
-                        <UrlTitle>{urlTitle}</UrlTitle>
-                        <UrlDescription>{urlDescription}</UrlDescription>
-                        <Url>{url}</Url>
-                    </UrlInfo>
-                    <UrlImage>
-                        <img src={urlImage} alt='urlImage' />
-                    </UrlImage>
-                </Metadata>
-            </Right>
-            <ReactTooltip place="bottom" type="light" effect="solid" />
-        </Post>
+                          Yes, delete it
+                        </button>
+                      </Buttons>
+                    </>
+                  )}
+                </ModalContent>
+              </Modal>
+            </Icons>
+          </Top>
+          <Description>
+            <ReactHashtag
+              renderHashtag={(hashtagValue) => (
+                <Hashtag onClick={() => redirectHashtag(hashtagValue)}>
+                  {hashtagValue}
+                </Hashtag>
+              )}
+            >
+              {timeToEdit ? "" : newPost}
+            </ReactHashtag>
+            {timeToEdit ? (
+              <InputNewPost>
+                <input
+                  name="newPost"
+                  onChange={(e) => setNewPost(e.target.value)}
+                  value={newPost}
+                  ref={inputEditPost}
+                  onKeyDown={(e) => cancelOrSend({ e, postId: id })}
+                  disabled={disabled}
+                />
+              </InputNewPost>
+            ) : (
+              ""
+            )}
+          </Description>
+          <Metadata onClick={() => window.open(url)}>
+            <UrlInfo>
+              <UrlTitle>{urlTitle}</UrlTitle>
+              <UrlDescription>{urlDescription}</UrlDescription>
+              <Url>{url}</Url>
+            </UrlInfo>
+            <UrlImage>
+              <img src={urlImage} alt="urlImage" />
+            </UrlImage>
+          </Metadata>
+        </Right>
+        <ReactTooltip place="bottom" type="light" effect="solid" />
+      </Post>
     );
 }
 const Post = styled.div`
@@ -333,27 +348,53 @@ const Img = styled.div`
   }
 `;
 
+const Options = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 70%;
+  justify-content: space-evenly;
+  font-size: 20px;
+  width: 80px;
+  margin-left: 10px;
+
+  a {
+    font-size: 13px;
+    text-align: center;
+    margin-top: 4px;
+  }
+`;
+
 const Likes = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 19px;
 `;
 
 const LikeHeart = styled.div`
-  width: 30px;
-  height: 30px;
-  margin-top: 20px;
-  font-size: 20px;
   cursor: pointer;
   color: ${({ isLiked }) => (isLiked ? "red" : "white")};
+`;
+
+const Comments = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+`;
+
+const Repost = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 `;
 
 const Right = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 17px;
-  margin-left: 18px;
+  margin-left: 30px;
   width: 503px;
 `;
 
@@ -370,6 +411,9 @@ const Name = styled.div`
 
 const Icons = styled.div`
   display: flex;
+  justify-content: space-between;
+  width: 42px;
+  margin-right: 6px;
 `;
 
 const Hashtag = styled.span`
