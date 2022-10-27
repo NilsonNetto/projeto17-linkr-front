@@ -6,6 +6,7 @@ import {
   mountHeaders,
   postPost,
   getPosts,
+  getNewPosts
 } from "./../services/linkr";
 import Header from "./Header";
 import PostBox from "./PostBox";
@@ -20,6 +21,9 @@ export default function Timeline() {
   const [loadingPage, setLoadingPage] = useState(true);
   const [loadingPosts, setLoadingPosts] = useState(true);
   const [loadingPublish, setLoadingPublish] = useState(false);
+  const [loadingNewPosts, setLoadingNewPosts] = useState(false);
+  const [postsNumber, setPostsNumber] = useState(0);
+  const [newPosts, setNewPosts] = useState(0);
   const [posts, setPosts] = useState([]);
   const [updateLike, setUpdateLike] = useState(false);
   const { userData, setUserData } = useContext(UserContext);
@@ -47,8 +51,10 @@ export default function Timeline() {
       getPosts(headers)
         .then((resposta) => {
           setPosts(resposta.data);
+          setPostsNumber(resposta.data.length);
           setLoadingPosts(false);
           setLoadingPage(false);
+          setLoadingNewPosts(false);
         })
         .catch((resposta) => {
           console.log(resposta);
@@ -56,7 +62,7 @@ export default function Timeline() {
           setLoadingPage(false);
         });
     }
-  }, [updateLike, userData, loadingPublish]);
+  }, [updateLike, userData, loadingPublish, loadingNewPosts]);
 
   function post(event) {
     event.preventDefault();
@@ -177,6 +183,21 @@ export default function Timeline() {
                 </Form>
               </FormDiv>
             </Publish>
+            <Load>
+              {newPosts > 0 ?
+                <LoadButton onClick={() => {
+                  setNewPosts(0);
+                  setLoadingNewPosts(true);
+                }}>
+                  {`${newPosts} new posts, load more!`}
+                  <Icon>
+                    <ImSpinner11 />
+                  </Icon>
+                </LoadButton>
+                :
+                <></>
+              }
+            </Load>
             <Posts>
               {loadingPosts ? (
                 <ThreeDots height={40} color={"white"} />
@@ -209,11 +230,9 @@ const Title = styled.div`
   margin-top: 78px;
   margin-bottom: 43px;
   text-align: left;
-
   @media (max-width: 950px) {
     width: 611px;
   }
-
   @media (max-width: 650px) {
     width: 100%;
     padding-left: 20px;
@@ -222,7 +241,6 @@ const Title = styled.div`
 
 const Feed = styled.div`
   display: flex;
-  gap: 25px;
 
   @media (max-width: 650px) {
     width: 100%;
@@ -234,6 +252,7 @@ const TimelineBox = styled.div`
 `;
 
 const SidebarBox = styled.div`
+  margin-left:25px;
   @media (max-width: 950px) {
     display: none;
   }
@@ -246,7 +265,6 @@ const Publish = styled.div`
   border-radius: 16px;
   display: flex;
   margin-bottom: 15px;  
-
   @media (max-width:650px) {
     display: flex;
     flex-direction: column;
@@ -259,7 +277,6 @@ const Publish = styled.div`
 
 const ImgDiv = styled.div`
   margin-right: 21px;
-
   @media (max-width: 650px) {
     display: none;
   }
@@ -290,7 +307,6 @@ const PublishTitle = styled.div`
   color: #707070;
   margin-top: 21px;
   margin-bottom: 10px;
-
   @media (max-width: 650px) {
     width: 100%;
     margin: 15px 0;
@@ -304,24 +320,20 @@ const Form = styled.form`
   align-items: flex-end;
   margin-right: 22px;
   gap: 5px;
-
   @media (max-width: 650px) {
     width: 100%;
     padding: 0 15px;
     margin: 0;
   }
-
   input {
     width: 503px;
     background-color: #efefef;
     border-radius: 5px;
     border: #efefef;
-
     @media (max-width: 650px) {
       width: 100%;
     }
   }
-
   button {
     height: 31px;
     width: 112px;
@@ -332,7 +344,6 @@ const Form = styled.form`
     color: #ffffff;
     font-size: 14px;
     font-family: "Lato", sans-serif;
-
     @media (max-width: 650px) {
       height: 20px;
     }
@@ -341,7 +352,6 @@ const Form = styled.form`
 
 const InputLink = styled.input`
   height: 30px;
-
   ::placeholder {
     color: #949494;
     font-family: "Lato", sans-serif;
@@ -352,7 +362,6 @@ const InputLink = styled.input`
 
 const InputDescription = styled.input`
   height: 66px;
-
   ::placeholder {
     color: #949494;
     font-family: "Lato", sans-serif;
@@ -361,6 +370,27 @@ const InputDescription = styled.input`
     display: flex;
     justify-content: center;
   }
+`;
+
+const Load = styled.div``;
+
+const LoadButton = styled.div`
+  height: 61px;
+  width: 611px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 16px;
+  background-color: #1877F2;
+  margin-top: 40px;
+  margin-bottom: 14px;
+  font-family: "Lato", sans-serif;
+  font-size: 16px;
+  color: #FFFFFF;
+`;
+
+const Icon = styled.div`
+  margin-left: 10px;
 `;
 
 const Posts = styled.div`
