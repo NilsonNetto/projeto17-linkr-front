@@ -2,7 +2,14 @@ import styled from "styled-components";
 import { useState, useRef, useEffect, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { RotatingLines } from "react-loader-spinner";
-import { mountHeaders, likePost, unlikePost, newEditPost, deletePost, getComments } from "../services/linkr.js";
+import {
+  mountHeaders,
+  likePost,
+  unlikePost,
+  newEditPost,
+  deletePost,
+  getComments,
+} from "../services/linkr.js";
 import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
 import { AiOutlineComment } from "react-icons/ai";
@@ -14,199 +21,184 @@ import Modal from "react-modal";
 import Comments from "./Comments.js";
 
 export default function PostBox({
-    id,
-    userId,
-    username,
-    profilePicture,
-    description,
-    url,
-    urlTitle,
-    urlDescription,
-    urlImage,
-    userLike,
-    postLikes,
-    updateLike,
-    setUpdateLike,
+  id,
+  userId,
+  username,
+  profilePicture,
+  description,
+  url,
+  urlTitle,
+  urlDescription,
+  urlImage,
+  userLike,
+  postLikes,
+  updateLike,
+  setUpdateLike,
 }) {
+  const [isLiked, setIsLiked] = useState(userLike);
+  const [timeToEdit, setTimeToEdit] = useState(false);
+  const [newPost, setNewPost] = useState(description);
+  const [disabled, setDisabled] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [commentsIsOpen, setCommentsIsOpen] = useState(false);
+  const [comments, setComments] = useState([]);
+  const inputEditPost = useRef(null);
+  const navigate = useNavigate();
+  const { userData } = useContext(UserContext);
 
-    console.log({
-        id,
-        userId,
-        username,
-        profilePicture,
-        description,
-        url,
-        urlTitle,
-        urlDescription,
-        urlImage,
-        userLike,
-        postLikes,
-        updateLike,
-        setUpdateLike,
-    });
-    const [isLiked, setIsLiked] = useState(userLike);
-    const [timeToEdit, setTimeToEdit] = useState(false);
-    const [newPost, setNewPost] = useState(description);
-    const [disabled, setDisabled] = useState(false);
-    const [isOpen, setIsOpen] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [commentsIsOpen, setCommentsIsOpen] = useState(false);
-    const [comments, setComments] = useState([]);
-    const inputEditPost = useRef(null);
-    const navigate = useNavigate();
-    const { userData } = useContext(UserContext);
-
-    function likesCount(likes) {
-        if (likes[0] === null) {
-            return "No one likes this, be the first!";
-        }
-
-        if (userLike) {
-            const filteredLikes = likes.filter((value) => value !== username);
-
-            switch (likes.length) {
-                case 1:
-                    return "Você";
-                    break;
-                case 2:
-                    return `Você e ${filteredLikes[0]}`;
-                    break;
-                default:
-                    return `Você, ${filteredLikes[0]} e outras ${likes.length - 2
-                        } pessoas`;
-            }
-        } else {
-            switch (likes.length) {
-                case 1:
-                    return likes[0];
-                    break;
-                case 2:
-                    return `${likes[0]} e ${likes[1]}`;
-                    break;
-                default:
-                    return `${likes[0]}, ${likes[1]} e outras ${likes.length - 2
-                        } pessoas`;
-            }
-        }
+  function likesCount(likes) {
+    if (likes[0] === null) {
+      return "No one likes this, be the first!";
     }
 
-    function likeAndDislike(postId) {
+    if (userLike) {
+      const filteredLikes = likes.filter((value) => value !== username);
 
-        const headers = mountHeaders(userData.token);
-
-        if (isLiked) {
-            unlikePost(postId, headers)
-                .then((res) => {
-                    setIsLiked(false);
-                    setUpdateLike(!updateLike);
-                })
-                .catch((res) => {
-                    console.log(res.message);
-                    alert("unlike error");
-                });
-        } else {
-            likePost(postId, headers)
-                .then((res) => {
-                    setIsLiked(true);
-                    setUpdateLike(!updateLike);
-                })
-                .catch((res) => {
-                    console.log(res.message);
-                    alert("like error");
-                });
-        }
+      switch (likes.length) {
+        case 1:
+          return "Você";
+          break;
+        case 2:
+          return `Você e ${filteredLikes[0]}`;
+          break;
+        default:
+          return `Você, ${filteredLikes[0]} e outras ${
+            likes.length - 2
+          } pessoas`;
+      }
+    } else {
+      switch (likes.length) {
+        case 1:
+          return likes[0];
+          break;
+        case 2:
+          return `${likes[0]} e ${likes[1]}`;
+          break;
+        default:
+          return `${likes[0]}, ${likes[1]} e outras ${
+            likes.length - 2
+          } pessoas`;
+      }
     }
+  }
 
-    function redirectHashtag(hashtag) {
-        const redirect = hashtag.replace("#", "");
-        navigate(`/hashtag/${redirect}`);
+  function likeAndDislike(postId) {
+    const headers = mountHeaders(userData.token);
+
+    if (isLiked) {
+      unlikePost(postId, headers)
+        .then((res) => {
+          setIsLiked(false);
+          setUpdateLike(!updateLike);
+        })
+        .catch((res) => {
+          console.log(res.message);
+          alert("unlike error");
+        });
+    } else {
+      likePost(postId, headers)
+        .then((res) => {
+          setIsLiked(true);
+          setUpdateLike(!updateLike);
+        })
+        .catch((res) => {
+          console.log(res.message);
+          alert("like error");
+        });
     }
+  }
 
-    function editPost() {
-        setNewPost(newPost);
-        setTimeToEdit(!timeToEdit);
+  function redirectHashtag(hashtag) {
+    const redirect = hashtag.replace("#", "");
+    navigate(`/hashtag/${redirect}`);
+  }
+
+  function editPost() {
+    setNewPost(newPost);
+    setTimeToEdit(!timeToEdit);
+  }
+
+  function sendEditPost(postId) {
+    setDisabled(true);
+    console.log("enviar nova edição");
+
+    const headers = mountHeaders(userData.token);
+
+    const dataPostEdited = { newPost, postId };
+
+    newEditPost(dataPostEdited, headers)
+      .then((res) => {
+        setDisabled(false);
+        setNewPost(res.data);
+        setTimeToEdit(false);
+      })
+      .catch((err) => {
+        alert("Error editing the post!");
+        setDisabled(false);
+      });
+  }
+
+  useEffect(() => {
+    if (timeToEdit) {
+      inputEditPost.current.focus();
     }
+  }, [timeToEdit]);
 
-    function sendEditPost(postId) {
-        setDisabled(true);
-        console.log("enviar nova edição");
-
-        const headers = mountHeaders(userData.token);
-
-        const dataPostEdited = { newPost, postId };
-
-        newEditPost(dataPostEdited, headers)
-            .then((res) => {
-                setDisabled(false);
-                setNewPost(res.data);
-                setTimeToEdit(false);
-            })
-            .catch((err) => {
-                alert("Error editing the post!");
-                setDisabled(false);
-            });
+  function cancelOrSend({ e, postId }) {
+    const key = e.keyCode;
+    const ESC = 27;
+    const ENTER = 13;
+    if (key === ESC) {
+      setTimeToEdit(false);
+      setNewPost(description);
     }
-
-    useEffect(() => {
-        if (timeToEdit) {
-            inputEditPost.current.focus();
-        }
-    }, [timeToEdit]);
-
-    function cancelOrSend({ e, postId }) {
-        const key = e.keyCode;
-        const ESC = 27;
-        const ENTER = 13;
-        if (key === ESC) {
-            setTimeToEdit(false);
-            setNewPost(description);
-        }
-        if (key === ENTER) {
-            sendEditPost(postId);
-        }
+    if (key === ENTER) {
+      sendEditPost(postId);
     }
+  }
 
-    function openChoicesForDelete() {
-        setIsOpen(true);
-    }
+  function openChoicesForDelete() {
+    setIsOpen(true);
+  }
 
-    function toggleModal() {
-        setIsOpen(!isOpen);
-    }
+  function toggleModal() {
+    setIsOpen(!isOpen);
+  }
 
-    function confirmDeletePost({ postId }) {
-        setLoading(true);
+  function confirmDeletePost({ postId }) {
+    setLoading(true);
 
-        const headers = mountHeaders(userData.token);
+    const headers = mountHeaders(userData.token);
 
-        deletePost(postId, headers)
-            .then((res) => {
-                setLoading(false);
-                setUpdateLike(!updateLike);
-                console.log(res.data);
-                setIsOpen(false);
-            })
-            .catch((err) => {
-                setIsOpen(false);
-                setLoading(false);
-                console.log(err.response);
-                alert("Error deleting post");
-            });
-    }
+    deletePost(postId, headers)
+      .then((res) => {
+        setLoading(false);
+        setUpdateLike(!updateLike);
+        console.log(res.data);
+        setIsOpen(false);
+      })
+      .catch((err) => {
+        setIsOpen(false);
+        setLoading(false);
+        console.log(err.response);
+        alert("Error deleting post");
+      });
+  }
 
-    useEffect(() => {
-      const headers = mountHeaders(userData.token);
-      getComments(id, headers)
-        .then((res) => setComments(res.data))
-        .catch((err) => console.log(err));
-    }, []);
+  useEffect(() => {
+    const headers = mountHeaders(userData.token);
+    getComments(id, headers)
+      .then((res) => setComments(res.data))
+      .catch((err) => console.log(err));
+  }, []);
 
-    function openComments() {
-      setCommentsIsOpen(!commentsIsOpen);
-    }
+  function openComments() {
+    setCommentsIsOpen(!commentsIsOpen);
+  }
 
-    return (
-      <>
+  return (
+    <>
       <Post>
         <ContainerPost>
           <Left>
@@ -229,7 +221,7 @@ export default function PostBox({
                   style={{ cursor: "pointer" }}
                   onClick={openComments}
                 />
-                <a>{comments.length} comments</a>
+                <a>{comments.length} comments </a>
               </CommentsIcon>
               <Repost>
                 <BiRepost style={{ cursor: "pointer" }} />
@@ -240,7 +232,6 @@ export default function PostBox({
           <Right>
             <Top>
               <Link to={`/user/${userId}`}>
-                {" "}
                 <Name>{username}</Name>
               </Link>
               <Icons>
@@ -326,40 +317,38 @@ export default function PostBox({
                 <Url>{url}</Url>
               </UrlInfo>
               <UrlImage>
-                <img src={urlImage} alt="urlImage" />
+                <img src={urlImage} alt="Image Error" />
               </UrlImage>
             </Metadata>
           </Right>
-          
         </ContainerPost>
-        
         <ReactTooltip place="bottom" type="light" effect="solid" />
-        
-
       </Post>
       <RenderComments>
-      {commentsIsOpen
-        ? comments.map((cmt, i) => {
-          return (
-            <Comments
-              key={i}
-              comment={cmt.comment}
-              username={cmt.commentUser}
-              isFollowing={cmt.following}
-              isAuthorPost={cmt.authorPost}
-              postId={cmt.postId}
-              profileImg={cmt.profilePicture}
-              userId={cmt.userId}
-            />
-          );
-        }) : ""}
+        {commentsIsOpen
+          ? comments.map((cmt, i) => {
+              return (
+                <Comments
+                  key={i}
+                  comment={cmt.comment}
+                  username={cmt.commentUser}
+                  isFollowing={cmt.following}
+                  isAuthorPost={cmt.authorPost}
+                  postId={cmt.postId}
+                  profileImg={cmt.profilePicture}
+                  userId={cmt.userId}
+                />
+              );
+            })
+          : ""}
       </RenderComments>
-      </>
-    );
+    </>
+  );
 }
 const Post = styled.div`
-  height: 276px;
-  width: 611px;
+  height: 275px;
+  width: 100%;
+  max-width: 610px;
   border-radius: 16px;
   background-color: #171717;
   display: flex;
@@ -440,8 +429,8 @@ const Repost = styled.div`
 const Right = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 17px;
-  margin-left: 30px;
+  justify-content: space-between;
+  margin: 20px;
   width: 503px;
 `;
 
@@ -459,45 +448,68 @@ const Name = styled.div`
 const Icons = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 42px;
+  width: 50px;
   margin-right: 6px;
+
+  div {
+    cursor: pointer;
+  }
 `;
 
 const Hashtag = styled.span`
   font-weight: 700;
   cursor: pointer;
+  color: #ffffff;
 `;
 
-const Description = styled.div``;
+const Description = styled.div`
+  font-size: 17px;
+  color: #b7b7b7;
+`;
 
 const Metadata = styled.div`
-    height: 155px;
-    width: 503px;
-    border-radius: 16px;
-    border: 1px #C4C4C4;
-    display: flex;
-    justify-content: space-between;
-`;
-const UrlInfo = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    width: 349.56px;
-`;
-const UrlImage = styled.div`
-    height: 155px;
-    width: 153.44px;
-    img {
-        height: 155px;
-        width: 153.44px;
-    }
+  height: 155px;
+  width: 503px;
+  border-radius: 16px;
+  border: 1px solid #4d4d4d;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
 `;
 
-const UrlTitle = styled.div``;
-const UrlDescription = styled.div``;
-const Url = styled.div``;
+const UrlInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin: 25px 20px;
+  width: 349.56px;
+`;
+
+const UrlImage = styled.div`
+  img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 153px;
+    width: 153.44px;
+    border-radius: 0 16px 16px 0;
+    object-fit: cover;
+  }
+`;
+
+const UrlTitle = styled.div`
+  font-size: 16px;
+  color: #cecece;
+`;
+const UrlDescription = styled.div`
+  font: 11px;
+  color: #cecece;
+`;
+const Url = styled.div`
+  font-size: 11px;
+  color: #cecece;
+`;
 
 const InputNewPost = styled.div`
   margin: 6px 0 6px 0;
@@ -519,7 +531,7 @@ const InputNewPost = styled.div`
 const ModalContent = styled.div`
   background-color: #333333;
   width: 600px;
-  height: 262px ;
+  height: 262px;
   font-family: "Lato";
   display: flex;
   align-items: center;
