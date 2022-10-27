@@ -2,7 +2,14 @@ import styled from "styled-components";
 import { useState, useRef, useEffect, useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { RotatingLines } from "react-loader-spinner";
-import { mountHeaders, likePost, unlikePost, newEditPost, deletePost } from "../services/linkr.js";
+import {
+  mountHeaders,
+  likePost,
+  unlikePost,
+  newEditPost,
+  deletePost,
+  getComments,
+} from "../services/linkr.js";
 import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
 import { AiOutlineComment } from "react-icons/ai";
@@ -11,6 +18,7 @@ import ReactHashtag from "@mdnm/react-hashtag";
 import ReactTooltip from "react-tooltip";
 import UserContext from "../context/UserContext.js";
 import Modal from "react-modal";
+import Comments from "./Comments.js";
 
 export default function PostBox({
   id,
@@ -27,14 +35,14 @@ export default function PostBox({
   updateLike,
   setUpdateLike,
 }) {
-
   const [isLiked, setIsLiked] = useState(userLike);
   const [timeToEdit, setTimeToEdit] = useState(false);
   const [newPost, setNewPost] = useState(description);
   const [disabled, setDisabled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [openComments, setOpenComments] = useState(false);
+  const [commentsIsOpen, setCommentsIsOpen] = useState(false);
+  const [comments, setComments] = useState([]);
   const inputEditPost = useRef(null);
   const navigate = useNavigate();
   const { userData } = useContext(UserContext);
@@ -74,7 +82,6 @@ export default function PostBox({
   }
 
   function likeAndDislike(postId) {
-
     const headers = mountHeaders(userData.token);
 
     if (isLiked) {
@@ -177,127 +184,163 @@ export default function PostBox({
       });
   }
 
-  return (
-    <Post>
-      <Left>
-        <Link to={`/user/${userId}`}>
-          <Img>
-            <img src={profilePicture} alt="profile" />
-          </Img>
-        </Link>
-        <Options>
-          <Likes isLiked={isLiked}>
-            <LikeHeart isLiked={isLiked} onClick={() => likeAndDislike(id)}>
-              {isLiked ? <BsHeartFill /> : <BsHeart />}
-            </LikeHeart>
-            <a data-tip={likesCount(postLikes)}>
-              {postLikes[0] === null ? 0 : postLikes.length} likes
-            </a>
-          </Likes>
-          <Comments>
-            <AiOutlineComment style={{ cursor: 'pointer' }} />
-            <a>0 comments </a>
-          </Comments>
-          <Repost>
-            <BiRepost style={{ cursor: 'pointer' }} />
-            <a> re-post </a>
-          </Repost>
-        </Options>
-      </Left>
-      <Right>
-        <Top>
-          <Link to={`/user/${userId}`}>
-            <Name>{username}</Name>
-          </Link>
-          <Icons>
-            <div>
-              <FaPencilAlt onClick={editPost} />
-            </div>
-            <div>
-              <FaTrash onClick={openChoicesForDelete} />
-            </div>
+  useEffect(() => {
+    const headers = mountHeaders(userData.token);
+    getComments(id, headers)
+      .then((res) => setComments(res.data))
+      .catch((err) => console.log(err));
+  }, []);
 
-            <Modal
-              isOpen={isOpen}
-              onRequestClose={toggleModal}
-              style={{
-                overlay: {
-                  backgroundColor: "rgba(255, 255, 255, 0.4)",
-                  zIndex: "2",
-                },
-                content: {
-                  border: "none",
-                  backgroundColor: "rgba(255, 255, 255, 0)",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                },
-              }}
-            >
-              <ModalContent>
-                {loading ? (
-                  <RotatingLines
-                    strokeColor="#1877f2"
-                    strokeWidth="2"
-                    animationDuration="1"
-                    width="96"
-                    visible={true}
-                  />
-                ) : (
-                  <>
-                    <p>Are you sure you want to delete this post?</p>
-                    <Buttons>
-                      <button onClick={toggleModal}>No, go back</button>
-                      <button
-                        onClick={() => confirmDeletePost({ postId: id })}
-                      >
-                        Yes, delete it
-                      </button>
-                    </Buttons>
-                  </>
+  function openComments() {
+    setCommentsIsOpen(!commentsIsOpen);
+  }
+
+  return (
+    <>
+      <Post>
+        <ContainerPost>
+          <Left>
+            <Link to={`/user/${userId}`}>
+              <Img>
+                <img src={profilePicture} alt="profile" />
+              </Img>
+            </Link>
+            <Options>
+              <Likes isLiked={isLiked}>
+                <LikeHeart isLiked={isLiked} onClick={() => likeAndDislike(id)}>
+                  {isLiked ? <BsHeartFill /> : <BsHeart />}
+                </LikeHeart>
+                <a data-tip={likesCount(postLikes)}>
+                  {postLikes[0] === null ? 0 : postLikes.length} likes
+                </a>
+              </Likes>
+              <CommentsIcon>
+                <AiOutlineComment
+                  style={{ cursor: "pointer" }}
+                  onClick={openComments}
+                />
+                <a>{comments.length} comments </a>
+              </CommentsIcon>
+              <Repost>
+                <BiRepost style={{ cursor: "pointer" }} />
+                <a> re-post </a>
+              </Repost>
+            </Options>
+          </Left>
+          <Right>
+            <Top>
+              <Link to={`/user/${userId}`}>
+                <Name>{username}</Name>
+              </Link>
+              <Icons>
+                <div>
+                  <FaPencilAlt onClick={editPost} />
+                </div>
+                <div>
+                  <FaTrash onClick={openChoicesForDelete} />
+                </div>
+
+                <Modal
+                  isOpen={isOpen}
+                  onRequestClose={toggleModal}
+                  style={{
+                    overlay: {
+                      backgroundColor: "rgba(255, 255, 255, 0.4)",
+                      zIndex: "2",
+                    },
+                    content: {
+                      border: "none",
+                      backgroundColor: "rgba(255, 255, 255, 0)",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    },
+                  }}
+                >
+                  <ModalContent>
+                    {loading ? (
+                      <RotatingLines
+                        strokeColor="#1877f2"
+                        strokeWidth="2"
+                        animationDuration="1"
+                        width="96"
+                        visible={true}
+                      />
+                    ) : (
+                      <>
+                        <p>Are you sure you want to delete this post?</p>
+                        <Buttons>
+                          <button onClick={toggleModal}>No, go back</button>
+                          <button
+                            onClick={() => confirmDeletePost({ postId: id })}
+                          >
+                            Yes, delete it
+                          </button>
+                        </Buttons>
+                      </>
+                    )}
+                  </ModalContent>
+                </Modal>
+              </Icons>
+            </Top>
+            <Description>
+              <ReactHashtag
+                renderHashtag={(hashtagValue) => (
+                  <Hashtag onClick={() => redirectHashtag(hashtagValue)}>
+                    {hashtagValue}
+                  </Hashtag>
                 )}
-              </ModalContent>
-            </Modal>
-          </Icons>
-        </Top>
-        <Description>
-          <ReactHashtag
-            renderHashtag={(hashtagValue) => (
-              <Hashtag onClick={() => redirectHashtag(hashtagValue)}>
-                {hashtagValue}
-              </Hashtag>
-            )}
-          >
-            {timeToEdit ? "" : newPost}
-          </ReactHashtag>
-          {timeToEdit ? (
-            <InputNewPost>
-              <input
-                name="newPost"
-                onChange={(e) => setNewPost(e.target.value)}
-                value={newPost}
-                ref={inputEditPost}
-                onKeyDown={(e) => cancelOrSend({ e, postId: id })}
-                disabled={disabled}
+              >
+                {timeToEdit ? "" : newPost}
+              </ReactHashtag>
+              {timeToEdit ? (
+                <InputNewPost>
+                  <input
+                    name="newPost"
+                    onChange={(e) => setNewPost(e.target.value)}
+                    value={newPost}
+                    ref={inputEditPost}
+                    onKeyDown={(e) => cancelOrSend({ e, postId: id })}
+                    disabled={disabled}
+                  />
+                </InputNewPost>
+              ) : (
+                ""
+              )}
+            </Description>
+            <Metadata onClick={() => window.open(url)}>
+              <UrlInfo>
+                <UrlTitle>{urlTitle}</UrlTitle>
+                <UrlDescription>{urlDescription}</UrlDescription>
+                <Url>{url}</Url>
+              </UrlInfo>
+              <UrlImage>
+                <img src={urlImage} alt="Image Error" />
+              </UrlImage>
+            </Metadata>
+          </Right>
+        </ContainerPost>
+        <ReactTooltip place="bottom" type="light" effect="solid" />
+      </Post>
+      <RenderComments>
+        {commentsIsOpen
+          ? comments.map((cmt, i) => {
+            return (
+              <Comments
+                key={i}
+                comment={cmt.comment}
+                username={cmt.commentUser}
+                isFollowing={cmt.following}
+                isAuthorPost={cmt.authorPost}
+                postId={cmt.postId}
+                profileImg={cmt.profilePicture}
+                userId={cmt.userId}
               />
-            </InputNewPost>
-          ) : (
-            ""
-          )}
-        </Description>
-        <Metadata onClick={() => window.open(url)}>
-          <UrlInfo>
-            <UrlTitle>{urlTitle}</UrlTitle>
-            <UrlDescription>{urlDescription}</UrlDescription>
-            <Url>{url}</Url>
-          </UrlInfo>
-          <UrlImage>
-            <img src={urlImage} alt="Image Error" />
-          </UrlImage>
-        </Metadata>
-      </Right>
-      <ReactTooltip place="bottom" type="light" effect="solid" />
-    </Post>
+            );
+          })
+          : ""}
+      </RenderComments>
+    </>
   );
 }
 const Post = styled.div`
@@ -384,7 +427,7 @@ const LikeHeart = styled.div`
   color: ${({ isLiked }) => (isLiked ? "red" : "white")};
 `;
 
-const Comments = styled.div`
+const CommentsIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -443,7 +486,7 @@ const Icons = styled.div`
 const Hashtag = styled.span`
   font-weight: 700;
   cursor: pointer;
-  color: #FFFFFF;
+  color: #ffffff;
 `;
 
 const Description = styled.div`
@@ -491,7 +534,7 @@ const UrlImage = styled.div`
     align-items: center;
     height: 153px;
     width: 153.44px;
-    border-radius: 0 16px 16px 0; 
+    border-radius: 0 16px 16px 0;
     object-fit: cover;
 
     @media (max-width:650px) {
@@ -546,7 +589,7 @@ const InputNewPost = styled.div`
 const ModalContent = styled.div`
   background-color: #333333;
   width: 600px;
-  height: 262px ;
+  height: 262px;
   font-family: "Lato";
   display: flex;
   align-items: center;
@@ -586,4 +629,10 @@ const Buttons = styled.div`
     background-color: #1877f2;
     color: #fff;
   }
+`;
+
+const RenderComments = styled.div`
+  margin-bottom: 40px;
+  margin-top: -10px;
+  border-radius: 100px;
 `;
