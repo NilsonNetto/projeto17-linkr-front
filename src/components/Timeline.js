@@ -6,7 +6,6 @@ import {
   mountHeaders,
   postPost,
   getPosts,
-  getNewPosts,
   deletePost,
 } from "./../services/linkr";
 import Header from "./Header";
@@ -64,8 +63,7 @@ export default function Timeline() {
     }
   }
 
-  console.log(posts);
-  console.log(postsNumber);
+  //console.log(posts);
 
   function post(event) {
     event.preventDefault();

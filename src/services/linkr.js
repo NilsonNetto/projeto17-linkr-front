@@ -65,13 +65,15 @@ function unfollowUser(userId, headers) {
 }
 
 function newEditPost(dataPostEdited, headers) {
-  console.log(headers);
   return axios.put(`${URL}/editPost`, dataPostEdited, headers);
 }
 
 function deletePost(postId, headers) {
-  console.log(postId);
   return axios.delete(`${URL}/deletePost/${postId}`, headers);
+}
+
+function getComments(postId, headers) {
+  return axios.get(`${URL}/comments/${postId}`, headers);
 }
 
 export {
@@ -91,4 +93,5 @@ export {
   unfollowUser,
   newEditPost,
   deletePost,
+  getComments
 };
