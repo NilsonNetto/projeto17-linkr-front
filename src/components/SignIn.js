@@ -3,11 +3,12 @@ import { postSignin } from "../services/linkr";
 import { useState, useEffect, useContext } from "react";
 import styled from "styled-components";
 import UserContext from "../context/UserContext";
+import { ThreeDots } from "react-loader-spinner";
 
 export default function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [offButton, setOffButton] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { setUserData } = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -28,37 +29,33 @@ export default function SignIn() {
 
   function Login(e) {
     e.preventDefault();
+    setLoading(true);
 
     const body = {
       email,
       password,
     };
 
-    const promise = postSignin(body);
-    promise.then((res) => {
-      const { data } = res;
+    postSignin(body)
+      .then(res => {
+        const { data } = res;
 
-      const result = [data.token];
-      if (result.length > 0) {
-        setOffButton(true);
-      }
+        setUserData(data);
+        setLoading(false);
+        localStorage.clear();
+        localStorage.setItem("token", JSON.stringify(data.token));
+        localStorage.setItem(
+          "profilePicture",
+          JSON.stringify(data.profilePicture)
+        );
 
-      setUserData(data);
-
-      localStorage.clear();
-      localStorage.setItem("token", JSON.stringify(data.token));
-      localStorage.setItem(
-        "profilePicture",
-        JSON.stringify(data.profilePicture)
-      );
-
-      navigate("/timeline");
-    });
-    promise.catch((err) => {
-      const erros = err;
-      console.log(erros);
-      alert(erros);
-    });
+        navigate("/timeline");
+      })
+      .catch(res => {
+        console.log(res.data);
+        setLoading(false);
+        alert('Email ou senha incorretos');
+      });
   }
 
   return (
@@ -79,6 +76,7 @@ export default function SignIn() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            disabled={loading}
             required
           />
           <input
@@ -86,10 +84,13 @@ export default function SignIn() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            disabled={loading}
             required
           />
-          <button onClick={Login} disabled={offButton}>
-            Log In
+          <button onClick={Login} disabled={loading}>
+            {loading ?
+              <ThreeDots height={20} color='white' /> :
+              'Log in'}
           </button>
           <Link to="/signup">
             <SignDesc>First time? Create an account!</SignDesc>
@@ -232,6 +233,9 @@ const LoginInputs = styled.div`
     line-height: 40px;
     color: #ffffff;
     margin-bottom: 22px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     @media (max-width: 450px) {
       width: 100%;
