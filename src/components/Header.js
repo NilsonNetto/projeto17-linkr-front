@@ -96,6 +96,10 @@ const Top = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1;
 `;
 
 const Title = styled.div`

@@ -32,7 +32,7 @@ export default function HashtagPage() {
   }, []);
 
   useEffect(() => {
-
+    setIsLoading(true);
     if (userData) {
       const headers = mountHeaders(userData.token);
 
@@ -91,6 +91,7 @@ const Container = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
+  margin-top: 72px;
 `;
 
 const SidebarBox = styled.div`

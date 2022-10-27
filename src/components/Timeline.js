@@ -175,6 +175,7 @@ const Container = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
+  margin-top: 72px;
 `;
 
 const TimelineBox = styled.div`
