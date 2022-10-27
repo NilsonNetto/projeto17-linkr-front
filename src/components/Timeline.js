@@ -6,6 +6,7 @@ import {
   mountHeaders,
   postPost,
   getPosts,
+  getNewPosts
 } from "./../services/linkr";
 import Header from "./Header";
 import PostBox from "./PostBox";
@@ -20,6 +21,9 @@ export default function Timeline() {
   const [loadingPage, setLoadingPage] = useState(true);
   const [loadingPosts, setLoadingPosts] = useState(true);
   const [loadingPublish, setLoadingPublish] = useState(false);
+  const [loadingNewPosts, setLoadingNewPosts] = useState(false);
+  const [postsNumber, setPostsNumber] = useState(0);
+  const [newPosts, setNewPosts] = useState(0);
   const [posts, setPosts] = useState([]);
   const [updateLike, setUpdateLike] = useState(false);
   const { userData, setUserData } = useContext(UserContext);
@@ -47,8 +51,10 @@ export default function Timeline() {
       getPosts(headers)
         .then((resposta) => {
           setPosts(resposta.data);
+          setPostsNumber(resposta.data.length);
           setLoadingPosts(false);
           setLoadingPage(false);
+          setLoadingNewPosts(false);
         })
         .catch((resposta) => {
           console.log(resposta);
@@ -56,7 +62,7 @@ export default function Timeline() {
           setLoadingPage(false);
         });
     }
-  }, [updateLike, userData, loadingPublish]);
+  }, [updateLike, userData, loadingPublish, loadingNewPosts]);
 
   function post(event) {
     event.preventDefault();
@@ -114,6 +120,24 @@ export default function Timeline() {
     }
   }
 
+  useInterval(async () => {
+    if (userData) {
+      const headers = mountHeaders(userData.token);
+
+      await getNewPosts(headers)
+        .then((resposta) => {
+          if (resposta.data > postsNumber) {
+            setNewPosts(resposta.data - postsNumber);
+          }
+          console.log(newPosts)
+
+        })
+        .catch((resposta) => {
+          console.log(resposta);
+        });
+    }
+  }, 15000);
+
   return loadingPage ? (
     <LoadingPage />
   ) : (
@@ -159,6 +183,21 @@ export default function Timeline() {
                 </Form>
               </FormDiv>
             </Publish>
+            <Load>
+              {newPosts > 0 ?
+                <LoadButton onClick={() => {
+                  setNewPosts(0);
+                  setLoadingNewPosts(true);
+                }}>
+                  {`${newPosts} new posts, load more!`}
+                  <Icon>
+                    <ImSpinner11 />
+                  </Icon>
+                </LoadButton>
+                :
+                <></>
+              }
+            </Load>
             <Posts>
               {loadingPosts ? (
                 <ThreeDots height={40} color={"white"} />
@@ -344,6 +383,27 @@ const InputDescription = styled.input`
     display: flex;
     justify-content: center;
   }
+`;
+
+const Load = styled.div``;
+
+const LoadButton = styled.div`
+  height: 61px;
+  width: 611px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 16px;
+  background-color: #1877F2;
+  margin-top: 40px;
+  margin-bottom: 14px;
+  font-family: "Lato", sans-serif;
+  font-size: 16px;
+  color: #FFFFFF;
+`;
+
+const Icon = styled.div`
+  margin-left: 10px;
 `;
 
 const Posts = styled.div`
