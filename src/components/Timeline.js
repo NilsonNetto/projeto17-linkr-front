@@ -53,7 +53,7 @@ export default function Timeline() {
     }
   }
 
-  console.log(posts);
+  //console.log(posts);
 
   function post(event) {
     event.preventDefault();
