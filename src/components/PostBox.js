@@ -349,6 +349,7 @@ const Post = styled.div`
   display: flex;
   padding: 20px;
   gap: 20px;
+  z-index: 1;
 
   @media (max-width: 650px) {
     width: 100%;
@@ -613,8 +614,13 @@ const Buttons = styled.div`
 `;
 
 const RenderComments = styled.div`
-  display: ${({ commentsIsOpen }) => commentsIsOpen ? 'initial' : 'none'};
+  display: ${({ commentsIsOpen }) => (commentsIsOpen ? "initial" : "none")};
   margin-bottom: 40px;
-  margin-top: -10px;
-  border-radius: 100px;
+  margin-top: -26px;
+  width: 610px;
+
+  @media (max-width: 650px) {
+    height: auto;
+    width: 100%;
+  }
 `;
