@@ -441,7 +441,7 @@ const UrlImage = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 155px;
+    height: 153px;
     width: 153.44px;
     border-radius: 0 16px 16px 0; 
     object-fit: cover;
