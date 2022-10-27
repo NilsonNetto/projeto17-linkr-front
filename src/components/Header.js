@@ -66,7 +66,6 @@ export default function Header() {
               ))}
           </UserFind>
         </Search>
-
         <Logout>
           {click === false ? (
             <FaChevronDown
@@ -96,6 +95,10 @@ const Top = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1;
 `;
 
 const Title = styled.div`
@@ -155,12 +158,15 @@ const Box = styled.div`
   margin-top: 110px;
   cursor: pointer;
 `;
+
 const Search = styled.div`
   z-index: 2;
   input {
-    width: 563px;
+    width: 50vw;
+    max-width: 563px;
     height: 45px;
     background-color: #ffffff;
+    border: none;
     border-radius: 8px;
   }
   input::placeholder {
@@ -169,19 +175,28 @@ const Search = styled.div`
     color: #c6c6c6;
     padding: 15px;
   }
+
+  @media (max-width: 650px) {
+    display: none;
+  }
 `;
 const UserFind = styled.div`
+  width: 50vw;
+  max-width: 563px;
   position: fixed;
   top: 50px;
   border-radius: 10px;
   z-index: 1;
 `;
+
 const User = styled.div`
-  width: 563px;
+  width: 50vw;
+  max-width: 563px;
   display: flex;
   margin: 0 auto;
   background: #e7e7e7;
   cursor: pointer;
+  border-radius: 0 0 8px 8px;
   img {
     width: 39px;
     height: 39px;

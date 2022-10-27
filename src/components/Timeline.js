@@ -6,18 +6,25 @@ import {
   mountHeaders,
   postPost,
   getPosts,
+  getNewPosts
 } from "./../services/linkr";
 import Header from "./Header";
 import PostBox from "./PostBox";
 import Sidebar from "./Sidebar";
 import LoadingPage from "./LoadingPage";
 import { ThreeDots } from "react-loader-spinner";
+import useInterval from "use-interval";
+import { ImSpinner11 } from "react-icons/im";
 
 export default function Timeline() {
   const [form, setForm] = useState({ description: "", link: "" });
-  const [loading, setLoading] = useState(false);
+  const [loadingPage, setLoadingPage] = useState(true);
+  const [loadingPosts, setLoadingPosts] = useState(true);
+  const [loadingPublish, setLoadingPublish] = useState(false);
+  const [loadingNewPosts, setLoadingNewPosts] = useState(false);
+  const [postsNumber, setPostsNumber] = useState(0);
+  const [newPosts, setNewPosts] = useState(0);
   const [posts, setPosts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [updateLike, setUpdateLike] = useState(false);
   const { userData, setUserData } = useContext(UserContext);
   const navigate = useNavigate();
@@ -37,30 +44,30 @@ export default function Timeline() {
   }, []);
 
   useEffect(() => {
-    updating();
-  }, [updateLike, userData]);
-
-  async function updating() {
     if (userData) {
+      setLoadingPosts(true);
       const headers = mountHeaders(userData.token);
 
-      await getPosts(headers)
+      getPosts(headers)
         .then((resposta) => {
           setPosts(resposta.data);
-          setIsLoading(false);
+          setPostsNumber(resposta.data.length);
+          setLoadingPosts(false);
+          setLoadingPage(false);
+          setLoadingNewPosts(false);
         })
         .catch((resposta) => {
           console.log(resposta);
-          setIsLoading(false);
+          setLoadingPosts(false);
+          setLoadingPage(false);
         });
     }
-  }
-
-  //console.log(posts);
+  }, [updateLike, userData, loadingPublish, loadingNewPosts]);
 
   function post(event) {
     event.preventDefault();
-    setLoading(true);
+    setLoadingPublish(true);
+    setLoadingPosts(true);
 
     const headers = mountHeaders(userData.token);
     const body = {
@@ -71,14 +78,13 @@ export default function Timeline() {
     postPost(body, headers)
       .then((resposta) => {
         console.log(resposta);
-        setLoading(false);
+        setLoadingPublish(false);
         setForm({ description: "", link: "" });
-        updating();
       })
       .catch((resposta) => {
         console.log(resposta);
         alert("Houve um erro ao publicar seu link");
-        setLoading(false);
+        setLoadingPublish(false);
         setForm({ description: "", link: "" });
       });
   }
@@ -111,60 +117,98 @@ export default function Timeline() {
       );
     } else if (posts.message) {
       return `${posts.message}`;
-    } else {
-      return <>No posts found from your friends</>;
     }
   }
 
-  return isLoading ? (
+  useInterval(async () => {
+    if (userData) {
+      const headers = mountHeaders(userData.token);
+
+      await getNewPosts(headers)
+        .then((resposta) => {
+          if (resposta.data > postsNumber) {
+            setNewPosts(resposta.data - postsNumber);
+          }
+          console.log(newPosts)
+
+        })
+        .catch((resposta) => {
+          console.log(resposta);
+        });
+    }
+  }, 15000);
+
+  return loadingPage ? (
     <LoadingPage />
   ) : (
     <>
       <Header />
       <Container>
-        <TimelineBox>
-          <Title>timeline</Title>
-          <Publish>
-            <ImgDiv>
-              <Img src={userData.profilePicture} alt="profile-pic" />
-            </ImgDiv>
-            <FormDiv>
-              <PublishTitle>What are you going to share today?</PublishTitle>
-              <Form onSubmit={post}>
-                <InputLink
-                  type="url"
-                  name="link"
-                  value={form.link}
-                  placeholder="https://..."
-                  required
-                  disabled={loading}
-                  onChange={(e) => setForm({ ...form, link: e.target.value })}
-                />
-                <InputDescription
-                  type="text"
-                  name="description"
-                  value={form.description}
-                  placeholder="Awesome article about #Javascript"
-                  disabled={loading}
-                  onChange={(e) =>
-                    setForm({ ...form, description: e.target.value })
-                  }
-                />
-                <button type="submit">
-                  {loading ? (
-                    <ThreeDots height={13} color={"white"} />
-                  ) : (
-                    <>Publish</>
-                  )}
-                </button>
-              </Form>
-            </FormDiv>
-          </Publish>
-          <Posts>{postsLoading()}</Posts>
-        </TimelineBox>
-        <SidebarBox>
-          <Sidebar />
-        </SidebarBox>
+        <Title>timeline</Title>
+        <Feed>
+          <TimelineBox>
+            <Publish>
+              <ImgDiv>
+                <Img src={userData.profilePicture} alt="profile-pic" />
+              </ImgDiv>
+              <FormDiv>
+                <PublishTitle>What are you going to share today?</PublishTitle>
+                <Form onSubmit={post}>
+                  <InputLink
+                    type="url"
+                    name="link"
+                    value={form.link}
+                    placeholder="https://..."
+                    required
+                    disabled={loadingPublish}
+                    onChange={(e) => setForm({ ...form, link: e.target.value })}
+                  />
+                  <InputDescription
+                    type="text"
+                    name="description"
+                    value={form.description}
+                    placeholder="Awesome article about #Javascript"
+                    disabled={loadingPublish}
+                    onChange={(e) =>
+                      setForm({ ...form, description: e.target.value })
+                    }
+                  />
+                  <button type="submit">
+                    {loadingPublish ? (
+                      <ThreeDots height={13} color={"white"} />
+                    ) : (
+                      <>Publish</>
+                    )}
+                  </button>
+                </Form>
+              </FormDiv>
+            </Publish>
+            <Load>
+              {newPosts > 0 ?
+                <LoadButton onClick={() => {
+                  setNewPosts(0);
+                  setLoadingNewPosts(true);
+                }}>
+                  {`${newPosts} new posts, load more!`}
+                  <Icon>
+                    <ImSpinner11 />
+                  </Icon>
+                </LoadButton>
+                :
+                <></>
+              }
+            </Load>
+            <Posts>
+              {loadingPosts ? (
+                <ThreeDots height={40} color={"white"} />
+              ) : (
+                postsLoading()
+              )}</Posts>
+          </TimelineBox>
+          <SidebarBox>
+            <Sidebar />
+          </SidebarBox>
+        </Feed>
       </Container>
     </>
   );
@@ -173,38 +217,74 @@ export default function Timeline() {
 const Container = styled.div`
   width: 100%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 72px;
+`;
+
+const Title = styled.div`
+  width: 937px;
+  font-size: 43px;
+  font-weight: 700;
+  font-family: "Oswald", sans-serif;
+  margin-top: 78px;
+  margin-bottom: 43px;
+  text-align: left;
+
+  @media (max-width: 950px) {
+    width: 611px;
+  }
+
+  @media (max-width: 650px) {
+    width: 100%;
+    padding-left: 20px;
+  }
+`;
+
+const Feed = styled.div`
+  display: flex;
+
+  @media (max-width: 650px) {
+    width: 100%;
+  }
 `;
 
 const TimelineBox = styled.div`
-  width: 611px;
-  margin-top: 78px;
+  width: 100%;
 `;
 
 const SidebarBox = styled.div`
-  margin: 164px 0 0 25px;
+  margin-left:25px;
+
   @media (max-width: 950px) {
     display: none;
   }
 `;
 
-const Title = styled.h1`
-  font-size: 43px;
-  font-weight: 700;
-  font-family: "Oswald", sans-serif;
-  margin-bottom: 43px;
-`;
-
 const Publish = styled.div`
   height: 209px;
-  width: 611px;
+  width: 100%;
   background-color: #ffffff;
   border-radius: 16px;
   display: flex;
+  margin-bottom: 15px;  
+
+  @media (max-width:650px) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0px;
+    box-shadow: 0 4px 4px 0 rgba(0,0,0,0.25);
+  }
 `;
 
 const ImgDiv = styled.div`
   margin-right: 21px;
+
+  @media (max-width: 650px) {
+    display: none;
+  }
 `;
 
 const Img = styled.img`
@@ -217,7 +297,14 @@ const Img = styled.img`
   margin-left: 18px;
 `;
 
-const FormDiv = styled.div``;
+const FormDiv = styled.div`
+  @media (max-width: 650px) {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+`;
 
 const PublishTitle = styled.div`
   font-family: "Lato", sans-serif;
@@ -225,6 +312,12 @@ const PublishTitle = styled.div`
   color: #707070;
   margin-top: 21px;
   margin-bottom: 10px;
+
+  @media (max-width: 650px) {
+    width: 100%;
+    margin: 15px 0;
+    text-align: center;
+  }
 `;
 
 const Form = styled.form`
@@ -232,12 +325,23 @@ const Form = styled.form`
   flex-direction: column;
   align-items: flex-end;
   margin-right: 22px;
+  gap: 5px;
+
+  @media (max-width: 650px) {
+    width: 100%;
+    padding: 0 15px;
+    margin: 0;
+  }
 
   input {
     width: 503px;
     background-color: #efefef;
     border-radius: 5px;
     border: #efefef;
+
+    @media (max-width: 650px) {
+      width: 100%;
+    }
   }
 
   button {
@@ -250,6 +354,10 @@ const Form = styled.form`
     color: #ffffff;
     font-size: 14px;
     font-family: "Lato", sans-serif;
+
+    @media (max-width: 650px) {
+      height: 20px;
+    }
   }
 `;
 
@@ -266,7 +374,6 @@ const InputLink = styled.input`
 
 const InputDescription = styled.input`
   height: 66px;
-  margin-top: 5px;
 
   ::placeholder {
     color: #949494;
@@ -278,6 +385,30 @@ const InputDescription = styled.input`
   }
 `;
 
+const Load = styled.div``;
+
+const LoadButton = styled.div`
+  height: 61px;
+  width: 611px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 16px;
+  background-color: #1877F2;
+  margin-top: 40px;
+  margin-bottom: 14px;
+  font-family: "Lato", sans-serif;
+  font-size: 16px;
+  color: #FFFFFF;
+`;
+
+const Icon = styled.div`
+  margin-left: 10px;
+`;
+
 const Posts = styled.div`
-  margin-top: 13px;
+  display:flex ;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 13px;
 `;

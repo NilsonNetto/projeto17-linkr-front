@@ -63,9 +63,8 @@ export default function PostBox({
           return `Você e ${filteredLikes[0]}`;
           break;
         default:
-          return `Você, ${filteredLikes[0]} e outras ${
-            likes.length - 2
-          } pessoas`;
+          return `Você, ${filteredLikes[0]} e outras ${likes.length - 2
+            } pessoas`;
       }
     } else {
       switch (likes.length) {
@@ -76,9 +75,8 @@ export default function PostBox({
           return `${likes[0]} e ${likes[1]}`;
           break;
         default:
-          return `${likes[0]}, ${likes[1]} e outras ${
-            likes.length - 2
-          } pessoas`;
+          return `${likes[0]}, ${likes[1]} e outras ${likes.length - 2
+            } pessoas`;
       }
     }
   }
@@ -200,146 +198,144 @@ export default function PostBox({
   return (
     <>
       <Post>
-        <ContainerPost>
-          <Left>
+        <Left>
+          <Link to={`/user/${userId}`}>
+            <Img>
+              <img src={profilePicture} alt="profile" />
+            </Img>
+          </Link>
+          <Options>
+            <Likes isLiked={isLiked}>
+              <LikeHeart isLiked={isLiked} onClick={() => likeAndDislike(id)}>
+                {isLiked ? <BsHeartFill /> : <BsHeart />}
+              </LikeHeart>
+              <a data-tip={likesCount(postLikes)}>
+                {postLikes[0] === null ? 0 : postLikes.length} likes
+              </a>
+            </Likes>
+            <CommentsIcon>
+              <AiOutlineComment
+                style={{ cursor: "pointer" }}
+                onClick={openComments}
+              />
+              <a>{comments.length} comments </a>
+            </CommentsIcon>
+            <Repost>
+              <BiRepost style={{ cursor: "pointer" }} />
+              <a> re-post </a>
+            </Repost>
+          </Options>
+        </Left>
+        <Right>
+          <Top>
             <Link to={`/user/${userId}`}>
-              <Img>
-                <img src={profilePicture} alt="profile" />
-              </Img>
+              <Name>{username}</Name>
             </Link>
-            <Options>
-              <Likes isLiked={isLiked}>
-                <LikeHeart isLiked={isLiked} onClick={() => likeAndDislike(id)}>
-                  {isLiked ? <BsHeartFill /> : <BsHeart />}
-                </LikeHeart>
-                <a data-tip={likesCount(postLikes)}>
-                  {postLikes[0] === null ? 0 : postLikes.length} likes
-                </a>
-              </Likes>
-              <CommentsIcon>
-                <AiOutlineComment
-                  style={{ cursor: "pointer" }}
-                  onClick={openComments}
-                />
-                <a>{comments.length} comments </a>
-              </CommentsIcon>
-              <Repost>
-                <BiRepost style={{ cursor: "pointer" }} />
-                <a> re-post </a>
-              </Repost>
-            </Options>
-          </Left>
-          <Right>
-            <Top>
-              <Link to={`/user/${userId}`}>
-                <Name>{username}</Name>
-              </Link>
-              <Icons>
-                <div>
-                  <FaPencilAlt onClick={editPost} />
-                </div>
-                <div>
-                  <FaTrash onClick={openChoicesForDelete} />
-                </div>
+            <Icons>
+              <div>
+                <FaPencilAlt onClick={editPost} />
+              </div>
+              <div>
+                <FaTrash onClick={openChoicesForDelete} />
+              </div>
 
-                <Modal
-                  isOpen={isOpen}
-                  onRequestClose={toggleModal}
-                  style={{
-                    overlay: {
-                      backgroundColor: "rgba(255, 255, 255, 0.4)",
-                      zIndex: "2",
-                    },
-                    content: {
-                      border: "none",
-                      backgroundColor: "rgba(255, 255, 255, 0)",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    },
-                  }}
-                >
-                  <ModalContent>
-                    {loading ? (
-                      <RotatingLines
-                        strokeColor="#1877f2"
-                        strokeWidth="2"
-                        animationDuration="1"
-                        width="96"
-                        visible={true}
-                      />
-                    ) : (
-                      <>
-                        <p>Are you sure you want to delete this post?</p>
-                        <Buttons>
-                          <button onClick={toggleModal}>No, go back</button>
-                          <button
-                            onClick={() => confirmDeletePost({ postId: id })}
-                          >
-                            Yes, delete it
-                          </button>
-                        </Buttons>
-                      </>
-                    )}
-                  </ModalContent>
-                </Modal>
-              </Icons>
-            </Top>
-            <Description>
-              <ReactHashtag
-                renderHashtag={(hashtagValue) => (
-                  <Hashtag onClick={() => redirectHashtag(hashtagValue)}>
-                    {hashtagValue}
-                  </Hashtag>
-                )}
+              <Modal
+                isOpen={isOpen}
+                onRequestClose={toggleModal}
+                style={{
+                  overlay: {
+                    backgroundColor: "rgba(255, 255, 255, 0.4)",
+                    zIndex: "2",
+                  },
+                  content: {
+                    border: "none",
+                    backgroundColor: "rgba(255, 255, 255, 0)",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  },
+                }}
               >
-                {timeToEdit ? "" : newPost}
-              </ReactHashtag>
-              {timeToEdit ? (
-                <InputNewPost>
-                  <input
-                    name="newPost"
-                    onChange={(e) => setNewPost(e.target.value)}
-                    value={newPost}
-                    ref={inputEditPost}
-                    onKeyDown={(e) => cancelOrSend({ e, postId: id })}
-                    disabled={disabled}
-                  />
-                </InputNewPost>
-              ) : (
-                ""
+                <ModalContent>
+                  {loading ? (
+                    <RotatingLines
+                      strokeColor="#1877f2"
+                      strokeWidth="2"
+                      animationDuration="1"
+                      width="96"
+                      visible={true}
+                    />
+                  ) : (
+                    <>
+                      <p>Are you sure you want to delete this post?</p>
+                      <Buttons>
+                        <button onClick={toggleModal}>No, go back</button>
+                        <button
+                          onClick={() => confirmDeletePost({ postId: id })}
+                        >
+                          Yes, delete it
+                        </button>
+                      </Buttons>
+                    </>
+                  )}
+                </ModalContent>
+              </Modal>
+            </Icons>
+          </Top>
+          <Description>
+            <ReactHashtag
+              renderHashtag={(hashtagValue) => (
+                <Hashtag onClick={() => redirectHashtag(hashtagValue)}>
+                  {hashtagValue}
+                </Hashtag>
               )}
-            </Description>
-            <Metadata onClick={() => window.open(url)}>
-              <UrlInfo>
-                <UrlTitle>{urlTitle}</UrlTitle>
-                <UrlDescription>{urlDescription}</UrlDescription>
-                <Url>{url}</Url>
-              </UrlInfo>
-              <UrlImage>
-                <img src={urlImage} alt="Image Error" />
-              </UrlImage>
-            </Metadata>
-          </Right>
-        </ContainerPost>
+            >
+              {timeToEdit ? "" : newPost}
+            </ReactHashtag>
+            {timeToEdit ? (
+              <InputNewPost>
+                <input
+                  name="newPost"
+                  onChange={(e) => setNewPost(e.target.value)}
+                  value={newPost}
+                  ref={inputEditPost}
+                  onKeyDown={(e) => cancelOrSend({ e, postId: id })}
+                  disabled={disabled}
+                />
+              </InputNewPost>
+            ) : (
+              ""
+            )}
+          </Description>
+          <Metadata onClick={() => window.open(url)}>
+            <UrlInfo>
+              <UrlTitle>{urlTitle}</UrlTitle>
+              <UrlDescription>{urlDescription}</UrlDescription>
+              <Url>{url}</Url>
+            </UrlInfo>
+            <UrlImage>
+              <img src={urlImage} alt="Image Error" />
+            </UrlImage>
+          </Metadata>
+        </Right>
         <ReactTooltip place="bottom" type="light" effect="solid" />
       </Post>
       <RenderComments>
         {commentsIsOpen
           ? comments.map((cmt, i) => {
-              return (
-                <Comments
-                  key={i}
-                  comment={cmt.comment}
-                  username={cmt.commentUser}
-                  isFollowing={cmt.following}
-                  isAuthorPost={cmt.authorPost}
-                  postId={cmt.postId}
-                  profileImg={cmt.profilePicture}
-                  userId={cmt.userId}
-                />
-              );
-            })
+            return (
+              <Comments
+                key={i}
+                comment={cmt.comment}
+                username={cmt.commentUser}
+                isFollowing={cmt.following}
+                isAuthorPost={cmt.authorPost}
+                postId={cmt.postId}
+                profileImg={cmt.profilePicture}
+                userId={cmt.userId}
+              />
+            );
+          })
           : ""}
       </RenderComments>
     </>
@@ -347,18 +343,21 @@ export default function PostBox({
 }
 const Post = styled.div`
   height: 275px;
-  width: 100%;
-  max-width: 610px;
+  width: 610px;
   border-radius: 16px;
   background-color: #171717;
   display: flex;
-  margin-top: 13px;
-  flex-direction: column;
-  z-index: 1;
-`;
+  margin-bottom: 13px;
 
-const ContainerPost = styled.div`
-  display: flex;
+  @media (max-width: 650px) {
+    width: 100%;
+    height: 232px;
+    display: flex;
+    justify-content: space-between;
+    border-radius: 0;
+    padding: 10px 15px 15px 15px;
+    gap: 20px;
+  }
 `;
 
 const Left = styled.div`
@@ -367,6 +366,10 @@ const Left = styled.div`
   flex-direction: column;
   align-items: center;
   margin-left: 18px;
+
+  @media (max-width:650px) {
+    margin: 0;
+  }
 `;
 
 const Img = styled.div`
@@ -376,11 +379,21 @@ const Img = styled.div`
   margin-top: 17px;
   background-color: blueviolet;
 
+  @media (max-width: 650px) {
+      height: 40px;
+      width: 40px;
+    }
+
   img {
     height: 50px;
     width: 50px;
     border-radius: 26.5px;
-    object-fit: fill;
+    object-fit: cover;
+
+    @media (max-width: 650px) {
+      height: 40px;
+      width: 40px;
+    }
   }
 `;
 
@@ -388,7 +401,7 @@ const Options = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 70%;
+  height: 100%;
   justify-content: space-evenly;
   font-size: 20px;
   width: 80px;
@@ -432,26 +445,38 @@ const Right = styled.div`
   justify-content: space-between;
   margin: 20px;
   width: 503px;
+
+  @media (max-width:650px) {
+   width: 100% ;
+   margin:0;
+  }
 `;
 
 const Top = styled.div`
   display: flex;
   justify-content: space-between;
+
+  @media (max-width:650px) {
+   width: 100%;
+  }
 `;
 
 const Name = styled.div`
   font-size: 19px;
   font-family: "Lato", sans-serif;
   color: #ffffff;
+
+  @media (max-width:650px) {
+  font-size: 17px;
+  }
 `;
 
 const Icons = styled.div`
   display: flex;
   justify-content: space-between;
   width: 50px;
-  margin-right: 6px;
-
-  div {
+  
+  div{
     cursor: pointer;
   }
 `;
@@ -464,26 +489,40 @@ const Hashtag = styled.span`
 
 const Description = styled.div`
   font-size: 17px;
-  color: #b7b7b7;
+  color: #B7B7B7;
+
+  @media (max-width:650px) {
+   font-size: 15px;
+  }
 `;
 
 const Metadata = styled.div`
-  height: 155px;
-  width: 503px;
-  border-radius: 16px;
-  border: 1px solid #4d4d4d;
-  display: flex;
-  justify-content: space-between;
-  cursor: pointer;
+    height: 155px;
+    width: 503px;
+    border-radius: 16px;
+    border: 1px solid #4D4D4D;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+
+    @media (max-width:650px) {
+    width:100%;
+    height: 115px;
+  }
 `;
 
 const UrlInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin: 25px 20px;
-  width: 349.56px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin: 25px 20px;
+    width: 349.56px;
+
+    @media (max-width:650px) {
+    width: 100%;
+    margin: 10px;
+  }
 `;
 
 const UrlImage = styled.div`
@@ -495,20 +534,37 @@ const UrlImage = styled.div`
     width: 153.44px;
     border-radius: 0 16px 16px 0;
     object-fit: cover;
+
+    @media (max-width:650px) {
+    width: 95px;
+    height: 113px;
+  }
   }
 `;
 
 const UrlTitle = styled.div`
   font-size: 16px;
-  color: #cecece;
+  color: #CECECE;
+
+  @media (max-width:650px) {
+  font-size: 11px;
+  }
 `;
 const UrlDescription = styled.div`
   font: 11px;
-  color: #cecece;
+  color: #CECECE;
+
+  @media (max-width:650px) {
+    font-size: 9px;
+  }
 `;
 const Url = styled.div`
   font-size: 11px;
-  color: #cecece;
+  color: #CECECE;
+
+  @media (max-width:650px) {
+    font-size: 11px;
+  }
 `;
 
 const InputNewPost = styled.div`
