@@ -36,6 +36,10 @@ function getPosts(headers) {
   return axios.get(`${URL}/timeline`, headers);
 }
 
+function getNewPosts(headers) {
+  return axios.get(`${URL}/new`, headers);
+}
+
 function getPageUser(id, headers) {
   return axios.get(`${URL}/user/${id}`, headers);
 }
@@ -76,6 +80,7 @@ export {
   getHashtagByName,
   postPost,
   getPosts,
+  getNewPosts,
   getPageUser,
   searchUser,
   postSignin,

@@ -6,6 +6,7 @@ import {
   mountHeaders,
   postPost,
   getPosts,
+  getNewPosts,
   deletePost,
 } from "./../services/linkr";
 import Header from "./Header";
@@ -13,11 +14,15 @@ import PostBox from "./PostBox";
 import Sidebar from "./Sidebar";
 import LoadingPage from "./LoadingPage";
 import { ThreeDots } from "react-loader-spinner";
+import useInterval from "use-interval";
+import { ImSpinner11 } from "react-icons/im";
 
 export default function Timeline() {
   const [form, setForm] = useState({ description: "", link: "" });
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState([]);
+  const [postsNumber, setPostsNumber] = useState(0);
+  const [newPosts, setNewPosts] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [updateLike, setUpdateLike] = useState(false);
   const { userData, setUserData } = useContext(UserContext);
@@ -42,6 +47,7 @@ export default function Timeline() {
   }, [updateLike, userData]);
 
   async function updating() {
+    console.log('carregando')
     if (userData) {
       const headers = mountHeaders(userData.token);
 
@@ -49,6 +55,7 @@ export default function Timeline() {
         .then((resposta) => {
           setPosts(resposta.data);
           setIsLoading(false);
+          setPostsNumber(resposta.data.length);
         })
         .catch((resposta) => {
           console.log(resposta);
@@ -58,6 +65,7 @@ export default function Timeline() {
   }
 
   console.log(posts);
+  console.log(postsNumber);
 
   function post(event) {
     event.preventDefault();
@@ -117,6 +125,24 @@ export default function Timeline() {
     }
   }
 
+  useInterval(async () => {
+    if (userData) {
+      const headers = mountHeaders(userData.token);
+
+      await getNewPosts(headers)
+        .then((resposta) => {
+          if (resposta.data > postsNumber) {
+            setNewPosts(resposta.data - postsNumber);
+          }
+          console.log(newPosts)
+
+        })
+        .catch((resposta) => {
+          console.log(resposta);
+        });
+    }
+  }, 15000);
+
   return isLoading ? (
     <LoadingPage />
   ) : (
@@ -161,12 +187,28 @@ export default function Timeline() {
               </Form>
             </FormDiv>
           </Publish>
-          <Posts>{postsLoading()}</Posts>
-        </TimelineBox>
-        <SidebarBox>
-          <Sidebar />
-        </SidebarBox>
-      </Container>
+          <Load>
+            {newPosts > 0 ?
+              <LoadButton onClick={() => {
+                  updating()
+                  setNewPosts(0)
+              }}>
+            {`${newPosts} new posts, load more!`}
+            <Icon>
+              <ImSpinner11 />
+            </Icon>
+          </LoadButton>
+          :
+          <></>
+            }
+        </Load>
+
+        <Posts>{postsLoading()}</Posts>
+      </TimelineBox>
+      <SidebarBox>
+        <Sidebar />
+      </SidebarBox>
+    </Container>
     </>
   );
 }
@@ -219,6 +261,26 @@ const Img = styled.img`
 `;
 
 const FormDiv = styled.div``;
+
+const Load = styled.div``;
+
+const LoadButton = styled.div`
+  height: 61px;
+  width: 611px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 16px;
+  background-color: #1877F2;
+  margin-top: 40px;
+  font-family: "Lato", sans-serif;
+  font-size: 16px;
+  color: #FFFFFF;
+`;
+
+const Icon = styled.div`
+  margin-left: 10px;
+`;
 
 const PublishTitle = styled.div`
   font-family: "Lato", sans-serif;
