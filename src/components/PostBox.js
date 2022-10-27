@@ -322,7 +322,7 @@ export default function PostBox({
         </ContainerPost>
         <ReactTooltip place="bottom" type="light" effect="solid" />
       </Post>
-      <RenderComments>
+      <RenderComments commentsIsOpen={commentsIsOpen}>
         {commentsIsOpen
           ? comments.map((cmt, i) => {
             return (
@@ -349,7 +349,7 @@ const Post = styled.div`
   border-radius: 16px;
   background-color: #171717;
   display: flex;
-  margin-bottom: 13px;
+  padding: 20px;
 
   @media (max-width: 650px) {
     width: 100%;
@@ -362,23 +362,25 @@ const Post = styled.div`
   }
 `;
 
+const ContainerPost = styled.div`
+  display: flex;
+  width: 100%;
+  gap: 15px;
+`;
+
 const Left = styled.div`
   width: 50px;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-left: 18px;
-
-  @media (max-width:650px) {
-    margin: 0;
-  }
+  justify-content: space-between;
 `;
 
 const Img = styled.div`
   height: 50px;
   width: 50px;
-  border-radius: 26.5px;
-  margin-top: 17px;
+  border-radius: 50%;
   background-color: blueviolet;
 
   @media (max-width: 650px) {
@@ -389,7 +391,7 @@ const Img = styled.div`
   img {
     height: 50px;
     width: 50px;
-    border-radius: 26.5px;
+    border-radius: 50%;
     object-fit: cover;
 
     @media (max-width: 650px) {
@@ -407,12 +409,22 @@ const Options = styled.div`
   justify-content: space-evenly;
   font-size: 20px;
   width: 80px;
-  margin-left: 10px;
+
+  @media (max-width: 650px) {
+    width: 50px;
+    font-size: 20px;
+  }
 
   a {
     font-size: 13px;
     text-align: center;
     margin-top: 4px;
+    width: 50px;
+
+    @media (max-width: 650px) {
+    font-size: 10px;
+    margin-left: 0;
+  }
   }
 `;
 
@@ -445,12 +457,10 @@ const Right = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin: 20px;
   width: 503px;
 
   @media (max-width:650px) {
    width: 100% ;
-   margin:0;
   }
 `;
 
@@ -533,7 +543,7 @@ const UrlImage = styled.div`
     justify-content: center;
     align-items: center;
     height: 153px;
-    width: 153.44px;
+    width: 153px;
     border-radius: 0 16px 16px 0;
     object-fit: cover;
 
@@ -566,11 +576,14 @@ const Url = styled.div`
 
   @media (max-width:650px) {
     font-size: 11px;
+    overflow: hidden;
+    overflow-wrap: break-word;
+    text-overflow: ellipsis;
   }
 `;
 
 const InputNewPost = styled.div`
-  margin: 6px 0 6px 0;
+  margin: 6px 0;
   input {
     background-color: #fff;
     color: #4c4c4c;
@@ -632,6 +645,7 @@ const Buttons = styled.div`
 `;
 
 const RenderComments = styled.div`
+  display: ${({ commentsIsOpen }) => commentsIsOpen ? 'initial' : 'none'};
   margin-bottom: 40px;
   margin-top: -10px;
   border-radius: 100px;

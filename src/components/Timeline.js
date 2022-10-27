@@ -202,6 +202,7 @@ const Title = styled.div`
 
 const Feed = styled.div`
   display: flex;
+  gap: 25px;
 
   @media (max-width: 650px) {
     width: 100%;
@@ -213,8 +214,6 @@ const TimelineBox = styled.div`
 `;
 
 const SidebarBox = styled.div`
-  margin-left:25px;
-
   @media (max-width: 950px) {
     display: none;
   }
@@ -348,5 +347,5 @@ const Posts = styled.div`
   display:flex ;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 13px;
+  gap: 15px;
 `;
