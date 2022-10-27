@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 export default function Comments({
@@ -13,10 +14,11 @@ export default function Comments({
   return (
     <OpenComments>
       <Container>
-        <ImageProfile>
-          <img src={profileImg} alt={`Profile picture of ${username}`} />
-        </ImageProfile>
-
+        <Link to={`/user/${userId}`}>
+          <ImageProfile>
+            <img src={profileImg} alt={`Profile picture of ${username}`} />
+          </ImageProfile>
+        </Link>
         <ContainerComments>
           <InfoProfile>
             <h1> {username} </h1>
