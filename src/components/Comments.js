@@ -22,14 +22,14 @@ export default function Comments({
             <h1> {username} </h1>
             {isFollowing ? (
               <>
-                <div></div> <h2> following </h2>
+                <div className="dot"></div> <h2> following </h2>
               </>
             ) : (
               ""
             )}
             {isAuthorPost ? (
               <>
-                <div></div> <h2> post's author </h2>
+                <div className="dot"></div> <h2> post's author </h2>
               </>
             ) : (
               ""
@@ -48,11 +48,14 @@ const OpenComments = styled.div`
   background-color: #1e1e1e;
   width: 100%;
   height: auto;
-  font-family: "Lato", sans-serif;
   font-size: 14px;
   display: flex;
   flex-direction: column;
-  padding: 0 20px;
+  padding: 0px 20px;
+
+  :first-child {
+    padding-top: 20px;
+  }
 
   .diviser {
     width: 100%;
@@ -94,7 +97,7 @@ const InfoProfile = styled.div`
     font-weight: 700;
   }
 
-  div {
+  .dot {
     width: 5px;
     height: 5px;
     border-radius: 50px;

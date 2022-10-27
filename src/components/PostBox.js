@@ -206,6 +206,7 @@ export default function PostBox({
     }
 
     return (
+      <>
       <Post>
         <ContainerPost>
           <Left>
@@ -329,27 +330,31 @@ export default function PostBox({
               </UrlImage>
             </Metadata>
           </Right>
+          
         </ContainerPost>
-        <ReactTooltip place="bottom" type="light" effect="solid" />
-        <RenderComments>
-        {commentsIsOpen
-          ? comments.map((cmt, i) => {
-            return (
-              <Comments
-                key={i}
-                comment={cmt.comment}
-                username={cmt.commentUser}
-                isFollowing={cmt.following}
-                isAuthorPost={cmt.authorPost}
-                postId={cmt.postId}
-                profileImg={cmt.profilePicture}
-                userId={cmt.userId}
-              />
-            );
-          }) : ""}
-        </RenderComments>
         
+        <ReactTooltip place="bottom" type="light" effect="solid" />
+        
+
       </Post>
+      <RenderComments>
+      {commentsIsOpen
+        ? comments.map((cmt, i) => {
+          return (
+            <Comments
+              key={i}
+              comment={cmt.comment}
+              username={cmt.commentUser}
+              isFollowing={cmt.following}
+              isAuthorPost={cmt.authorPost}
+              postId={cmt.postId}
+              profileImg={cmt.profilePicture}
+              userId={cmt.userId}
+            />
+          );
+        }) : ""}
+      </RenderComments>
+      </>
     );
 }
 const Post = styled.div`
@@ -358,8 +363,9 @@ const Post = styled.div`
   border-radius: 16px;
   background-color: #171717;
   display: flex;
-  margin-bottom: 13px;
+  margin-top: 13px;
   flex-direction: column;
+  z-index: 1;
 `;
 
 const ContainerPost = styled.div`
@@ -556,4 +562,7 @@ const Buttons = styled.div`
 `;
 
 const RenderComments = styled.div`
+  margin-bottom: 40px;
+  margin-top: -10px;
+  border-radius: 100px;
 `;
