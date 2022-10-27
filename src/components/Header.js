@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { DebounceInput } from "react-debounce-input";
 import { useContext, useState } from "react";
 import { mountHeaders, searchUser } from "../services/linkr";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import UserContext from "../context/UserContext";
 
 export default function Header() {
@@ -44,39 +45,37 @@ export default function Header() {
             {!user.length > 0
               ? " "
               : user.map((u) => (
-                  <Link to={`/user/${u.id}`} key={u.id}>
-                    <User>
-                      <img src={u.profilePicture} />
-                      <div>
-                        <h1>{u.username}</h1>
-                        <p>
-                          {u.following !== null ? (
-                            <span>
-                              <div></div>
-                              following
-                            </span>
-                          ) : (
-                            ""
-                          )}
-                        </p>
-                      </div>
-                    </User>
-                  </Link>
-                ))}
+                <Link to={`/user/${u.id}`} key={u.id}>
+                  <User>
+                    <img src={u.profilePicture} />
+                    <div>
+                      <h1>{u.username}</h1>
+                      <p>
+                        {u.following !== null ? (
+                          <span>
+                            <div></div>
+                            following
+                          </span>
+                        ) : (
+                          ""
+                        )}
+                      </p>
+                    </div>
+                  </User>
+                </Link>
+              ))}
           </UserFind>
         </Search>
 
         <Logout>
           {click === false ? (
-            <ion-icon
-              name="chevron-down-outline"
+            <FaChevronDown
               onClick={() => setClick(!click)}
-            ></ion-icon>
+            />
           ) : (
-            <ion-icon
-              name="chevron-up-outline"
+            <FaChevronUp
               onClick={() => setClick(!click)}
-            ></ion-icon>
+            />
           )}
           <Img
             onClick={() => setClick(!click)}
@@ -113,19 +112,12 @@ const Title = styled.div`
 `;
 
 const Logout = styled.div`
+  width: 90px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  margin-right: 26px;
-
-  ion-icon[name="chevron-down-outline"] {
-    height: 20px;
-    width: 30px;
-  }
-
-  ion-icon[name="chevron-up-outline"] {
-    height: 20px;
-    width: 30px;
-  }
+  margin-right: 20px;
+  font-size: 25px;
 `;
 
 const Img = styled.img`
@@ -161,6 +153,7 @@ const Box = styled.div`
   position: fixed;
   right: 0;
   margin-top: 110px;
+  cursor: pointer;
 `;
 const Search = styled.div`
   z-index: 2;
