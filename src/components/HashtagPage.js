@@ -12,6 +12,7 @@ export default function HashtagPage() {
 
   const [postsWithHashtag, setPostsWithHashtag] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [refreshPage, setRefreshPage] = useState(false);
   const { hashtag } = useParams();
   const { userData, setUserData } = useContext(UserContext);
   const navigate = useNavigate();
@@ -69,6 +70,8 @@ export default function HashtagPage() {
                     urlTitle={post.metadata.title}
                     urlDescription={post.metadata.description}
                     urlImage={post.metadata.image}
+                    refreshPage={refreshPage}
+                    setRefreshPage={setRefreshPage}
                   />
                 );
               })}

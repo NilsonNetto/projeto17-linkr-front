@@ -32,8 +32,8 @@ export default function PostBox({
   urlTitle,
   urlDescription,
   urlImage,
-  updateLike,
-  setUpdateLike,
+  setRefreshPage,
+  refreshPage,
 }) {
   const [userLikeId, setUserLikeId] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
@@ -190,7 +190,7 @@ export default function PostBox({
     deletePost(postId, headers)
       .then((res) => {
         setLoading(false);
-        setUpdateLike(!updateLike);
+        setRefreshPage(!refreshPage);
         console.log(res.data);
         setIsOpen(false);
       })
