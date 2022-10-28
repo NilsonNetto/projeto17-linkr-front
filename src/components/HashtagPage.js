@@ -49,8 +49,6 @@ export default function HashtagPage() {
     }
   }, [hashtag, userData]);
 
-  console.log(postsWithHashtag);
-
   return (isLoading ? (
     <LoadingPage />
   ) : (<>
