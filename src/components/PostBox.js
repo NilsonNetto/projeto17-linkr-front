@@ -19,6 +19,7 @@ import ReactTooltip from "react-tooltip";
 import UserContext from "../context/UserContext.js";
 import Modal from "react-modal";
 import Comments from "./Comments.js";
+import WriteComment from "./WriteComment.js";
 
 export default function PostBox({
   id,
@@ -43,6 +44,7 @@ export default function PostBox({
   const [loading, setLoading] = useState(false);
   const [commentsIsOpen, setCommentsIsOpen] = useState(false);
   const [comments, setComments] = useState([]);
+  const [refreshComments, setRefreshComments] = useState(false);
   const inputEditPost = useRef(null);
   const navigate = useNavigate();
   const { userData } = useContext(UserContext);
@@ -189,7 +191,7 @@ export default function PostBox({
     getComments(id, headers)
       .then((res) => setComments(res.data))
       .catch((err) => console.log(err));
-  }, []);
+  }, [refreshComments]);
 
   function openComments() {
     setCommentsIsOpen(!commentsIsOpen);
@@ -323,20 +325,25 @@ export default function PostBox({
       <RenderComments commentsIsOpen={commentsIsOpen}>
         {commentsIsOpen
           ? comments.map((cmt, i) => {
-            return (
-              <Comments
-                key={i}
-                comment={cmt.comment}
-                username={cmt.commentUser}
-                isFollowing={cmt.following}
-                isAuthorPost={cmt.authorPost}
-                postId={cmt.postId}
-                profileImg={cmt.profilePicture}
-                userId={cmt.userId}
-              />
-            );
-          })
+              return (
+                <Comments
+                  key={i}
+                  comment={cmt.comment}
+                  username={cmt.commentUser}
+                  isFollowing={cmt.following}
+                  isAuthorPost={cmt.authorPost}
+                  profileImg={cmt.profilePicture}
+                  userId={cmt.userId}
+                />
+              );
+            })
           : ""}
+        <WriteComment
+          postId={id}
+          username={username}
+          setRefreshComments={setRefreshComments}
+          refreshComments={refreshComments}
+        />
       </RenderComments>
     </>
   );

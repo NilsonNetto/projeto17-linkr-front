@@ -76,6 +76,10 @@ function getComments(postId, headers) {
   return axios.get(`${URL}/comments/${postId}`, headers);
 }
 
+function postComment(body, headers) {
+  return axios.post(`${URL}/createComment`, body, headers);
+}
+
 export {
   mountHeaders,
   getTrendingHashtags,
@@ -93,5 +97,6 @@ export {
   unfollowUser,
   newEditPost,
   deletePost,
-  getComments
+  getComments,
+  postComment
 };
