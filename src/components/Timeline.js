@@ -16,6 +16,7 @@ import { ThreeDots } from "react-loader-spinner";
 import useInterval from "use-interval";
 import { ImSpinner11 } from "react-icons/im";
 import InfiniteScroll from 'react-infinite-scroller';
+import UserSearch from "./UserSearch";
 
 export default function Timeline() {
   const [form, setForm] = useState({ description: "", link: "" });
@@ -151,6 +152,9 @@ export default function Timeline() {
     <>
       <Header />
       <Container>
+        <SearchInput>
+          <UserSearch />
+        </SearchInput>
         <Title>timeline</Title>
         <Feed>
           <TimelineBox>
@@ -217,7 +221,7 @@ export default function Timeline() {
                 //     loader={
                 //       <ThreeDots height={13} color={"white"} />
                 //     }>
-                     postsLoading()
+                postsLoading()
                 //   </ InfiniteScroll>
                 // </>
 
@@ -241,6 +245,15 @@ const Container = styled.div`
   margin-top: 72px;
 `;
 
+const SearchInput = styled.div`
+  display: none;
+  @media (max-width: 650px) {
+    width: 100%;
+    padding: 10px 15px ;
+    display: initial;
+  }
+`;
+
 const Title = styled.div`
   width: 937px;
   font-size: 43px;
@@ -256,6 +269,7 @@ const Title = styled.div`
   
   @media (max-width: 650px) {
     width: 100%;
+    margin-top: 20px;
     padding-left: 20px;
   }
 `;

@@ -7,6 +7,7 @@ import Sidebar from "./Sidebar";
 import PostBox from "./PostBox";
 import UserContext from "../context/UserContext";
 import LoadingPage from "./LoadingPage.js";
+import UserSearch from "./UserSearch";
 
 export default function HashtagPage() {
 
@@ -53,6 +54,9 @@ export default function HashtagPage() {
   ) : (<>
     <Header />
     <Container>
+      <SearchInput>
+        <UserSearch />
+      </SearchInput>
       <Title># {hashtag}</Title>
       <Feed>
         <TimelineBox>
@@ -95,6 +99,15 @@ const Container = styled.div`
   margin-top: 72px;
 `;
 
+const SearchInput = styled.div`
+  display: none;
+  @media (max-width: 650px) {
+    width: 100%;
+    padding: 10px 15px ;
+    display: initial;
+  }
+`;
+
 const Title = styled.h1`
   width: 937px;
   font-size: 43px;
@@ -110,6 +123,7 @@ const Title = styled.h1`
 
   @media (max-width: 650px) {
     width: 100%;
+    margin-top: 20px;
     padding-left: 20px;
   }
 `;

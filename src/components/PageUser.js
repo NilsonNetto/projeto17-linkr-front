@@ -8,6 +8,7 @@ import PostBox from "./PostBox";
 import UserContext from "../context/UserContext";
 import LoadingPage from "./LoadingPage.js";
 import { ThreeDots } from "react-loader-spinner";
+import UserSearch from "./UserSearch";
 
 export default function UserPage() {
   const { id } = useParams();
@@ -83,6 +84,9 @@ export default function UserPage() {
       <>
         <Header />
         <Container>
+          <SearchInput>
+            <UserSearch />
+          </SearchInput>
           <Title follow={following}>
             <Username>{userPage?.username} 's posts</Username>
             {userPage.userId === Number(id) ? '' :
@@ -144,6 +148,15 @@ const Container = styled.div`
   margin-top: 72px;
 `;
 
+const SearchInput = styled.div`
+  display: none;
+  @media (max-width: 650px) {
+    width: 100%;
+    padding: 10px 15px ;
+    display: initial;
+  }
+`;
+
 const Title = styled.div`
   width: 937px;
   margin-top: 78px;
@@ -159,6 +172,7 @@ const Title = styled.div`
   }
   @media (max-width: 650px) {
     width: 100%;
+    margin-top: 20px;
     padding: 0 20px ;
   }
 `;
