@@ -80,6 +80,7 @@ export default function Timeline() {
         console.log(resposta);
         setLoadingPublish(false);
         setForm({ description: "", link: "" });
+        setRefreshPage(!refreshPage);
       })
       .catch((resposta) => {
         console.log(resposta);
