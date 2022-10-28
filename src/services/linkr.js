@@ -48,6 +48,10 @@ function searchUser(name, headers) {
   return axios.get(`${URL}/users/${name}`, headers);
 }
 
+function listLikes(postId, headers) {
+  return axios.get(`${URL}/likes/${postId}`, headers);
+}
+
 function likePost(postId, headers) {
   return axios.post(`${URL}/likes/${postId}/like`, {}, headers);
 }
@@ -76,6 +80,10 @@ function getComments(postId, headers) {
   return axios.get(`${URL}/comments/${postId}`, headers);
 }
 
+function postComment(body, headers) {
+  return axios.post(`${URL}/createComment`, body, headers);
+}
+
 export {
   mountHeaders,
   getTrendingHashtags,
@@ -87,11 +95,13 @@ export {
   searchUser,
   postSignin,
   postSignup,
+  listLikes,
   likePost,
   unlikePost,
   followUser,
   unfollowUser,
   newEditPost,
   deletePost,
-  getComments
+  getComments,
+  postComment
 };

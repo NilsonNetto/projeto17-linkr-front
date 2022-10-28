@@ -15,7 +15,7 @@ export default function UserPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [followLoading, setFollowLoading] = useState(false);
   const [following, setFollowing] = useState(false);
-  const [updateLike, setUpdateLike] = useState(false);
+  const [refreshPage, setRefreshPage] = useState(false);
   const { userData, setUserData } = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -45,7 +45,7 @@ export default function UserPage() {
         setIsLoading(false);
       });
     }
-  }, [updateLike, userData, id]);
+  }, [userData, id, refreshPage]);
 
   function followAndUnfollow(userId) {
     setFollowLoading(true);
@@ -76,6 +76,8 @@ export default function UserPage() {
     }
   }
 
+  console.log(userPage.userId, id);
+
   return (
     (isLoading ? (
       <LoadingPage />
@@ -85,7 +87,7 @@ export default function UserPage() {
         <Container>
           <Title follow={following}>
             <Username>{userPage?.username} 's posts</Username>
-            {userPage.username === userPage.posts[0].username ? '' :
+            {userPage.userId === Number(id) ? '' :
               (
                 <FollowButton follow={following} followLoading={followLoading} onClick={() => followAndUnfollow(id)}>
                   {followLoading ?
@@ -98,25 +100,31 @@ export default function UserPage() {
           <Feed>
             <TimelineBox>
               <PostsWrapper>
-                {userPage.posts.map((post, index) => {
-                  return (
-                    <PostBox
-                      key={index}
-                      id={post.id}
-                      userId={post.userId}
-                      username={post.username}
-                      profilePicture={post.profilePicture}
-                      description={post.description}
-                      url={post.url}
-                      urlTitle={post.metadata.title}
-                      urlDescription={post.metadata.description}
-                      urlImage={post.metadata.image}
-                      postLikes={post.postLikes}
-                      updateLike={updateLike}
-                      setUpdateLike={setUpdateLike}
-                    />
-                  );
-                })}
+                {userPage.posts.length === 0 ? (
+                  <NoPosts>
+                    No posts yet
+                  </NoPosts>
+                ) : (
+                  userPage.posts.map((post, index) => {
+                    return (
+                      <PostBox
+                        key={index}
+                        id={post.id}
+                        userId={post.userId}
+                        username={post.username}
+                        profilePicture={post.profilePicture}
+                        description={post.description}
+                        url={post.url}
+                        urlTitle={post.metadata.title}
+                        urlDescription={post.metadata.description}
+                        urlImage={post.metadata.image}
+                        setRefreshPage={setRefreshPage}
+                        refreshPage={refreshPage}
+                      />
+                    );
+                  })
+                )}
+                { }
               </PostsWrapper>
             </TimelineBox>
             <SidebarBox>
@@ -197,4 +205,14 @@ const PostsWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 15px;
+`;
+
+const NoPosts = styled.div`
+  width: 611px;
+  font-size: 20px;
+  text-align: left;
+
+  @media (max-width: 650px) {
+    width: 100%;
+  }
 `;

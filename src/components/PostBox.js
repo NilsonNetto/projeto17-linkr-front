@@ -9,6 +9,7 @@ import {
   newEditPost,
   deletePost,
   getComments,
+  listLikes,
 } from "../services/linkr.js";
 import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
@@ -20,6 +21,7 @@ import UserContext from "../context/UserContext.js";
 import Modal from "react-modal";
 import Comments from "./Comments.js";
 import RepostsItens from "./RepostsItens.js";
+import WriteComment from "./WriteComment.js";
 
 export default function PostBox({
   id,
@@ -31,12 +33,12 @@ export default function PostBox({
   urlTitle,
   urlDescription,
   urlImage,
-  userLike,
-  postLikes,
-  updateLike,
-  setUpdateLike,
+  setRefreshPage,
+  refreshPage,
 }) {
-  const [isLiked, setIsLiked] = useState(userLike);
+  const [userLikeId, setUserLikeId] = useState(0);
+  const [isLiked, setIsLiked] = useState(false);
+  const [postLikes, setPostLikes] = useState([]);
   const [timeToEdit, setTimeToEdit] = useState(false);
   const [newPost, setNewPost] = useState(description);
   const [disabled, setDisabled] = useState(false);
@@ -44,40 +46,58 @@ export default function PostBox({
   const [loading, setLoading] = useState(false);
   const [commentsIsOpen, setCommentsIsOpen] = useState(false);
   const [comments, setComments] = useState([]);
+  const [refreshComments, setRefreshComments] = useState(false);
   const inputEditPost = useRef(null);
   const navigate = useNavigate();
   const { userData } = useContext(UserContext);
 
+  useEffect(() => {
+
+    const headers = mountHeaders(userData.token);
+
+    listLikes(id, headers)
+      .then(res => {
+        setUserLikeId(res.data.userId);
+        setIsLiked(res.data.isLiked);
+        setPostLikes(res.data.postLikes);
+      })
+      .catch(res => {
+        console.log(res.data);
+      });
+  }, [isLiked]);
+
   function likesCount(likes) {
-    if (likes[0] === null) {
+
+    if (likes.length === 0) {
       return "No one likes this, be the first!";
     }
 
-    if (userLike) {
-      const filteredLikes = likes.filter((value) => value !== username);
+    if (isLiked) {
+
+      const filteredLikes = likes.filter((value) => value.userId !== userLikeId);
 
       switch (likes.length) {
         case 1:
           return "Você";
           break;
         case 2:
-          return `Você e ${filteredLikes[0]}`;
+          return `Você e ${filteredLikes[0].username}`;
           break;
         default:
-          return `Você, ${filteredLikes[0]} e outras ${likes.length - 2
+          return `Você, ${filteredLikes[0].username} e outras ${likes.length - 2
             } pessoas`;
       }
     } else {
       switch (likes.length) {
         case 1:
-          return likes[0];
+          return likes[0].username;
           break;
         case 2:
-          return `${likes[0]} e ${likes[1]}`;
+          return `${likes[0].username} e ${likes[1].username}`;
           break;
         default:
-          return `${likes[0]}, ${likes[1]} e outras ${likes.length - 2
-            } pessoas`;
+          return `${likes[0].username}, ${likes[1].username} 
+          e outras ${likes.length - 2} pessoas`;
       }
     }
   }
@@ -89,7 +109,6 @@ export default function PostBox({
       unlikePost(postId, headers)
         .then((res) => {
           setIsLiked(false);
-          setUpdateLike(!updateLike);
         })
         .catch((res) => {
           console.log(res.message);
@@ -99,7 +118,6 @@ export default function PostBox({
       likePost(postId, headers)
         .then((res) => {
           setIsLiked(true);
-          setUpdateLike(!updateLike);
         })
         .catch((res) => {
           console.log(res.message);
@@ -173,7 +191,7 @@ export default function PostBox({
     deletePost(postId, headers)
       .then((res) => {
         setLoading(false);
-        setUpdateLike(!updateLike);
+        setRefreshPage(!refreshPage);
         console.log(res.data);
         setIsOpen(false);
       })
@@ -190,7 +208,7 @@ export default function PostBox({
     getComments(id, headers)
       .then((res) => setComments(res.data))
       .catch((err) => console.log(err));
-  }, []);
+  }, [refreshComments]);
 
   function openComments() {
     setCommentsIsOpen(!commentsIsOpen);
@@ -211,7 +229,7 @@ export default function PostBox({
                 {isLiked ? <BsHeartFill /> : <BsHeart />}
               </LikeHeart>
               <a data-tip={likesCount(postLikes)}>
-                {postLikes[0] === null ? 0 : postLikes.length} likes
+                {postLikes.length} likes
               </a>
             </Likes>
             <CommentsIcon>
@@ -231,56 +249,61 @@ export default function PostBox({
             <Link to={`/user/${userId}`}>
               <Name>{username}</Name>
             </Link>
-            <Icons>
-              <div>
-                <FaPencilAlt onClick={editPost} />
-              </div>
-              <div>
-                <FaTrash onClick={openChoicesForDelete} />
-              </div>
+            {userId === userLikeId ? (
+              <Icons>
+                <div>
+                  <FaPencilAlt onClick={editPost} />
+                </div>
+                <div>
+                  <FaTrash onClick={openChoicesForDelete} />
+                </div>
 
-              <Modal
-                isOpen={isOpen}
-                onRequestClose={toggleModal}
-                style={{
-                  overlay: {
-                    backgroundColor: "rgba(255, 255, 255, 0.4)",
-                    zIndex: "2",
-                  },
-                  content: {
-                    border: "none",
-                    backgroundColor: "rgba(255, 255, 255, 0)",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  },
-                }}
-              >
-                <ModalContent>
-                  {loading ? (
-                    <RotatingLines
-                      strokeColor="#1877f2"
-                      strokeWidth="2"
-                      animationDuration="1"
-                      width="96"
-                      visible={true}
-                    />
-                  ) : (
-                    <>
-                      <p>Are you sure you want to delete this post?</p>
-                      <Buttons>
-                        <button onClick={toggleModal}>No, go back</button>
-                        <button
-                          onClick={() => confirmDeletePost({ postId: id })}
-                        >
-                          Yes, delete it
-                        </button>
-                      </Buttons>
-                    </>
-                  )}
-                </ModalContent>
-              </Modal>
-            </Icons>
+                <Modal
+                  isOpen={isOpen}
+                  onRequestClose={toggleModal}
+                  style={{
+                    overlay: {
+                      backgroundColor: "rgba(255, 255, 255, 0.4)",
+                      zIndex: "2",
+                    },
+                    content: {
+                      border: "none",
+                      backgroundColor: "rgba(255, 255, 255, 0)",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    },
+                  }}
+                >
+                  <ModalContent>
+                    {loading ? (
+                      <RotatingLines
+                        strokeColor="#1877f2"
+                        strokeWidth="2"
+                        animationDuration="1"
+                        width="96"
+                        visible={true}
+                      />
+                    ) : (
+                      <>
+                        <p>Are you sure you want to delete this post?</p>
+                        <Buttons>
+                          <button onClick={toggleModal}>No, go back</button>
+                          <button
+                            onClick={() => confirmDeletePost({ postId: id })}
+                          >
+                            Yes, delete it
+                          </button>
+                        </Buttons>
+                      </>
+                    )}
+                  </ModalContent>
+                </Modal>
+              </Icons>
+            ) : (
+              ''
+            )}
+
           </Top>
           <Description>
             <ReactHashtag
@@ -330,13 +353,18 @@ export default function PostBox({
                 username={cmt.commentUser}
                 isFollowing={cmt.following}
                 isAuthorPost={cmt.authorPost}
-                postId={cmt.postId}
                 profileImg={cmt.profilePicture}
                 userId={cmt.userId}
               />
             );
           })
           : ""}
+        <WriteComment
+          postId={id}
+          username={username}
+          setRefreshComments={setRefreshComments}
+          refreshComments={refreshComments}
+        />
       </RenderComments>
     </>
   );

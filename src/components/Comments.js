@@ -2,12 +2,10 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 export default function Comments({
-  key,
   comment,
   username,
   isFollowing,
   isAuthorPost,
-  postId,
   profileImg,
   userId,
 }) {
@@ -57,6 +55,10 @@ const OpenComments = styled.div`
 
   :first-child {
     padding-top: 20px;
+  }
+
+  :nth-last-child(2) {
+    margin-bottom: -10px;
   }
 
   .diviser {
