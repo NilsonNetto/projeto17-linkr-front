@@ -192,15 +192,16 @@ const UserFind = styled.div`
 const User = styled.div`
   width: 50vw;
   max-width: 563px;
+  height: 40px;
   display: flex;
   margin: 0 auto;
   background: #e7e7e7;
   cursor: pointer;
 
   img {
-    width: 39px;
-    height: 39px;
-    border-radius: 304px;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
     margin: auto 10px;
   }
   div {

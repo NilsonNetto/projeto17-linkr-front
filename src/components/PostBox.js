@@ -249,56 +249,61 @@ export default function PostBox({
             <Link to={`/user/${userId}`}>
               <Name>{username}</Name>
             </Link>
-            <Icons>
-              <div>
-                <FaPencilAlt onClick={editPost} />
-              </div>
-              <div>
-                <FaTrash onClick={openChoicesForDelete} />
-              </div>
+            {userId === userLikeId ? (
+              <Icons>
+                <div>
+                  <FaPencilAlt onClick={editPost} />
+                </div>
+                <div>
+                  <FaTrash onClick={openChoicesForDelete} />
+                </div>
 
-              <Modal
-                isOpen={isOpen}
-                onRequestClose={toggleModal}
-                style={{
-                  overlay: {
-                    backgroundColor: "rgba(255, 255, 255, 0.4)",
-                    zIndex: "2",
-                  },
-                  content: {
-                    border: "none",
-                    backgroundColor: "rgba(255, 255, 255, 0)",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  },
-                }}
-              >
-                <ModalContent>
-                  {loading ? (
-                    <RotatingLines
-                      strokeColor="#1877f2"
-                      strokeWidth="2"
-                      animationDuration="1"
-                      width="96"
-                      visible={true}
-                    />
-                  ) : (
-                    <>
-                      <p>Are you sure you want to delete this post?</p>
-                      <Buttons>
-                        <button onClick={toggleModal}>No, go back</button>
-                        <button
-                          onClick={() => confirmDeletePost({ postId: id })}
-                        >
-                          Yes, delete it
-                        </button>
-                      </Buttons>
-                    </>
-                  )}
-                </ModalContent>
-              </Modal>
-            </Icons>
+                <Modal
+                  isOpen={isOpen}
+                  onRequestClose={toggleModal}
+                  style={{
+                    overlay: {
+                      backgroundColor: "rgba(255, 255, 255, 0.4)",
+                      zIndex: "2",
+                    },
+                    content: {
+                      border: "none",
+                      backgroundColor: "rgba(255, 255, 255, 0)",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    },
+                  }}
+                >
+                  <ModalContent>
+                    {loading ? (
+                      <RotatingLines
+                        strokeColor="#1877f2"
+                        strokeWidth="2"
+                        animationDuration="1"
+                        width="96"
+                        visible={true}
+                      />
+                    ) : (
+                      <>
+                        <p>Are you sure you want to delete this post?</p>
+                        <Buttons>
+                          <button onClick={toggleModal}>No, go back</button>
+                          <button
+                            onClick={() => confirmDeletePost({ postId: id })}
+                          >
+                            Yes, delete it
+                          </button>
+                        </Buttons>
+                      </>
+                    )}
+                  </ModalContent>
+                </Modal>
+              </Icons>
+            ) : (
+              ''
+            )}
+
           </Top>
           <Description>
             <ReactHashtag

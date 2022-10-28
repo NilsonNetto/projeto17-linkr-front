@@ -75,6 +75,8 @@ export default function UserPage() {
     }
   }
 
+  console.log(userPage.userId, id);
+
   return (
     (isLoading ? (
       <LoadingPage />
@@ -84,7 +86,7 @@ export default function UserPage() {
         <Container>
           <Title follow={following}>
             <Username>{userPage?.username} 's posts</Username>
-            {userPage.posts[0] && userPage.username === userPage.posts[0].username ? '' :
+            {userPage.userId === Number(id) ? '' :
               (
                 <FollowButton follow={following} followLoading={followLoading} onClick={() => followAndUnfollow(id)}>
                   {followLoading ?
