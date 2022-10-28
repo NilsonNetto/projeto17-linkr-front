@@ -12,7 +12,6 @@ export default function HashtagPage() {
 
   const [postsWithHashtag, setPostsWithHashtag] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [updateLike, setUpdateLike] = useState(false);
   const { hashtag } = useParams();
   const { userData, setUserData } = useContext(UserContext);
   const navigate = useNavigate();
@@ -46,7 +45,7 @@ export default function HashtagPage() {
           alert('Get posts with hashtags error');
         });
     }
-  }, [hashtag, updateLike, userData]);
+  }, [hashtag, userData]);
 
   return (isLoading ? (
     <LoadingPage />
@@ -70,10 +69,6 @@ export default function HashtagPage() {
                     urlTitle={post.metadata.title}
                     urlDescription={post.metadata.description}
                     urlImage={post.metadata.image}
-                    userLike={post.userLike}
-                    postLikes={post.postLikes}
-                    updateLike={updateLike}
-                    setUpdateLike={setUpdateLike}
                   />
                 );
               })}

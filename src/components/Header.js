@@ -196,7 +196,7 @@ const User = styled.div`
   margin: 0 auto;
   background: #e7e7e7;
   cursor: pointer;
-  border-radius: 0 0 8px 8px;
+
   img {
     width: 39px;
     height: 39px;

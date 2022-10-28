@@ -9,6 +9,7 @@ import {
   newEditPost,
   deletePost,
   getComments,
+  listLikes,
 } from "../services/linkr.js";
 import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import { BsHeart, BsHeartFill } from "react-icons/bs";
@@ -31,12 +32,12 @@ export default function PostBox({
   urlTitle,
   urlDescription,
   urlImage,
-  userLike,
-  postLikes,
   updateLike,
   setUpdateLike,
 }) {
-  const [isLiked, setIsLiked] = useState(userLike);
+  const [userLikeId, setUserLikeId] = useState(0);
+  const [isLiked, setIsLiked] = useState(false);
+  const [postLikes, setPostLikes] = useState([]);
   const [timeToEdit, setTimeToEdit] = useState(false);
   const [newPost, setNewPost] = useState(description);
   const [disabled, setDisabled] = useState(false);
@@ -49,36 +50,53 @@ export default function PostBox({
   const navigate = useNavigate();
   const { userData } = useContext(UserContext);
 
+  useEffect(() => {
+
+    const headers = mountHeaders(userData.token);
+
+    listLikes(id, headers)
+      .then(res => {
+        setUserLikeId(res.data.userId);
+        setIsLiked(res.data.isLiked);
+        setPostLikes(res.data.postLikes);
+      })
+      .catch(res => {
+        console.log(res.data);
+      });
+  }, [isLiked]);
+
   function likesCount(likes) {
-    if (likes[0] === null) {
+
+    if (likes.length === 0) {
       return "No one likes this, be the first!";
     }
 
-    if (userLike) {
-      const filteredLikes = likes.filter((value) => value !== username);
+    if (isLiked) {
+
+      const filteredLikes = likes.filter((value) => value.userId !== userLikeId);
 
       switch (likes.length) {
         case 1:
           return "Você";
           break;
         case 2:
-          return `Você e ${filteredLikes[0]}`;
+          return `Você e ${filteredLikes[0].username}`;
           break;
         default:
-          return `Você, ${filteredLikes[0]} e outras ${likes.length - 2
+          return `Você, ${filteredLikes[0].username} e outras ${likes.length - 2
             } pessoas`;
       }
     } else {
       switch (likes.length) {
         case 1:
-          return likes[0];
+          return likes[0].username;
           break;
         case 2:
-          return `${likes[0]} e ${likes[1]}`;
+          return `${likes[0].username} e ${likes[1].username}`;
           break;
         default:
-          return `${likes[0]}, ${likes[1]} e outras ${likes.length - 2
-            } pessoas`;
+          return `${likes[0].username}, ${likes[1].username} 
+          e outras ${likes.length - 2} pessoas`;
       }
     }
   }
@@ -90,7 +108,6 @@ export default function PostBox({
       unlikePost(postId, headers)
         .then((res) => {
           setIsLiked(false);
-          setUpdateLike(!updateLike);
         })
         .catch((res) => {
           console.log(res.message);
@@ -100,7 +117,6 @@ export default function PostBox({
       likePost(postId, headers)
         .then((res) => {
           setIsLiked(true);
-          setUpdateLike(!updateLike);
         })
         .catch((res) => {
           console.log(res.message);
@@ -212,7 +228,7 @@ export default function PostBox({
                 {isLiked ? <BsHeartFill /> : <BsHeart />}
               </LikeHeart>
               <a data-tip={likesCount(postLikes)}>
-                {postLikes[0] === null ? 0 : postLikes.length} likes
+                {postLikes.length} likes
               </a>
             </Likes>
             <CommentsIcon>
@@ -325,18 +341,18 @@ export default function PostBox({
       <RenderComments commentsIsOpen={commentsIsOpen}>
         {commentsIsOpen
           ? comments.map((cmt, i) => {
-              return (
-                <Comments
-                  key={i}
-                  comment={cmt.comment}
-                  username={cmt.commentUser}
-                  isFollowing={cmt.following}
-                  isAuthorPost={cmt.authorPost}
-                  profileImg={cmt.profilePicture}
-                  userId={cmt.userId}
-                />
-              );
-            })
+            return (
+              <Comments
+                key={i}
+                comment={cmt.comment}
+                username={cmt.commentUser}
+                isFollowing={cmt.following}
+                isAuthorPost={cmt.authorPost}
+                profileImg={cmt.profilePicture}
+                userId={cmt.userId}
+              />
+            );
+          })
           : ""}
         <WriteComment
           postId={id}

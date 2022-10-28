@@ -69,6 +69,10 @@ const ContainerWrite = styled.div`
   position: relative;
   border-radius: 0 0 16px 16px;
 
+  @media (max-width:650px) {
+    border-radius: 0;
+  }
+
   input {
     width: 90%;
     height: 40px;
