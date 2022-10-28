@@ -75,8 +75,6 @@ export default function UserPage() {
     }
   }
 
-  console.log(userPage.userId, id);
-
   return (
     (isLoading ? (
       <LoadingPage />

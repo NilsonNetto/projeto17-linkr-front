@@ -373,18 +373,25 @@ const InputDescription = styled.input`
 const Load = styled.div``;
 
 const LoadButton = styled.div`
-  height: 61px;
+  height: 60px;
   width: 611px;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 16px;
   background-color: #1877F2;
-  margin-top: 40px;
+  margin-top: 30px;
   margin-bottom: 14px;
   font-family: "Lato", sans-serif;
   font-size: 16px;
   color: #FFFFFF;
+  cursor: pointer;
+
+  @media (max-width: 650px) {
+    height: 45px;
+    width: 100%;
+    border-radius: 0;
+  }
 `;
 
 const Icon = styled.div`
