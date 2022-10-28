@@ -240,7 +240,7 @@ export default function PostBox({
               <a>{comments.length} comments </a>
             </CommentsIcon>
             <Repost>
-              <RepostsItens/>
+              <RepostsItens />
             </Repost>
           </Options>
         </Left>
@@ -569,15 +569,23 @@ const UrlTitle = styled.div`
   }
 `;
 const UrlDescription = styled.div`
+  max-height: 50px;
   font: 11px;
   color: #CECECE;
+  word-break: break-all;
+  overflow-y: hidden;
+
   @media (max-width:650px) {
     font-size: 9px;
   }
 `;
 const Url = styled.div`
+  max-height: 50px;
   font-size: 11px;
   color: #CECECE;
+  word-break: break-all;
+  overflow-y: hidden;
+
   @media (max-width:650px) {
     font-size: 11px;
   }
@@ -610,6 +618,11 @@ const ModalContent = styled.div`
   flex-direction: column;
   justify-content: space-evenly;
   border-radius: 40px;
+
+  @media (max-width:650px) {
+    height: 150px;
+  }
+
   p {
     width: 70%;
     font-size: 34px;
@@ -617,6 +630,11 @@ const ModalContent = styled.div`
     text-align: center;
     font-weight: bold;
     line-height: 45px;
+
+    @media (max-width:650px) {
+      font-size: 20px;
+      line-height: normal;
+    }
   }
 `;
 
@@ -630,6 +648,11 @@ const Buttons = styled.div`
     font-size: 18px;
     border: solid 1px #333333;
     padding: 0 16px;
+
+    @media (max-width:650px) {
+      font-size: 15px;
+    }
+
   }
   button:nth-child(1) {
     background-color: #fff;

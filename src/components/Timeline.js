@@ -229,7 +229,7 @@ export default function Timeline() {
             </Posts>
           </TimelineBox>
           <SidebarBox>
-            <Sidebar loadingPublish={loadingPublish} loadingNewPosts={loadingNewPosts} />
+            <Sidebar loadingPublish={loadingPublish} loadingNewPosts={loadingNewPosts} refreshPage={refreshPage} />
           </SidebarBox>
         </Feed>
       </Container>
