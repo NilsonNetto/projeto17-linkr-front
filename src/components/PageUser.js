@@ -15,6 +15,7 @@ export default function UserPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [followLoading, setFollowLoading] = useState(false);
   const [following, setFollowing] = useState(false);
+  const [refreshPage, setRefreshPage] = useState(false);
   const { userData, setUserData } = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -44,7 +45,7 @@ export default function UserPage() {
         setIsLoading(false);
       });
     }
-  }, [userData, id]);
+  }, [userData, id, refreshPage]);
 
   function followAndUnfollow(userId) {
     setFollowLoading(true);
@@ -117,6 +118,8 @@ export default function UserPage() {
                         urlTitle={post.metadata.title}
                         urlDescription={post.metadata.description}
                         urlImage={post.metadata.image}
+                        setRefreshPage={setRefreshPage}
+                        refreshPage={refreshPage}
                       />
                     );
                   })

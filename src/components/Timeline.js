@@ -25,7 +25,7 @@ export default function Timeline() {
   const [postsNumber, setPostsNumber] = useState(0);
   const [newPosts, setNewPosts] = useState(0);
   const [posts, setPosts] = useState([]);
-  const [updateLike, setUpdateLike] = useState(false);
+  const [refreshPage, setRefreshPage] = useState(false);
   const { userData, setUserData } = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -62,7 +62,7 @@ export default function Timeline() {
           setLoadingPage(false);
         });
     }
-  }, [updateLike, userData, loadingPublish, loadingNewPosts]);
+  }, [refreshPage, userData, loadingPublish, loadingNewPosts]);
 
   function post(event) {
     event.preventDefault();
@@ -106,6 +106,8 @@ export default function Timeline() {
                 urlTitle={post.metadata.title}
                 urlDescription={post.metadata.description}
                 urlImage={post.metadata.image}
+                setRefreshPage={setRefreshPage}
+                refreshPage={refreshPage}
               />
             );
           })}
