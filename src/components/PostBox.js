@@ -19,6 +19,7 @@ import ReactTooltip from "react-tooltip";
 import UserContext from "../context/UserContext.js";
 import Modal from "react-modal";
 import Comments from "./Comments.js";
+import RepostsItens from "./RepostsItens.js";
 
 export default function PostBox({
   id,
@@ -221,8 +222,7 @@ export default function PostBox({
               <a>{comments.length} comments </a>
             </CommentsIcon>
             <Repost>
-              <BiRepost style={{ cursor: "pointer" }} />
-              <a> re-post </a>
+              <RepostsItens/>
             </Repost>
           </Options>
         </Left>
