@@ -49,6 +49,8 @@ export default function HashtagPage() {
     }
   }, [hashtag, userData]);
 
+  console.log(postsWithHashtag);
+
   return (isLoading ? (
     <LoadingPage />
   ) : (<>
@@ -67,6 +69,7 @@ export default function HashtagPage() {
                   <PostBox
                     key={index}
                     id={post.id}
+                    userId={post.userId}
                     username={post.username}
                     profilePicture={post.profilePicture}
                     description={post.description}
