@@ -4,7 +4,7 @@ import styled from "styled-components";
 import UserContext from "../context/UserContext";
 import { mountHeaders, getTrendingHashtags } from "../services/linkr";
 
-export default function Sidebar() {
+export default function Sidebar({ loadingPublish, loadingNewPosts, refreshPage }) {
 
   const [trendingHashtags, setTrendingHashtags] = useState([]);
   const navigate = useNavigate();
@@ -22,7 +22,7 @@ export default function Sidebar() {
         console.log(res.data);
         alert('Trending hashtags error');
       });
-  }, []);
+  }, [loadingPublish, loadingNewPosts, refreshPage]);
 
   function hashtagPage(hashtag) {
     navigate(`/hashtag/${hashtag}`);

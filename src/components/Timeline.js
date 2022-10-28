@@ -16,6 +16,7 @@ import { ThreeDots } from "react-loader-spinner";
 import useInterval from "use-interval";
 import { ImSpinner11 } from "react-icons/im";
 import InfiniteScroll from 'react-infinite-scroller';
+import UserSearch from "./UserSearch";
 
 export default function Timeline() {
   const [form, setForm] = useState({ description: "", link: "" });
@@ -151,6 +152,9 @@ export default function Timeline() {
     <>
       <Header />
       <Container>
+        <SearchInput>
+          <UserSearch />
+        </SearchInput>
         <Title>timeline</Title>
         <Feed>
           <TimelineBox>
@@ -217,7 +221,7 @@ export default function Timeline() {
                 //     loader={
                 //       <ThreeDots height={13} color={"white"} />
                 //     }>
-                     postsLoading()
+                postsLoading()
                 //   </ InfiniteScroll>
                 // </>
 
@@ -225,7 +229,7 @@ export default function Timeline() {
             </Posts>
           </TimelineBox>
           <SidebarBox>
-            <Sidebar />
+            <Sidebar loadingPublish={loadingPublish} loadingNewPosts={loadingNewPosts} refreshPage={refreshPage} />
           </SidebarBox>
         </Feed>
       </Container>
@@ -239,6 +243,15 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   margin-top: 72px;
+`;
+
+const SearchInput = styled.div`
+  display: none;
+  @media (max-width: 650px) {
+    width: 100%;
+    padding: 10px 15px ;
+    display: initial;
+  }
 `;
 
 const Title = styled.div`
@@ -256,6 +269,7 @@ const Title = styled.div`
   
   @media (max-width: 650px) {
     width: 100%;
+    margin-top: 20px;
     padding-left: 20px;
   }
 `;
@@ -396,18 +410,25 @@ const InputDescription = styled.input`
 const Load = styled.div``;
 
 const LoadButton = styled.div`
-  height: 61px;
+  height: 60px;
   width: 611px;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 16px;
   background-color: #1877F2;
-  margin-top: 40px;
+  margin-top: 30px;
   margin-bottom: 14px;
   font-family: "Lato", sans-serif;
   font-size: 16px;
   color: #FFFFFF;
+  cursor: pointer;
+
+  @media (max-width: 650px) {
+    height: 45px;
+    width: 100%;
+    border-radius: 0;
+  }
 `;
 
 const Icon = styled.div`
