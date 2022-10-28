@@ -32,8 +32,8 @@ function postPost(body, headers) {
   return axios.post(`${URL}/publish`, body, headers);
 }
 
-function getPosts(headers) {
-  return axios.get(`${URL}/timeline`, headers);
+function getPosts(headers, offset) {
+  return axios.get(`${URL}/timeline/${offset}`, headers);
 }
 
 function getNewPosts(headers) {

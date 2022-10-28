@@ -15,6 +15,7 @@ import LoadingPage from "./LoadingPage";
 import { ThreeDots } from "react-loader-spinner";
 import useInterval from "use-interval";
 import { ImSpinner11 } from "react-icons/im";
+import InfiniteScroll from 'react-infinite-scroller';
 
 export default function Timeline() {
   const [form, setForm] = useState({ description: "", link: "" });
@@ -26,6 +27,8 @@ export default function Timeline() {
   const [newPosts, setNewPosts] = useState(0);
   const [posts, setPosts] = useState([]);
   const [refreshPage, setRefreshPage] = useState(false);
+  const [offset, setOffset] = useState(0);
+  const [loadMorePosts, setLoadMorePosts] = useState(true);
   const { userData, setUserData } = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -48,10 +51,10 @@ export default function Timeline() {
       setLoadingPosts(true);
       const headers = mountHeaders(userData.token);
 
-      getPosts(headers)
+      getPosts(headers, offset)
         .then((resposta) => {
           setPosts(resposta.data);
-          setPostsNumber(resposta.data.length);
+          setPostsNumber(resposta.data[0].id);
           setLoadingPosts(false);
           setLoadingPage(false);
           setLoadingNewPosts(false);
@@ -124,8 +127,8 @@ export default function Timeline() {
 
       await getNewPosts(headers)
         .then((resposta) => {
-          if (resposta.data > postsNumber) {
-            setNewPosts(resposta.data - postsNumber);
+          if (resposta.data.id > postsNumber) {
+            setNewPosts(resposta.data.id - postsNumber);
           }
           console.log(newPosts);
 
@@ -135,6 +138,11 @@ export default function Timeline() {
         });
     }
   }, 15000);
+
+  function loadingMorePosts() {
+    offset += 10;
+    setOffset(offset);
+  }
 
   return loadingPage ? (
     <LoadingPage />
@@ -200,8 +208,20 @@ export default function Timeline() {
               {loadingPosts ? (
                 <ThreeDots height={40} color={"white"} />
               ) : (
-                postsLoading()
-              )}</Posts>
+                // <>
+                //   <InfiniteScroll
+                //     pageStart={0}
+                //     loadMore={() => loadingMorePosts()}
+                //     hasMore={loadMorePosts}
+                //     loader={
+                //       <ThreeDots height={13} color={"white"} />
+                //     }>
+                     postsLoading()
+                //   </ InfiniteScroll>
+                // </>
+
+              )}
+            </Posts>
           </TimelineBox>
           <SidebarBox>
             <Sidebar />
