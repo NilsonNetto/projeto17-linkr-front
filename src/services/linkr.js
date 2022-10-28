@@ -48,6 +48,10 @@ function searchUser(name, headers) {
   return axios.get(`${URL}/users/${name}`, headers);
 }
 
+function listLikes(postId, headers) {
+  return axios.get(`${URL}/likes/${postId}`, headers);
+}
+
 function likePost(postId, headers) {
   return axios.post(`${URL}/likes/${postId}/like`, {}, headers);
 }
@@ -91,6 +95,7 @@ export {
   searchUser,
   postSignin,
   postSignup,
+  listLikes,
   likePost,
   unlikePost,
   followUser,

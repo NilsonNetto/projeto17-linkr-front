@@ -106,10 +106,6 @@ export default function Timeline() {
                 urlTitle={post.metadata.title}
                 urlDescription={post.metadata.description}
                 urlImage={post.metadata.image}
-                userLike={post.userLike}
-                postLikes={post.postLikes}
-                updateLike={updateLike}
-                setUpdateLike={setUpdateLike}
               />
             );
           })}
