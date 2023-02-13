@@ -1,7 +1,8 @@
 import axios from "axios";
+import dotenv from "dotenv";
+dotenv.config();
 
-const URL = "https://projeto17-linkr-agjnn.herokuapp.com";
-//const URL = "http://localhost:4000";
+const URL = process.env.REACT_APP_API_BASE_URL;
 
 function mountHeaders(token) {
   return {
